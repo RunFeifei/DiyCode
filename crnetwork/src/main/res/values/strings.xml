@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">crnetwork</string>
+    <string name="drNetwork_loginStatusException">登录状态异常</string>
+    <string name="loadDataError">数据加载失败</string>
+    <string name="defaultApiError">服务器数据返回错误</string>
+
+    <string name="error_dataParseError">数据解析错误</string>
+    <string name="error_networkError">网络错误</string>
+    <string name="error_networkError_fmt">网络错误(%1$s)</string>
+    <string name="error_loginStateError">登录状态错误</string>
+    <string name="error_resourceNotFound">未找到该资源或操作对象:404</string>
+    <string name="error_unknownServerErrorParam">服务器未知错误:%1$d01</string>
+    <string name="error_unknownServerError">服务器未知错误</string>
+    <string name="error_noResponse">网络请求没有响应</string>
+</resources>

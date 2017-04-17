@@ -1,0 +1,75 @@
+apply plugin: 'com.android.library'
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+    compileSdkVersion ANDROID_SDK_VERSION
+    buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
+
+    defaultConfig {
+        minSdkVersion ANDROID_MIN_SDK_VERSION
+        targetSdkVersion ANDROID_TARGET_SDK_VERSION
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    productFlavors {
+        create('all') {
+
+        }
+    }
+    publishNonDefault true
+}
+
+configurations {
+    allDebug
+    allRelease
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+
+    compile "com.android.support:support-v4:$ANDROID_SUPPORT_VERSION"
+    compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
+    compile "com.android.support:design:$ANDROID_SUPPORT_VERSION"
+    compile 'com.android.support:multidex:1.0.1'
+    compile "com.android.support:percent:$ANDROID_SUPPORT_VERSION"
+
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.1'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.8.1'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.1'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
+    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.6.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-jackson:2.2.0'
+    compile "com.squareup.retrofit2:converter-gson:2.2.0"
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0'
+    compile 'io.reactivex:rxjava:1.1.0'
+    compile 'io.reactivex:rxandroid:1.1.0'
+
+    // 为Glide统一OkHttpClient
+    provided 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.dianrong.android.external:okhttp3-integration:1.4.0'
+
+    releaseCompile "com.dianrong.android:drutils:1.0.5-release"
+    debugCompile "com.dianrong.android:drutils:1.0.5-debug"
+
+    debugCompile "com.dianrong.android:druser:1.0.0-debug"
+    releaseCompile "com.dianrong.android:druser:1.0.0-release"
+
+}
