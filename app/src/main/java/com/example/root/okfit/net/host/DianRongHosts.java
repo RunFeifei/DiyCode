@@ -1,4 +1,4 @@
-package com.example.root.okfit.net.baseurlservices.hosts;
+package com.example.root.okfit.net.host;
 
 /**
  * Created by PengFeifei on 17-4-19.

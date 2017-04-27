@@ -1,4 +1,4 @@
-package com.example.root.okfit.bean.errors;
+package com.example.root.okfit.net.bean;
 
 import com.example.crnetwork.dataformat.Entity;
 import com.fasterxml.jackson.annotation.JsonProperty;

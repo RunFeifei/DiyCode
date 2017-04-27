@@ -1,0 +1,15 @@
+package com.example.root.okfit.uibinder;
+
+
+import com.example.crnetwork.error.ErrorCode;
+
+/**
+ * Created by Lei Guoting on 17-3-19.
+ */
+public interface UiBinderView {
+    void onUiBinderStart(int type);
+
+    void onUiBinderError(ErrorCode error);
+
+    void onUiBinderEnd(int type);
+}

@@ -1,4 +1,4 @@
-package com.example.root.okfit;
+package com.example.root.okfit.business;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +12,9 @@ import com.example.crnetwork.host.BaseUrlBindHelper;
 import com.example.crnetwork.host.ServerType;
 import com.example.crnetwork.response.DrResponse;
 import com.example.crnetwork.response.ResponseCallback;
-import com.example.root.okfit.bean.breakers.BreakerItem;
-import com.example.root.okfit.bean.errors.ErrorItem;
+import com.example.root.okfit.R;
+import com.example.root.okfit.net.bean.BreakerItem;
+import com.example.root.okfit.net.bean.ErrorItem;
 import com.okfit.repository.ClassTestRepository;
 import com.okfit.repository.MethodTestRepository;
 
