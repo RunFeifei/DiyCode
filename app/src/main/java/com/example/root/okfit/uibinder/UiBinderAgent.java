@@ -175,7 +175,8 @@ public final class UiBinderAgent {
             Observable.create(new Observable.OnSubscribe<T>() {
                 @Override
                 public void call(Subscriber<? super T> subscriber) {
-
+                    subscriber.onNext(work.onWork());
+                    subscriber.onCompleted();
                 }
             })
             .subscribeOn(SingletonScheduler.backScheduler)
