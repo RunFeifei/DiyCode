@@ -5,6 +5,7 @@ import android.graphics.Rect;
 public class BubbleInfo {
     private int index;
     private Rect rect;
+    //弧度
     private double radians;
     private int speed;
     private int oldSpeed;

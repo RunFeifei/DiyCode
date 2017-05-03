@@ -7,10 +7,8 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-
 
 import com.example.root.okfit.R;
 
@@ -22,7 +20,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class BubbleLayout extends ViewGroup {
+public class BubbleLayout extends ViewGroup implements BubbleView.MoveListener {
 
     public static final int DEFAULT_PADDING = 10;
     public static final int DEFAULT_MIN_SPEED = 200;
@@ -90,70 +88,62 @@ public class BubbleLayout extends ViewGroup {
             }
             BubbleView bubbleView = (BubbleView) child;
             bubbleView.setBubbleInfo(bubbleInfo);
+            bubbleView.setMoveListener(this);
             if (i == 0) {
-                Rect newRect = getBounds(padding, padding, child.getMeasuredWidth(), child.getMeasuredHeight());
+                Rect newRect = getBounds(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
                 child.layout(newRect.left, newRect.top, newRect.right, newRect.bottom);
                 bubbleInfo.setRect(newRect);
             }
             if (i == 1) {
-                Rect lastRect=sortResult.get(i-1).getmBubbleInfo().getRect();
-                Rect newRect = getBounds(2 * padding +lastRect.height(), 3 * padding, child.getMeasuredWidth(), child.getMeasuredHeight());
+                Rect lastRect = sortResult.get(i - 1).getBubbleInfo().getRect();
+                Rect newRect = getBounds(2 * padding + lastRect.height(), lastRect.height() / 2 + 2 * padding, child.getMeasuredWidth(), child
+                        .getMeasuredHeight());
                 child.layout(newRect.left, newRect.top, newRect.right, newRect.bottom);
                 bubbleInfo.setRect(newRect);
             }
             if (i == 2) {
-                Rect lastRect=sortResult.get(i-1).getmBubbleInfo().getRect();
-                Rect newRect = getBounds(padding + lastRect.height()/2, lastRect.bottom, child.getMeasuredWidth(), child.getMeasuredHeight());
+                Rect lastRect = sortResult.get(i - 1).getBubbleInfo().getRect();
+                Rect newRect = getBounds(padding + lastRect.height(), lastRect.bottom, child.getMeasuredWidth(), child.getMeasuredHeight());
                 child.layout(newRect.left, newRect.top, newRect.right, newRect.bottom);
                 bubbleInfo.setRect(newRect);
             }
             if (i == 3) {
-                Rect lastRect=sortResult.get(i-1).getmBubbleInfo().getRect();
-                Rect newRect = getBounds(0, sortResult.get(2).getmBubbleInfo().getRect().bottom-lastRect.height()/3 , child.getMeasuredWidth(), child.getMeasuredHeight());
+                Rect lastRect = sortResult.get(i - 1).getBubbleInfo().getRect();
+                Rect newRect = getBounds(0, lastRect.bottom - lastRect.height() - padding * 2, child.getMeasuredWidth(), child
+                        .getMeasuredHeight());
                 child.layout(newRect.left, newRect.top, newRect.right, newRect.bottom);
                 bubbleInfo.setRect(newRect);
             }
             if (i == 4) {
-                Rect lastRect=sortResult.get(i-1).getmBubbleInfo().getRect();
-                Rect newRect = getBounds(lastRect.centerX()-padding, getMeasuredHeight()-bubbleView.getMeasuredWidth() , child.getMeasuredWidth(), child.getMeasuredHeight());
+                Rect lastRect = sortResult.get(i - 1).getBubbleInfo().getRect();
+                Rect newRect = getBounds(lastRect.centerX() - padding, getMeasuredHeight() - bubbleView.getMeasuredWidth(), child.getMeasuredWidth(), child
+                        .getMeasuredHeight());
                 child.layout(newRect.left, newRect.top, newRect.right, newRect.bottom);
                 bubbleInfo.setRect(newRect);
             }
             if (i == 5) {
-                Rect lastRect=sortResult.get(2).getmBubbleInfo().getRect();
-                Rect newRect = getBounds(getMeasuredWidth()-padding-child.getMeasuredWidth(), lastRect.bottom-padding , child.getMeasuredWidth(), child.getMeasuredHeight());
+                Rect lastRect = sortResult.get(2).getBubbleInfo().getRect();
+                Rect newRect = getBounds(getMeasuredWidth() - padding - child.getMeasuredWidth(), lastRect.bottom - padding, child.getMeasuredWidth(), child
+                        .getMeasuredHeight());
                 child.layout(newRect.left, newRect.top, newRect.right, newRect.bottom);
                 bubbleInfo.setRect(newRect);
             }
         }
     }
 
-    //计算球的球心
+    /**
+     * 计算球心
+     *
+     * @param amount 当前速度
+     * @param x      当前球心X
+     * @param y      当前球心Y
+     * @param radian 弧度
+     */
     private int[] getRadianPoint(int amount, int x, int y, double radian) {
         int resultX = x + (int) (amount * Math.cos(radian));
         int resultY = y + (int) (amount * Math.sin(radian));
 
         return new int[] {resultX, resultY};
-    }
-
-
-    public void addViewSortByWidth(BubbleView newChild) {
-        LayoutParams param = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        newChild.setLayoutParams(param);
-        if (getChildCount() > 0) {
-            for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                if (child instanceof BubbleView) {
-                    BubbleView bubbleView = (BubbleView) child;
-                    float textWidth = bubbleView.getTextMeasureWidth();
-                    if (newChild.getTextMeasureWidth() > textWidth) {
-                        super.addView(newChild, i);
-                        return;
-                    }
-                }
-            }
-        }
-        super.addView(newChild);
     }
 
     /**
@@ -209,15 +199,13 @@ public class BubbleLayout extends ViewGroup {
     }
 
     /**
-     * //TODO 可以按照热点的程度进行排序
+     * 按照热点的程度进行排序
      */
     private List<BubbleView> sort() {
-        double maxDiameter = (getMeasuredWidth() - padding * 2) / 2;
         List<BubbleView> allBubbleChild = new ArrayList<>();
         for (int i = 0; i < getChildCount(); i++) {
             View view = getChildAt(i);
             if (view != null && view instanceof BubbleView) {
-                ((BubbleView) view).setMaxWidth((int) maxDiameter);
                 allBubbleChild.add((BubbleView) view);
             }
         }
@@ -225,11 +213,34 @@ public class BubbleLayout extends ViewGroup {
         Collections.sort(allBubbleChild, new Comparator<BubbleView>() {
             @Override
             public int compare(BubbleView o1, BubbleView o2) {
-                return o1.getMeasuredWidth() > o2.getMeasuredWidth() ? -1 : 1;
+                return o1.getIndex() > o2.getIndex() ? -1 : 1;
             }
         });
-        Log(allBubbleChild.toString());
+        initViewSize(allBubbleChild);
         return allBubbleChild;
+    }
+
+    /**
+     * @param allBubbleChild 经过排序的views
+     */
+    private void initViewSize(List<BubbleView> allBubbleChild) {
+        int size = util.Collections.size(allBubbleChild);
+        if (size < 0) {
+            return;
+        }
+        float[] factors = new float[size];
+        factors[0] = 1;
+        for (int i = 1; i < size; i++) {
+            float factor = i < 2 ? 0.75f : 0.85f;
+            factors[i] = factor * factors[i - 1];
+        }
+        int maxDiameter = (int) (getMeasuredWidth() / 1.8);
+        for (int i = 0; i < size; i++) {
+            int diameter = (int) (maxDiameter * factors[i]);
+            allBubbleChild.get(i).setMaxSize(diameter);
+            //            LayoutParams layoutParams = new LinearLayout.LayoutParams(diameter, diameter);
+            //            allBubbleChild.get(i).setLayoutParams(layoutParams);
+        }
     }
 
     //刷新间隔
@@ -243,9 +254,7 @@ public class BubbleLayout extends ViewGroup {
                 mHandler.sendEmptyMessage(0);
                 this.cancel();
             }
-
-        }, 10);
-
+        }, 15);
     }
 
     private static class MyHandler extends Handler {
@@ -258,6 +267,9 @@ public class BubbleLayout extends ViewGroup {
         @Override
         public void handleMessage(Message msg) {
             BubbleLayout layout = layoutWeakReference.get();
+            if (layout == null) {
+                return;
+            }
             int count = layout.getChildCount();
             for (int i = 0; i < count && layout.mBubbleInfos.size() > 0; i++) {
 
@@ -292,6 +304,12 @@ public class BubbleLayout extends ViewGroup {
         }
     }
 
+    /**
+     * @param bubbleInfo  当前圆
+     * @param child       当前view
+     * @param overlapRect 相切的其他圆
+     * @return
+     */
     private BubbleInfo getNewMoveInfo(BubbleInfo bubbleInfo, View child, List<BubbleInfo> overlapRect) {
         Rect oldRect = bubbleInfo.getRect();
 
@@ -319,11 +337,12 @@ public class BubbleLayout extends ViewGroup {
     }
 
     /**
-     * 处理重合Case
+     * 处理重合&相切Case
      */
     private void dealWithOverlap() {
         List<BubbleInfo> tempBubbleInfoList = new ArrayList<>();
         for (BubbleInfo info : mBubbleInfos) {
+            //所有和当前圆有重合&相切的圆
             List<BubbleInfo> overlapList = hasOverlap(info);
             if (overlapList.size() > 0) {
                 BubbleInfo bubbleInfoNew = getNewMoveInfo(info, getChildAt(info.getIndex()), overlapList);
@@ -355,6 +374,12 @@ public class BubbleLayout extends ViewGroup {
         return new Point(totalX / overlapRect.size(), totalY / overlapRect.size());
     }
 
+    /**
+     * 弧度反向
+     *
+     * @param radians
+     * @return
+     */
     private double getReverseRadians(double radians) {
         double reverseRadians;
         if (radians > Math.PI) {
@@ -367,7 +392,7 @@ public class BubbleLayout extends ViewGroup {
     }
 
     /**
-     * @return 所有和当前圆有重合的圆
+     * @return 所有和当前圆有重合&相切的圆
      */
     private List<BubbleInfo> hasOverlap(BubbleInfo bubbleInfo) {
         int count = mBubbleInfos.size();
@@ -414,7 +439,7 @@ public class BubbleLayout extends ViewGroup {
      * @param bubbleInfo 当前圆的Info
      */
     private Point ifOverlapBounds(BubbleInfo bubbleInfo) {
-        Rect rect = new Rect(this.getLeft(), this.getTop(), this.getRight(), this.getBottom());
+        Rect rect = new Rect(this.getLeft(), this.getTop(), this.getRight(), this.getMeasuredHeight());
         if (bubbleInfo.getRect() != null) {
             Rect bubbleRect = bubbleInfo.getRect();
             List<Point> overlapPoints = new ArrayList<>();
@@ -422,7 +447,8 @@ public class BubbleLayout extends ViewGroup {
                 Point overlapPoint = new Point(rect.left, bubbleRect.centerY());
                 overlapPoints.add(overlapPoint);
             }
-            if (rect.top >= bubbleRect.top) {
+            // NOTE: 17-5-3 0 replace rect.top
+            if (0 >= bubbleRect.top) {
                 Point overlapPoint = new Point(bubbleRect.centerX(), rect.top);
                 overlapPoints.add(overlapPoint);
             }
@@ -467,8 +493,14 @@ public class BubbleLayout extends ViewGroup {
         }
     }
 
-    private static void Log(String message) {
-        Log.e("TAG-->", message);
+    @Override
+    public void onMove(BubbleInfo bubbleInfo, int centerX, int centerY, int deltaX, int deltaY, double velocity) {
+        velocity /= 6;
+        if (velocity > bubbleInfo.getSpeed()) {
+            float radians = (float) getRadians(new float[] {centerX, centerY}, new float[] {centerX + deltaX, centerY + deltaY});
+            bubbleInfo.setRadians(radians);
+            bubbleInfo.setSpeed((int) velocity);
+        }
     }
 
 }
