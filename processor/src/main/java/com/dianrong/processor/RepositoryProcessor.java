@@ -125,7 +125,7 @@ public class RepositoryProcessor extends AbstractProcessor {
 
     /**
      * 是带有完整包名的!!!
-     * retrofit2.Call<com.example.crnetwork.dataformat.DrRoot<com.example.crnetwork.dataformat.DrList<com.example.root.okfit.bean.errors.ErrorItem>>>
+     * retrofit2.Call<com.example.crnetwork.dataformat.DrRoot<com.example.crnetwork.dataformat.DrList<com.example.root.okfit.net.bean.errors.ErrorItem>>>
      * 把Content的数据结构拿出来(带有完整包名)
      * Call<DrRoot<DrList<BreakerItem>>> -->DrList<BreakerItem>>
      * Call<DrRoot<Data>> -->Data

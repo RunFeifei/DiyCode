@@ -1,12 +1,11 @@
-package com.example.root.okfit.request;
+package com.example.root.okfit.net.api;
 
 import com.example.crnetwork.dataformat.DrList;
 import com.example.crnetwork.dataformat.DrRoot;
 import com.example.crnetwork.host.ClassHostMap;
-import com.example.crnetwork.host.MethodHostMap;
-import com.example.root.okfit.bean.breakers.BreakerItem;
-import com.example.root.okfit.bean.errors.ErrorItem;
-import com.example.root.okfit.net.baseurlservices.hosts.DianRongHosts;
+import com.example.root.okfit.net.bean.BreakerItem;
+import com.example.root.okfit.net.bean.ErrorItem;
+import com.example.root.okfit.net.host.DianRongHosts;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

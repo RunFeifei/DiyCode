@@ -17,7 +17,7 @@ class Method {
     private final ArrayList<Argument> args;
     /**
      * Content的数据结构 带有完整包名
-     * e.g.com.example.root.okfit.bean.errors.ContentData
+     * e.g.com.example.root.okfit.net.bean.errors.ContentData
      * or void
      */
     private String returnClassName;

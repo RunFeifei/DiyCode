@@ -1,4 +1,4 @@
-package com.example.root.okfit.bean.breakers;
+package com.example.root.okfit.net.bean;
 
 import com.example.crnetwork.dataformat.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -10,19 +10,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BreakerItem implements Entity {
 
-    /* @Expose
-     @SerializedName("app")
-     @JsonProperty("app")*/
     private String app1;
 
-    /* @Expose
-     @SerializedName("name")
-     @JsonProperty("name")*/
     private String name;
 
-    /* @Expose
-     @SerializedName("value")
-     @JsonProperty("value")*/
     private boolean value;
 
     public String getApp() {
