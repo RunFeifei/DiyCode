@@ -42,11 +42,14 @@ dependencies {
     releaseCompile project(path: ':crnetwork', configuration: 'allRelease')
     compile "com.android.support:support-v4:$ANDROID_SUPPORT_VERSION"
     compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
-    testCompile 'junit:junit:4.12'
-    compile 'com.squareup.retrofit2:retrofit:2.2.0'
-    compile "com.squareup.retrofit2:converter-gson:2.2.0"
-    compile 'com.squareup.okhttp3:okhttp:3.5.0'
 
     compile project(path: ':processor')
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
+    compile 'com.squareup.okhttp3:okhttp:3.5.0'
+    testCompile 'junit:junit:4.12'
+
+    //for bubble
+    compile 'com.github.lzyzsd.randomcolor:library:1.0.0'
 }
