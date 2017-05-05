@@ -23,16 +23,15 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
-import annotation.MethodHostMap;
 import annotation.MethodHostSurpported;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
-import util.Strings;
 
 /**
  * Created by Lei Guoting on 17-3-15.
+ * NOTE:processor模块必须是独立的java module
  */
 @AutoService(Processor.class)
 public class RepositoryProcessor extends AbstractProcessor {
@@ -101,6 +100,7 @@ public class RepositoryProcessor extends AbstractProcessor {
             Method method = new Method(executableElement.getSimpleName().toString(), 3);
             method.setPrimaryReturnType(returnType);
             method.setReturnClassName(parseReturnType(returnType.toString()));
+            // TODO: 17-5-5 在此不能识别crnetwork模块中的Host注解 造成在app模块中使用compile非apt方式引入此processor模块
             MethodHostSurpported methodHostMap = executableElement.getAnnotation(MethodHostSurpported.class);
             method.setAssignedMethodHost(methodHostMap != null && methodHostMap.Surpported());
 
