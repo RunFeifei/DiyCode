@@ -14,8 +14,12 @@ import com.example.crnetwork.host.ServerType;
 import com.example.crnetwork.response.DrResponse;
 import com.example.crnetwork.response.ResponseCallback;
 import com.example.root.okfit.R;
+import com.example.root.okfit.base.BaseActivity;
 import com.example.root.okfit.net.bean.BreakerItem;
 import com.example.root.okfit.net.bean.ErrorItem;
+import com.example.root.okfit.uibinder.Hold;
+import com.example.root.okfit.uibinder.UiBinder;
+import com.example.root.okfit.uibinder.Work;
 import com.okfit.repository.ClassTestRepository;
 import com.okfit.repository.MethodTestRepository;
 
@@ -25,7 +29,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private TextView textView;
     private TextView textView2;
 
@@ -52,9 +56,22 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void log(String tag, String log) {
-        Log.e("TAG-->" + tag, log);
+
+    private void loadData() {
+        UiBinder<DrList<BreakerItem>> uiBinder = getUiBinder();
+        uiBinder.workInBackground(new Work<DrList<BreakerItem>>() {
+            @Override
+            public DrList<BreakerItem> onWork() {
+                return new MethodTestRepository().getBreakers("ios");
+            }
+        }).holdDataInUi(new Hold<DrList<BreakerItem>>() {
+            @Override
+            public void onResultHold(DrList<BreakerItem> data) {
+                textView2.setText(data.getList().get(1).getName());
+            }
+        }).apply();
     }
+
 
     private void getMethodBreakers() {
         new Thread(new Runnable() {

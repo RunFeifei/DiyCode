@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Process;
 
 import com.dianrong.android.common.AppContext;
-import com.dianrong.android.common.utils.Log;
 import com.example.crnetwork.dataformat.Entity;
 import com.example.crnetwork.error.ErrorCode;
 
@@ -26,25 +25,26 @@ public class ResponseHandler {
      * 勿在主线程执行此方法
      */
     public static <T extends Entity> Response<T> getSyncResponse(Call<T> call) {
-        HttpUrl url = call.request().url();
+        HttpUrl url;
+        try {
+            url = call.request().url();
+        } catch (NullPointerException e) {
+            url = HttpUrl.parse("https://www.null.com/");
+        }
+
         Response<T> response = null;
         try {
             response = call.execute();
         } catch (Exception e) {
-            Log.e(TAG, "Errors occurrs in Synchronously excute request", e);
             throw new RequestException(url, ErrorCode.NETWORK_ERR, e);
         }
+
         if (response == null) {
-            throw new RequestException(url, ErrorCode.RESPONSE_NULL_ERR);
+            throw new RequestException(url, ErrorCode.RESPONSE_NULL_ERR, "response is null");
         }
         if (!response.isSuccessful()) {
-            throw new RequestException(url, response.code());
+            throw new RequestException(url, response.code(), "response is failed");
         }
-        /*T responseBody = response.body();
-        if (responseBody == null) {
-            throw new RequestException(url, ErrorCode.RESPONSE_NULL_ERR, response.code());
-        }
-        return responseBody;*/
         return response;
     }
 

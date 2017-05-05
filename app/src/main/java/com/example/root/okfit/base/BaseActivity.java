@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.crnetwork.error.ErrorCode;
+import com.example.crnetwork.response.RequestException;
 import com.example.root.okfit.uibinder.UiBinder;
 import com.example.root.okfit.uibinder.UiBinderAgent;
 import com.example.root.okfit.uibinder.UiBinderBatch;
@@ -39,7 +40,7 @@ public class BaseActivity extends AppCompatActivity implements UiBinderView{
     }
 
     @Override
-    public void onUiBinderError(ErrorCode error) {
+    public void onUiBinderError(RequestException exception) {
         log("","onUiBinderError");
     }
 
