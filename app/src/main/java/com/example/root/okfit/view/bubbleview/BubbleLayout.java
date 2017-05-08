@@ -75,7 +75,6 @@ public class BubbleLayout extends ViewGroup implements BubbleView.MoveListener {
         setMeasuredDimension(widthSize, heightSize);
     }
 
-    //TODO  (´︵`)
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         List<BubbleView> sortResult = sort();

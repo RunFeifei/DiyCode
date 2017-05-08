@@ -1,8 +1,7 @@
 package com.example.root.okfit.uibinder;
 
 
-import com.example.crnetwork.error.ErrorCode;
-import com.example.crnetwork.response.RequestException;
+import com.dianrong.crnetwork.response.RequestException;
 
 /**
  * Created by Lei Guoting on 17-3-19.

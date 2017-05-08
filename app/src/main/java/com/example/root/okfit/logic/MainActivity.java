@@ -2,17 +2,15 @@ package com.example.root.okfit.logic;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.crnetwork.dataformat.DrList;
-import com.example.crnetwork.dataformat.DrRoot;
-import com.example.crnetwork.host.BaseUrlBindHelper;
-import com.example.crnetwork.host.ServerType;
-import com.example.crnetwork.response.DrResponse;
-import com.example.crnetwork.response.ResponseCallback;
+import com.dianrong.crnetwork.dataformat.DrList;
+import com.dianrong.crnetwork.dataformat.DrRoot;
+import com.dianrong.crnetwork.host.BaseUrlBindHelper;
+import com.dianrong.crnetwork.host.ServerType;
+import com.dianrong.crnetwork.response.DrResponse;
+import com.dianrong.crnetwork.response.ResponseCallback;
 import com.example.root.okfit.R;
 import com.example.root.okfit.base.BaseActivity;
 import com.example.root.okfit.net.bean.BreakerItem;

@@ -1,32 +1,24 @@
-package com.example.root.okfit.net.bean;
+package com.dianrong.crnetwork.error;
 
 import com.dianrong.crnetwork.dataformat.Entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by PengFeifei on 17-4-19.
  */
 
-public class ErrorItem implements Entity{
+public class DrErrorItemBean implements Entity {
 
-    @Expose
-    @JsonProperty
+    @JsonProperty("code")
     private String code;
 
-    @Expose
-    @SerializedName("zh-CN")
     @JsonProperty("zh-CN")
     private String zhCN;
 
-    @Expose
-    @SerializedName("en-US")
     @JsonProperty("en-US")
     private String enUS;
 
-    @Expose
-    @JsonProperty
+    @JsonProperty("modifyDate")
     private long modifyDate;
 
     public String getCode() {

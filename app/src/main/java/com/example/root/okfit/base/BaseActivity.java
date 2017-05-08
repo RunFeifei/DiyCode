@@ -1,13 +1,11 @@
 package com.example.root.okfit.base;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.crnetwork.error.ErrorCode;
-import com.example.crnetwork.response.RequestException;
+import com.dianrong.crnetwork.response.RequestException;
 import com.example.root.okfit.uibinder.UiBinder;
 import com.example.root.okfit.uibinder.UiBinderAgent;
 import com.example.root.okfit.uibinder.UiBinderBatch;
