@@ -3,6 +3,7 @@ package com.example.crnetwork.response;
 import com.example.crnetwork.dataformat.DrList;
 import com.example.crnetwork.dataformat.Entity;
 import com.example.crnetwork.dataformat.DrRoot;
+import com.example.crnetwork.error.DrErrorMsgHelper;
 import com.example.crnetwork.error.ErrorCode.DrResultCode;
 import com.example.crnetwork.relogin.LoginServiceCreator;
 
@@ -28,12 +29,14 @@ import util.Strings;
  * "code": 3456
  * }
  */
-//TODO T=ContentWrapper<TemplateEntityList<ErrorItem>>>
+//Note T=ContentWrapper<TemplateEntityList<ErrorItem>>>
 public class DrResponse<T extends Entity> {
 
-    private static boolean logined;
+    private boolean logined;
     private DrResultCode drResultCode;
-    private Action0 loginFailedCallBack;
+    private static Action0 loginFailedCallBack;
+    private String drErrMsg;
+    private String drCode;
 
     /**
      * @return 点融统一的数据格式 && 数据非空
@@ -54,25 +57,31 @@ public class DrResponse<T extends Entity> {
         return isDianrongDataFormat && drRoot != null;
     }
 
-    public DrRoot getRootData(Response<T> response, final Call<T> call) {
+    private DrRoot getRootData(Response<T> response, final Call<T> call) {
         if (!checkRootData(response)) {
             return null;
         }
         DrRoot drRoot = (DrRoot) response.body();
+        int code = drRoot.getCode();
+        drCode = Integer.toString(code);
+        drErrMsg = DrErrorMsgHelper.getErrorMsg(drCode);
         boolean result = false;
-        if (drRoot != null && !Strings.isEmpty(drRoot.getResult())) {
+        if (!Strings.isEmpty(drRoot.getResult())) {
             result = dispatchResult(drRoot, call);
         }
-        return result ? drRoot : null;
+        if (!result) {
+            String errMsg=new StringBuilder("parse drReponse failed").append(drErrMsg).toString();
+            throw new RequestException(call.request().url(), code, errMsg);
+        }
+        return drRoot;
     }
 
-    public <Content extends Entity > Content getContentData(Response<T> response, final Call<T> call) {
+    public <Content extends Entity> Content getContentData(Response<T> response, final Call<T> call) {
         DrRoot drRoot = getRootData(response, call);
         if (drRoot == null) {
             return null;
         }
-        Content data = (Content) drRoot.getContent();
-        return data;
+        return (Content) drRoot.getContent();
     }
 
     public <Item extends Entity> ArrayList<Item> getListData(Response<T> response, final Call<T> call) {
@@ -87,8 +96,7 @@ public class DrResponse<T extends Entity> {
         if (drList == null) {
             return null;
         }
-        ArrayList<Item> list = drList.getList();
-        return list;
+        return drList.getList();
     }
 
 
@@ -99,7 +107,7 @@ public class DrResponse<T extends Entity> {
      */
     @SuppressWarnings("unchecked")
     private void tryLoginWithToken(final Call<T> call, Action0 loginFailedCallBack) {
-        if (DrResponse.logined) {
+        if (logined) {
             if (loginFailedCallBack != null) {
                 loginFailedCallBack.call();
             }
@@ -126,7 +134,7 @@ public class DrResponse<T extends Entity> {
 
 
     /**
-     * //TODO 只处理login和Auth?????
+     * //NOTE 只处理login和Auth
      * 解析Response的result字段
      *
      * @param drRoot
@@ -165,6 +173,7 @@ public class DrResponse<T extends Entity> {
         return drResultCode;
     }
 
+    // NOTE: 17-5-5 在父类中初始化此回调
     public void setLoginFailedCallBack(Action0 loginFailedCallBack) {
         this.loginFailedCallBack = loginFailedCallBack;
     }

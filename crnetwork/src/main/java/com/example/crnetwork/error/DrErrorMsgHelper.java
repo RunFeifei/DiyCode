@@ -56,6 +56,9 @@ public class DrErrorMsgHelper {
     }
 
     public static String getErrorMsg(String code) {
+        if (code == null) {
+            return null;
+        }
         if (!Collections.isEmpty(errMsgMap)) {
             return errMsgMap.get(code);
         }

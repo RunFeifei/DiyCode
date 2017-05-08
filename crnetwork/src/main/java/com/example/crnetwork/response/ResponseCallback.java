@@ -15,16 +15,22 @@ public abstract class ResponseCallback<T extends Entity> implements retrofit2.Ca
 
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
-        HttpUrl url = call.request().url();
+        HttpUrl url;
+        try {
+            url = call.request().url();
+        } catch (NullPointerException e) {
+            url = HttpUrl.parse("https://www.null.com/");
+        }
+
         if (response == null) {
-            throw new RequestException(url, ErrorCode.RESPONSE_NULL_ERR);
+            throw new RequestException(url, ErrorCode.RESPONSE_NULL_ERR, "response is null");
         }
         if (!response.isSuccessful()) {
-            throw new RequestException(url, response.code());
+            throw new RequestException(url, response.code(), "response is failed");
         }
         T responseBody = response.body();
         if (responseBody == null) {
-            throw new RequestException(url, ErrorCode.RESPONSE_NULL_ERR, response.code());
+            throw new RequestException(url, response.code(), "responseBody is null");
         }
     }
 

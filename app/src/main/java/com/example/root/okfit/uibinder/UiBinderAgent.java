@@ -2,10 +2,14 @@ package com.example.root.okfit.uibinder;
 
 import android.os.Looper;
 
+import com.example.crnetwork.error.ErrorCode;
+import com.example.crnetwork.response.RequestException;
+
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import okhttp3.HttpUrl;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
@@ -45,6 +49,7 @@ public final class UiBinderAgent {
         this.view = view;
     }
 
+    // NOTE: 17-5-5 泛型T代表返回的数据格式
     private static class SimpleUiBinder<T> implements UiBinder<T> {
         private Work mWork;
         private Error mError;
@@ -179,45 +184,71 @@ public final class UiBinderAgent {
                     subscriber.onCompleted();
                 }
             })
-            .subscribeOn(SingletonScheduler.backScheduler)
-            .observeOn(SingletonScheduler.uiScheduler)
-            .subscribe(new Subscriber<T>() {
-                @Override
-                public void onCompleted() {
-                    SimpleUiBinder binder = SimpleUiBinder.this;
-                    Runnable completedTask = binder.completedTask;
-                    if (completedTask != null) {
-                        completedTask.run();
-                    }
+                    .subscribeOn(SingletonScheduler.backScheduler)
+                    .observeOn(SingletonScheduler.uiScheduler)
+                    .subscribe(new Subscriber<T>() {
+                        @Override
+                        public void onCompleted() {
+                            SimpleUiBinder binder = SimpleUiBinder.this;
+                            Runnable completedTask = binder.completedTask;
+                            if (completedTask != null) {
+                                completedTask.run();
+                            }
 
-                    int type = binder.type;
-                    UiBinderView view = binder.view;
-                    AtomicInteger batchCount = binder.batchCount;
-                    if (view != null &&
-                            BEHAVIOR_SILENCE != type
-                            && (batchCount == null || batchCount.decrementAndGet() == 0)) {
-                        view.onUiBinderEnd(type);
-                    }
-                }
+                            int type = binder.type;
+                            UiBinderView view = binder.view;
+                            AtomicInteger batchCount = binder.batchCount;
+                            if (view != null &&
+                                    BEHAVIOR_SILENCE != type
+                                    && (batchCount == null || batchCount.decrementAndGet() == 0)) {
+                                view.onUiBinderEnd(type);
+                            }
+                        }
 
-                @Override
-                public void onError(Throwable e) {
-                    try {
-                        //TODO
-                    } finally {
-                        onCompleted();
-                    }
-                }
+                        @Override
+                        public void onError(Throwable e) {
+                            try {
+                                Error error = SimpleUiBinder.this.mError;
+                                boolean isdefinedException = e instanceof RequestException;
+                                RequestException requestException;
+                                if (isdefinedException) {
+                                    requestException = (RequestException) e;
+                                } else {
+                                    requestException = new RequestException(HttpUrl.parse("https://www.null.com/"), ErrorCode.UNKNOWN_ERR, e);
+                                }
+                                /**
+                                 * 在此 catchErrorInUi()
+                                 */
+                                boolean isCatched = isdefinedException
+                                        && error != null
+                                        && error.onError((RequestException) e);
 
-                @Override
-                public void onNext(T data) {
-                    Hold<T> h = hold;
-                    if (h != null) {
-                        h.onResultHold(data);
-                    }
+                                /**
+                                 * catchErrorInUi()-->没有拦截or不是已经定义过的Exception则传递到onUiBinderError()中
+                                 */
+                                UiBinderView view = SimpleUiBinder.this.view;
+                                if (view != null && !isCatched) {
+                                    view.onUiBinderError(requestException);
+                                }
+                            } catch (Exception e1) {
+                                view.onUiBinderError(new RequestException(HttpUrl.parse("https://www.null.com/"), ErrorCode.UNKNOWN_ERR, e));
+                            } finally {
+                                onCompleted();
+                            }
+                        }
 
-                }
-            });
+                        /**
+                         * 在此 holdDataInUi()
+                         */
+                        @Override
+                        public void onNext(T data) {
+                            Hold<T> h = hold;
+                            if (h != null) {
+                                h.onResultHold(data);
+                            }
+
+                        }
+                    });
 
 
             return this;
