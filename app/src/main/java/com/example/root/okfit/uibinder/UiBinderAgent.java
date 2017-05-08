@@ -2,8 +2,8 @@ package com.example.root.okfit.uibinder;
 
 import android.os.Looper;
 
-import com.example.crnetwork.error.ErrorCode;
-import com.example.crnetwork.response.RequestException;
+import com.dianrong.crnetwork.error.ErrorCode;
+import com.dianrong.crnetwork.response.RequestException;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;

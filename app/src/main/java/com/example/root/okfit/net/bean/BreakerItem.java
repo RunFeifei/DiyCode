@@ -1,6 +1,6 @@
 package com.example.root.okfit.net.bean;
 
-import com.example.crnetwork.dataformat.Entity;
+import com.dianrong.crnetwork.dataformat.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**

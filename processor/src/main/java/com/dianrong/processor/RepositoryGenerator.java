@@ -33,12 +33,13 @@ class RepositoryGenerator {
     //末端数据结构
     private static TypeName contentDataType;
 
-    private final static ClassName ResponseHandler = ClassName.get("com.example.crnetwork.response", "ResponseHandler");
-    private final static ClassName DrResponse = ClassName.get("com.example.crnetwork.response", "DrResponse");
-    private final static ClassName ResponseCallback = ClassName.get("com.example.crnetwork.response", "ResponseCallback");
-    private final static ClassName RequestHandler = ClassName.get("com.example.crnetwork", "RequestHandler");
-    private final static ClassName DrRoot = ClassName.get("com.example.crnetwork.dataformat", "DrRoot");
-    private final static ClassName DrList = ClassName.get("com.example.crnetwork.dataformat", "DrList");
+    // NOTE: 17-5-8 此处crnetwork模块的各类的包名是写死的 如果crnetwork类的包名变化此处需要手动修改
+    private final static ClassName ResponseHandler = ClassName.get("com.dianrong.crnetwork.response", "ResponseHandler");
+    private final static ClassName DrResponse = ClassName.get("com.dianrong.crnetwork.response", "DrResponse");
+    private final static ClassName ResponseCallback = ClassName.get("com.dianrong.crnetwork.response", "ResponseCallback");
+    private final static ClassName RequestHandler = ClassName.get("com.dianrong.crnetwork", "RequestHandler");
+    private final static ClassName DrRoot = ClassName.get("com.dianrong.crnetwork.dataformat", "DrRoot");
+    private final static ClassName DrList = ClassName.get("com.dianrong.crnetwork.dataformat", "DrList");
     private final static ClassName Call = ClassName.get("retrofit2", "Call");
 
     public static void generateCode(Collection<Clazz> bucket, Filer filer) throws IOException {

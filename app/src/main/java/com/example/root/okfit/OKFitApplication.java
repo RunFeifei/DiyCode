@@ -2,7 +2,7 @@ package com.example.root.okfit;
 
 import com.dianrong.android.common.AppContext;
 import com.dianrong.android.common.utils.Log;
-import com.example.crnetwork.error.DrErrorMsgHelper;
+import com.dianrong.crnetwork.error.DrErrorMsgHelper;
 
 import java.io.File;
 import java.io.IOException;
