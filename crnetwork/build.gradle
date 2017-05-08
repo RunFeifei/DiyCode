@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: "maven"
 
 android {
     compileSdkVersion ANDROID_SDK_VERSION
@@ -19,6 +20,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+        }
     }
 
     compileOptions {
@@ -26,28 +29,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    productFlavors {
-        create('all') {
-
-        }
-    }
     publishNonDefault true
 }
 
-configurations {
-    allDebug
-    allRelease
-}
-
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-
-    compile "com.android.support:support-v4:$ANDROID_SUPPORT_VERSION"
-    compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
-    compile "com.android.support:design:$ANDROID_SUPPORT_VERSION"
-    compile 'com.android.support:multidex:1.0.1'
-    compile "com.android.support:percent:$ANDROID_SUPPORT_VERSION"
 
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.1'
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.1'
@@ -71,5 +56,17 @@ dependencies {
 
     debugCompile "com.dianrong.android:druser:1.0.0-debug"
     releaseCompile "com.dianrong.android:druser:1.0.0-release"
+
+    //maven上传配置
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                pom.artifactId = "crnetwork"
+                pom.groupId = "com.dianrong.android"
+                pom.version = "1.0.0"
+                repository(url: uri('http://10.8.12.133:8099/repository/internal/'))
+            }
+        }
+    }
 
 }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import javax.lang.model.type.TypeMirror;
 
-import util.Collections;
 
 /**
  * Created by Lei Guoting on 17-3-15.
@@ -75,7 +74,7 @@ class Clazz {
         StringBuilder builder = new StringBuilder(32);
         builder.append(className);
         builder.append("{");
-        int size = Collections.size(methods);
+        int size = methods.size();
         if (size > 0) {
             for (int i = 0; i < size; i++) {
                 builder.append(methods.get(i)).append(";");

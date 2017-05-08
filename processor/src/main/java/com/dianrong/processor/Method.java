@@ -5,8 +5,6 @@ import java.util.ArrayList;
 
 import javax.lang.model.type.TypeMirror;
 
-import util.Collections;
-import util.Strings;
 
 /**
  * Created by Lei Guoting on 17-3-15.
@@ -52,7 +50,7 @@ class Method {
     }
 
     public String getReturnClassName() {
-        return Strings.isEmpty(returnClassName) ? "void" : returnClassName;
+        return returnClassName==null ? "void" : returnClassName;
     }
 
     public TypeMirror getPrimaryReturnType() {
@@ -64,7 +62,7 @@ class Method {
     }
 
     public String getModifier() {
-        return Strings.isEmpty(modifier) ? "public" : modifier;
+        return modifier==null ? "public" : modifier;
     }
 
     public String getName() {
@@ -94,7 +92,7 @@ class Method {
         builder.append(getReturnClassName()).append(" ");
         builder.append(name);
         builder.append("(");
-        int size = Collections.size(args);
+        int size = args.size();
         if (size > 0) {
             final String separator = ", ";
             for (int i = 0; i < size; i++) {
