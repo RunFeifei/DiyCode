@@ -17,7 +17,7 @@ import okhttp3.OkHttpClient;
  * Created by yangcheng on 2016/12/28.
  * 在Manifest中注册
  */
-public class MyGlideModule implements GlideModule {
+public class CrGlideModule implements GlideModule {
 
     /**
      *改变Bitmap的格式,可以将默认的RGB_565转化为RGB_8888,是
@@ -34,7 +34,7 @@ public class MyGlideModule implements GlideModule {
     @Override
     public void registerComponents(Context context, Glide glide) {
 
-        OkHttpClient client = NetworkFactory.getClient();
+        OkHttpClient client = CrNetworkFactory.getClient();
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
         glide.register(GlideUrl.class, InputStream.class, factory);
     }

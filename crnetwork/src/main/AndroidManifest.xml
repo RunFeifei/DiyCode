@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         >
         <meta-data
-            android:name="com.dianrong.crnetwork.MyGlideModule"
+            android:name="com.dianrong.crnetwork.CrGlideModule"
             android:value="GlideModule" />
     </application>
 
