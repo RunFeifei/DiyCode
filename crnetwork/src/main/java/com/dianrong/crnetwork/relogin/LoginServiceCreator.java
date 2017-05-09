@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.dianrong.android.common.utils.ContextUtils;
 import com.dianrong.android.common.utils.Log;
 import com.dianrong.android.user.UserStatus;
-import com.dianrong.crnetwork.CrNetworkFactory;
+import com.dianrong.crnetwork.RequestHandler;
 import com.dianrong.crnetwork.dataformat.DrRoot;
 import com.dianrong.crnetwork.dataformat.EmptyEntity;
 import com.dianrong.crnetwork.dataformat.Entity;
@@ -36,7 +36,7 @@ public class LoginServiceCreator {
                         aid = UserStatus.getUser().getAid();
                     }
                 }
-                return CrNetworkFactory.createService(TokenLoginRequest.class)
+                return RequestHandler.getService(TokenLoginRequest.class)
                         .tokenLogin(token, aid, ContextUtils.getDeviceToken(), ContextUtils.getChannelName());
             };
         }
@@ -49,9 +49,8 @@ public class LoginServiceCreator {
     public interface AutoLoginServiceFactory<T extends Entity> {
         /**
          * 用于为不同的应用创建登录服务
-         *
-         * @return
          */
         Observable<Result<DrRoot<T>>> create();
     }
+
 }

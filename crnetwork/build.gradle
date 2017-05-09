@@ -63,7 +63,7 @@ dependencies {
             mavenDeployer {
                 pom.artifactId = "crnetwork"
                 pom.groupId = "com.dianrong.android"
-                pom.version = "1.0.1"
+                pom.version = "1.0.2"
                 repository(url: uri('http://10.8.12.133:8099/repository/internal/'))
             }
         }
