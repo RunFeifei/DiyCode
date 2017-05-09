@@ -4,7 +4,7 @@ package com.dianrong.crnetwork.host.dianrong.hosts;
  * Created by PengFeifei on 17-4-19.
  */
 
-public @interface DianRongHosts {
+public interface DianRongHosts {
     String PRODUCT = "https://www.dianrong.com/";
     String DEMO = "https://www-demo.dianrong.com/";
     String DEV = "https://www-dev.dianrong.com/";

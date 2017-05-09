@@ -6,6 +6,10 @@ releaseCompile project(path: ':crnetwork', configuration: 'release')
 #####maven方式
 releaseCompile "com.dianrong.android:crnetwork:1.0.0:release@aar"
 debugCompile "com.dianrong.android:crnetwork:1.0.0:debug@aar"
+###在Apllication(继承AppContext)中初始化
+BaseUrlBindHelper.resetBaseUrl(DianRongHosts.PRODUCT);
+BaseUrlBindHelper.resetBaseUrl(ServerType.PRODUCT);
+DrErrorMsgHelper.initErrorMsgs();
 
 
 ### processor 模块接入
