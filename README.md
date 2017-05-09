@@ -34,4 +34,4 @@ dependencies {
 
 
 ###上传到maven库
-在库的根目录下执行 ../gradlew uploadArchives
+在库的根目录下执行 ../gradlew uploadArchives --info
