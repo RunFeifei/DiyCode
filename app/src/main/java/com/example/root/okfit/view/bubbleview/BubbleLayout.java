@@ -223,7 +223,10 @@ public class BubbleLayout extends ViewGroup implements BubbleView.MoveListener {
      * @param allBubbleChild 经过排序的views
      */
     private void initViewSize(List<BubbleView> allBubbleChild) {
-        int size = util.Collections.size(allBubbleChild);
+        if (allBubbleChild == null) {
+            return;
+        }
+        int size = allBubbleChild.size();
         if (size < 0) {
             return;
         }

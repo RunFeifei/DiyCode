@@ -3,9 +3,22 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
+    signingConfigs {
+        release {
+
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+            storeFile file(properties.getProperty('key.store'))
+            storePassword properties.getProperty('key.store.password')
+            keyAlias properties.getProperty('key.alias')
+            keyPassword properties.getProperty('key.alias.password')
+        }
+    }
     compileSdkVersion ANDROID_SDK_VERSION
     buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
     defaultConfig {
+        multiDexEnabled true
         applicationId "com.example.root.okfit"
         minSdkVersion ANDROID_MIN_SDK_VERSION
         targetSdkVersion ANDROID_TARGET_SDK_VERSION
@@ -17,6 +30,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -34,22 +48,16 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    debugCompile project(path: ':crnetwork', configuration: 'allDebug')
-    releaseCompile project(path: ':crnetwork', configuration: 'allRelease')
+    debugCompile project(path: ':crnetwork', configuration: 'debug')
+    releaseCompile project(path: ':crnetwork', configuration: 'release')
     compile "com.android.support:support-v4:$ANDROID_SUPPORT_VERSION"
     compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
-
     compile project(path: ':processor')
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
-    compile 'com.squareup.retrofit2:retrofit:2.2.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
-    compile 'com.squareup.okhttp3:okhttp:3.5.0'
     testCompile 'junit:junit:4.12'
-
     //for bubble
     compile 'com.github.lzyzsd.randomcolor:library:1.0.0'
     //butterknife

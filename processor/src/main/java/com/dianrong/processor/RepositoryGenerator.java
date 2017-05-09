@@ -15,9 +15,6 @@ import java.util.Collection;
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Modifier;
 
-import util.Arrays;
-import util.Collections;
-import util.Strings;
 
 /**
  * Created by Lei Guoting on 17-3-15.
@@ -43,14 +40,14 @@ class RepositoryGenerator {
     private final static ClassName Call = ClassName.get("retrofit2", "Call");
 
     public static void generateCode(Collection<Clazz> bucket, Filer filer) throws IOException {
-        if (Collections.isEmpty(bucket)) {
+        if (bucket == null) {
             return;
         }
         TypeSpec.Builder classBuilder;
         ArrayList<TypeSpec> repositoryList = new ArrayList<>();
         for (Clazz cls : bucket) {
             ArrayList<Method> methodList = cls.getMethods();
-            if (Collections.isEmpty(methodList)) {
+            if (methodList == null) {
                 continue;
             }
             classBuilder = TypeSpec.classBuilder(getRepositoryClassName(cls.getClassSimpleName()))//生成类名
@@ -86,8 +83,8 @@ class RepositoryGenerator {
                     ParameterSpec parameterSpec = ParameterSpec.get(args.get(j).element);
                     mthBuild02.addParameter(parameterSpec);
                 }
-                ParameterSpec parameterSpec= ParameterSpec.builder(
-                        ParameterizedTypeName.get(ResponseCallback, ParameterizedTypeName.get(DrRoot,modelClassType)),
+                ParameterSpec parameterSpec = ParameterSpec.builder(
+                        ParameterizedTypeName.get(ResponseCallback, ParameterizedTypeName.get(DrRoot, modelClassType)),
                         "callback").build();
                 mthBuild02.addParameter(parameterSpec);
 
@@ -101,8 +98,7 @@ class RepositoryGenerator {
         }
     }
 
-    private static void generateCallStatement(Method method, MethodSpec.Builder builder, Clazz cls)
-    {
+    private static void generateCallStatement(Method method, MethodSpec.Builder builder, Clazz cls) {
         ClassName clazz = ClassName.get(cls.getPackageName(), cls.getClassSimpleName());
         boolean isListData = method.getReturnClassName().contains("<");
 
@@ -114,7 +110,7 @@ class RepositoryGenerator {
 
             builder.addStatement(secondStatemet, nameInSecond, RequestHandler, clazz);
         } else {
-            int numOfParams = Collections.size(method.getArguments());
+            int numOfParams = method.getArguments().size();
             String secondStatemet = "$T call =($T)$T.getMethodCall($T.class, \"" + method.getName() + "\", ";
             secondStatemet += numOfParams <= 0 ? "null)" : arguments2array(method.getArguments()) + ", new Class[] {";
 
@@ -143,7 +139,7 @@ class RepositoryGenerator {
             }
             secondStatemet += numOfParams <= 0 ? "" : "})";
             Object[] objs = new Object[tyNamesNum + 4];
-            Arrays.copy(typeNames, 0, objs, 0, tyNamesNum + 4);
+            System.arraycopy(typeNames, 0, objs, 0, tyNamesNum + 4);
             builder.addStatement(secondStatemet, objs);
         }
     }
@@ -161,7 +157,7 @@ class RepositoryGenerator {
         builder.addStatement(firstatement, nameInFirst, DrResponse);
 
         //第二行
-        generateCallStatement(method,builder,cls);
+        generateCallStatement(method, builder, cls);
 
         //第三行
         builder.addStatement("return drResponse.getContentData($T.getSyncResponse(call), call)", ResponseHandler);
@@ -170,7 +166,7 @@ class RepositoryGenerator {
 
     private static void addAsyncMethodBody(Method method, MethodSpec.Builder builder, Clazz cls) {
         //第一行
-        generateCallStatement(method,builder,cls);
+        generateCallStatement(method, builder, cls);
         String secondStatemet = "call.enqueue(callback)";
         builder.addStatement(secondStatemet);
     }
@@ -182,7 +178,7 @@ class RepositoryGenerator {
     private static String generateInvokeMethod(Method method) {
         StringBuilder invkMthBuild = new StringBuilder();
         ArrayList<Argument> args = method.getArguments();
-        int size = Collections.size(args);
+        int size = args.size();
         if (size > 0) {
             final String separator = ", ";
             invkMthBuild.append(method.getName()).append("(");
@@ -200,7 +196,7 @@ class RepositoryGenerator {
 
 
     private static TypeName[] parseChildrenType(String savage) {
-        if (Strings.isEmpty(savage)) {
+        if (savage == null) {
             return null;
         }
         int index = savage.indexOf(",");
@@ -281,8 +277,11 @@ class RepositoryGenerator {
      * ClassName并非代表类名而是JavaPoet的 ClassName.class类
      */
     private static ClassName parseClassName(String className) {
+        if (className == null) {
+            return null;
+        }
         String buffer[] = bufferStringSize2;
-        getPackageAndClassName(Strings.trim(className), buffer);
+        getPackageAndClassName(className.trim(), buffer);
         return ClassName.get(buffer[0], buffer[1]);
     }
 
@@ -292,8 +291,7 @@ class RepositoryGenerator {
      * pkgAndName[1]=类名
      */
     private static void getPackageAndClassName(String className, String[] pkgAndName) {
-        if (Strings.isEmpty(className)
-                || pkgAndName == null || pkgAndName.length < 2) {
+        if (className == null || pkgAndName == null || pkgAndName.length < 2) {
             return;
         }
 
@@ -313,11 +311,11 @@ class RepositoryGenerator {
      */
     private static String getRepositoryClassName(String apiClassName) {
         String newName = cutSuffix(apiClassName, "Api");
-        if (Strings.isEmpty(newName)) {
+        if (newName == null) {
             newName = cutSuffix(apiClassName, "Request");
         }
 
-        if (Strings.isEmpty(newName)) {
+        if (newName == null) {
             newName = apiClassName;
         }
         return String.format(REPOSITORY_CLASS_TEMPLATE, newName);
@@ -336,7 +334,10 @@ class RepositoryGenerator {
 
 
     private static String arguments2array(ArrayList<Argument> list) {
-        int length = Collections.size(list);
+        if (list == null) {
+            return "null";
+        }
+        int length = list.size();
         if (length == 0) {
             return "null";
         }

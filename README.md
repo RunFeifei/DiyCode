@@ -1,8 +1,12 @@
 ### crnetwork 模块接入
-
 ####在app模块build.gradle文件中
-debugCompile project(path: ':crnetwork', configuration: 'allDebug')
-releaseCompile project(path: ':crnetwork', configuration: 'allRelease')
+#####本地方式
+debugCompile project(path: ':crnetwork', configuration: 'debug')
+releaseCompile project(path: ':crnetwork', configuration: 'release')
+#####maven方式
+releaseCompile "com.dianrong.android:crnetwork:1.0.0:release@aar"
+debugCompile "com.dianrong.android:crnetwork:1.0.0:debug@aar"
+
 
 ### processor 模块接入
 ####在Project build.gradle文件中
@@ -27,3 +31,7 @@ dependencies {
 
 在 processor模块的RepositoryGenerator类中
 需要手动定义各类的包名
+
+
+###上传到maven库
+在库的根目录下执行 ../gradlew uploadArchives
