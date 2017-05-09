@@ -36,9 +36,9 @@ import util.Strings;
  * <p>
  * Created by yangcheng on 16/3/25.
  */
-public class NetworkFactory {
+public class CrNetworkFactory {
 
-    private static final String TAG = NetworkFactory.class.getSimpleName();
+    private static final String TAG = CrNetworkFactory.class.getSimpleName();
 
     private static final long CONNECT_TIMEOUT = 10_000;
     private static final long READ_TIMEOUT = 10_000;
@@ -91,8 +91,8 @@ public class NetworkFactory {
                 builder.sslSocketFactory(sslSocketFactory);
                 builder.hostnameVerifier((hostname, session) -> true);
 
-                MyLoggingInterceptor loggingInterceptor = new MyLoggingInterceptor();
-                loggingInterceptor.setLevel(MyLoggingInterceptor.Level.BODY);
+                CrLoggingInterceptor loggingInterceptor = new CrLoggingInterceptor();
+                loggingInterceptor.setLevel(CrLoggingInterceptor.Level.BODY);
                 builder.addNetworkInterceptor(loggingInterceptor);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -109,7 +109,7 @@ public class NetworkFactory {
          */
         builder.addInterceptor(getHeaderInterceptor());
 
-        builder.cookieJar(OkCookieStore.getInstance());
+        builder.cookieJar(CrOkCookieStore.getInstance());
 
         builder.connectTimeout(CONNECT_TIMEOUT, TimeUnit.MILLISECONDS);
         builder.readTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -127,7 +127,7 @@ public class NetworkFactory {
         }
         synchronized (retrofitInitLock) {
             if (retrofit == null) {
-                initRetrofit(NetworkFactory.baseUrl);
+                initRetrofit(CrNetworkFactory.baseUrl);
             }
         }
 
@@ -146,7 +146,7 @@ public class NetworkFactory {
         }
         builder.addConverterFactory(JacksonConverterFactory.create());
         builder.addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-        builder.client(NetworkFactory.getClient());
+        builder.client(CrNetworkFactory.getClient());
         retrofit = builder.build();
         Log.i(TAG, "Now: baseUrl is " + getBaseUrl());
     }
@@ -159,8 +159,8 @@ public class NetworkFactory {
         if (Strings.isEmpty(baseUrl) || !baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
             throw new IllegalStateException("baseUrl is illegal: " + baseUrl);
         }
-        NetworkFactory.baseUrl = baseUrl;
-        boolean needUpdateCookie = OkCookieStore.updateCookie(baseUrl);
+        CrNetworkFactory.baseUrl = baseUrl;
+        boolean needUpdateCookie = CrOkCookieStore.updateCookie(baseUrl);
         rebuildRetrofit(needUpdateCookie);
     }
 
@@ -168,7 +168,7 @@ public class NetworkFactory {
         if (client == null || needUpdateCookie) {
             init();
         }
-        initRetrofit(NetworkFactory.baseUrl);
+        initRetrofit(CrNetworkFactory.baseUrl);
     }
 
     public static <S> S createService(Class<S> serviceClass) {
@@ -253,7 +253,7 @@ public class NetworkFactory {
             requestBuilder.header("X-SL-UUID", DRPreferences.getSlUUID());
             requestBuilder.header("IMEI", ContextUtils.getImei());
             //TODO 非空判断
-            requestBuilder.header("Referer", NetworkFactory.baseUrl);
+            requestBuilder.header("Referer", CrNetworkFactory.baseUrl);
             // headers.forEach((k, v) -> requestBuilder.header(k, v));
             for (Map.Entry<String, String> item : headers.entrySet()) {
                 requestBuilder.header(item.getKey(), item.getValue());

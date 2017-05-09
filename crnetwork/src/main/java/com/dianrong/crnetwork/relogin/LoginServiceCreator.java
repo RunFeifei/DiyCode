@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.dianrong.android.common.utils.ContextUtils;
 import com.dianrong.android.common.utils.Log;
 import com.dianrong.android.user.UserStatus;
-import com.dianrong.crnetwork.NetworkFactory;
+import com.dianrong.crnetwork.CrNetworkFactory;
 import com.dianrong.crnetwork.dataformat.DrRoot;
 import com.dianrong.crnetwork.dataformat.EmptyEntity;
 import com.dianrong.crnetwork.dataformat.Entity;
@@ -36,7 +36,7 @@ public class LoginServiceCreator {
                         aid = UserStatus.getUser().getAid();
                     }
                 }
-                return NetworkFactory.createService(TokenLoginRequest.class)
+                return CrNetworkFactory.createService(TokenLoginRequest.class)
                         .tokenLogin(token, aid, ContextUtils.getDeviceToken(), ContextUtils.getChannelName());
             };
         }

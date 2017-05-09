@@ -1,4 +1,4 @@
-package com.dianrong.crnetwork.error;
+package com.dianrong.crnetwork.host.dianrong.hosts;
 
 /**
  * Created by PengFeifei on 17-4-19.

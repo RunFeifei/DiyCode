@@ -41,11 +41,11 @@ import util.Strings;
  * loadForRequest()-->发送时向request header中加入cookie
  * saveFromResponse()-->接收时读取response header中的cookie
  */
-public class OkCookieStore implements CookieJar {
-    private static final String TAG = OkCookieStore.class.getSimpleName();
+public class CrOkCookieStore implements CookieJar {
+    private static final String TAG = CrOkCookieStore.class.getSimpleName();
     private static final String DOMAINS_PREFERENCES = "domains";
 
-    private static OkCookieStore instance;
+    private static CrOkCookieStore instance;
     private Map<URI, Set<CookieWrapper>> allCookies;
     private CookieManager cookieManager;
     @SuppressWarnings("deprecation")
@@ -55,7 +55,7 @@ public class OkCookieStore implements CookieJar {
     private Func2<HttpUrl, List<Cookie>, List<Cookie>> onLoadListener;
 
     @SuppressWarnings("deprecation")
-    private OkCookieStore() {
+    private CrOkCookieStore() {
         allCookies = new HashMap<>();
         cookieManager = CookieManager.getInstance();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -63,9 +63,9 @@ public class OkCookieStore implements CookieJar {
         }
     }
 
-    public static OkCookieStore getInstance() {
+    public static CrOkCookieStore getInstance() {
         if (instance == null) {
-            instance = new OkCookieStore();
+            instance = new CrOkCookieStore();
         }
         return instance;
     }
@@ -169,7 +169,7 @@ public class OkCookieStore implements CookieJar {
             cookieManager.setCookie("read.dianrong.com", "slSessionId=" + cookie.value());
         }
         //Added-->
-        String domains = UserStorageUtils.getDRPreferences().getString(OkCookieStore.DOMAINS_PREFERENCES, null);
+        String domains = UserStorageUtils.getDRPreferences().getString(CrOkCookieStore.DOMAINS_PREFERENCES, null);
         if (Strings.isEmpty(domains)) {
             return;
         }
@@ -190,7 +190,7 @@ public class OkCookieStore implements CookieJar {
             return false;
         }
         SharedPreferences sharedPreferences = UserStorageUtils.getDRPreferences();
-        String domains = sharedPreferences.getString(OkCookieStore.DOMAINS_PREFERENCES, null);
+        String domains = sharedPreferences.getString(CrOkCookieStore.DOMAINS_PREFERENCES, null);
         boolean needUpdate = domains != null && !domains.contains(domain);
         if (!needUpdate) {
             return false;

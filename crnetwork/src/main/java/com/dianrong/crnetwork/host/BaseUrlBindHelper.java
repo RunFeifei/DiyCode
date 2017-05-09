@@ -2,7 +2,11 @@ package com.dianrong.crnetwork.host;
 
 import android.support.annotation.NonNull;
 
-import com.dianrong.crnetwork.NetworkFactory;
+import com.dianrong.crnetwork.CrNetworkFactory;
+import com.dianrong.crnetwork.host.dianrong.annotation.CrClassHostMap;
+import com.dianrong.crnetwork.host.dianrong.annotation.DrClassHostMap;
+import com.dianrong.crnetwork.host.dianrong.hosts.CreditRoadHosts;
+import com.dianrong.crnetwork.host.dianrong.hosts.DianRongHosts;
 
 import java.lang.reflect.Method;
 
@@ -31,7 +35,7 @@ public class BaseUrlBindHelper {
         if (Strings.isEmpty(baseUrl) || !baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
             throw new IllegalStateException("baseUrl is illegal: " + baseUrl);
         }
-        NetworkFactory.resetBaseUrl(baseUrl);
+        CrNetworkFactory.resetBaseUrl(baseUrl);
     }
 
     /**
@@ -40,11 +44,56 @@ public class BaseUrlBindHelper {
      */
     public static <S> void resetBaseUrl(@ServerType int selectedServerType, Class<S> serviceClass) {
         BaseUrlBindHelper.selectedServerType = selectedServerType;
-        NetworkFactory.resetBaseUrl(BaseUrlBindHelper.getClassHost(serviceClass));
+        CrNetworkFactory.resetBaseUrl(BaseUrlBindHelper.checkClassHosts(serviceClass));
+    }
+
+    /**
+     * 优先获取点融 & 信途的hosts
+     * 同时指定了>=2 or <1 个是视作非法
+     */
+    public static <S> String checkClassHosts(Class<S> serviceClass) {
+        int type = BaseUrlBindHelper.selectedServerType;
+        DrClassHostMap drClassHostMap = serviceClass.getAnnotation(DrClassHostMap.class);
+        CrClassHostMap crClassHostMap = serviceClass.getAnnotation(CrClassHostMap.class);
+        ClassHostMap classHostMap = serviceClass.getAnnotation(ClassHostMap.class);
+        if ((drClassHostMap != null && crClassHostMap != null)
+                || (crClassHostMap != null && classHostMap != null)
+                || (drClassHostMap != null && classHostMap != null)) {
+            throw new IllegalStateException("multiple hosts assigned in " + serviceClass.getSimpleName());
+        }
+
+        if (drClassHostMap != null) {
+            if (type == ServerType.PRODUCT) {
+                return DianRongHosts.PRODUCT;
+            }
+            if (type == ServerType.DEMO) {
+                return DianRongHosts.DEMO;
+            }
+            if (type == ServerType.DEV) {
+                return DianRongHosts.DEV;
+            }
+        }
+
+        if (crClassHostMap != null) {
+            if (type == ServerType.PRODUCT) {
+                return CreditRoadHosts.PRODUCT;
+            }
+            if (type == ServerType.DEMO) {
+                return CreditRoadHosts.DEMO;
+            }
+            if (type == ServerType.DEV) {
+                return CreditRoadHosts.DEV;
+            }
+        }
+
+        if (classHostMap != null) {
+            return getClassHost(serviceClass);
+        }
+        throw new IllegalStateException("no hosts assigned in " + serviceClass.getSimpleName());
     }
 
 
-    public static <S> String getClassHost(Class<S> serviceClass) {
+    private static <S> String getClassHost(Class<S> serviceClass) {
         ClassHostMap classHostMap = serviceClass.getAnnotation(ClassHostMap.class);
         if (classHostMap == null || Strings.isEmpty(classHostMap.PRODUCT()) ||
                 !classHostMap.PRODUCT().startsWith("http://") && !classHostMap.PRODUCT().startsWith("https://")) {

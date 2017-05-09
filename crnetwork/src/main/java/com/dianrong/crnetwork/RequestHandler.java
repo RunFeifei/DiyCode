@@ -14,8 +14,8 @@ import util.Arrays;
 public class RequestHandler {
 
     public static <S> S getService(Class<S> serviceClass) {
-        NetworkFactory.resetBaseUrl(BaseUrlBindHelper.getClassHost(serviceClass));
-        return NetworkFactory.createService(serviceClass);
+        CrNetworkFactory.resetBaseUrl(BaseUrlBindHelper.checkClassHosts(serviceClass));
+        return CrNetworkFactory.createService(serviceClass);
     }
 
     /**
@@ -31,16 +31,16 @@ public class RequestHandler {
         if (requestMethod == null) {
             return null;
         }
-        NetworkFactory.resetBaseUrl(BaseUrlBindHelper.getMethodHost(requestMethod));
+        CrNetworkFactory.resetBaseUrl(BaseUrlBindHelper.getMethodHost(requestMethod));
         for (Method method : methods) {
             if (method.equals(requestMethod)) {
                 try {
                     method.setAccessible(true);
                     Object object;
                     if (Arrays.isEmpty(parameters)) {
-                        object = method.invoke(NetworkFactory.createService(serviceClass));
+                        object = method.invoke(CrNetworkFactory.createService(serviceClass));
                     } else {
-                        object = method.invoke(NetworkFactory.createService(serviceClass), parameters);
+                        object = method.invoke(CrNetworkFactory.createService(serviceClass), parameters);
                     }
                     return object;
                 } catch (ClassCastException e) {

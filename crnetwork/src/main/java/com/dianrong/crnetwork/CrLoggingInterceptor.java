@@ -30,16 +30,16 @@ import static okhttp3.internal.http.StatusLine.HTTP_CONTINUE;
  * <p>
  * Created by yangcheng on 16/8/4.
  */
-public final class MyLoggingInterceptor implements Interceptor {
+public final class CrLoggingInterceptor implements Interceptor {
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private final Logger logger;
     private volatile Level level = Level.NONE;
 
-    public MyLoggingInterceptor() {
+    public CrLoggingInterceptor() {
         this(Logger.DEFAULT);
     }
 
-    public MyLoggingInterceptor(Logger logger) {
+    public CrLoggingInterceptor(Logger logger) {
         this.logger = logger;
     }
 
@@ -59,7 +59,7 @@ public final class MyLoggingInterceptor implements Interceptor {
     /**
      * Change the level at which this interceptor logs.
      */
-    public MyLoggingInterceptor setLevel(Level level) {
+    public CrLoggingInterceptor setLevel(Level level) {
         if (level == null) throw new NullPointerException("level == null. Use Level.NONE instead.");
         this.level = level;
         return this;
