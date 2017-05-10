@@ -1,14 +1,15 @@
 package com.dianrong.crnetwork.response;
 
 import com.dianrong.crnetwork.dataformat.DrList;
-import com.dianrong.crnetwork.error.ErrorCode;
-import com.dianrong.crnetwork.dataformat.Entity;
 import com.dianrong.crnetwork.dataformat.DrRoot;
+import com.dianrong.crnetwork.dataformat.Entity;
 import com.dianrong.crnetwork.error.DrErrorMsgHelper;
+import com.dianrong.crnetwork.error.ErrorCode;
 import com.dianrong.crnetwork.relogin.LoginServiceCreator;
 
 import java.util.ArrayList;
 
+import okhttp3.HttpUrl;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.adapter.rxjava.Result;
@@ -35,42 +36,45 @@ public class DrResponse<T extends Entity> {
     private boolean logined;
     private ErrorCode.DrResultCode drResultCode;
     private static Action0 loginFailedCallBack;
+    //errMsg和errCode通过Exception的方式传递到UI
     private String drErrMsg;
     private String drCode;
 
     /**
      * @return 点融统一的数据格式 && 数据非空
      */
-    private boolean checkRootData(Response<T> response) {
+    private boolean checkRootData(final Call<T> call, Response<T> response) {
         if (response == null || !response.isSuccessful()) {
             return false;
         }
         T root = response.body();
         //是否是点融统一的数据格式
         boolean isDianrongDataFormat = root instanceof DrRoot;
-        DrRoot drRoot;
+        DrRoot drRoot = null;
         try {
             drRoot = (DrRoot) response.body();
         } catch (ClassCastException e) {
-            return false;
+            throwRequestException(call.request().url(), "can not cast to dainrong root data");
         }
-        return isDianrongDataFormat && drRoot != null;
+        boolean result = isDianrongDataFormat && drRoot != null;
+        if (!result) {
+            throwRequestException(call.request().url(),"can not cast to dainrong root data");
+        }
+        return true;
     }
 
     private DrRoot getRootData(Response<T> response, final Call<T> call) {
-        if (!checkRootData(response)) {
-            return null;
-        }
+        checkRootData(call, response);
         DrRoot drRoot = (DrRoot) response.body();
-        int code = drRoot.getCode();
-        drCode = Integer.toString(code);
-        drErrMsg = DrErrorMsgHelper.getErrorMsg(drCode);
         boolean result = false;
         if (!Strings.isEmpty(drRoot.getResult())) {
             result = dispatchResult(drRoot, call);
         }
         if (!result) {
-            String errMsg=new StringBuilder("parse drReponse failed").append(drErrMsg).toString();
+            int code = drRoot.getCode();
+            drCode = Integer.toString(code);
+            drErrMsg = DrErrorMsgHelper.getErrorMsg(drCode);
+            String errMsg = new StringBuilder("dr API returns failed").append(drErrMsg).toString();
             throw new RequestException(call.request().url(), code, errMsg);
         }
         return drRoot;
@@ -79,9 +83,15 @@ public class DrResponse<T extends Entity> {
     public <Content extends Entity> Content getContentData(Response<T> response, final Call<T> call) {
         DrRoot drRoot = getRootData(response, call);
         if (drRoot == null) {
-            return null;
+            throwRequestException(call.request().url(),"drRoot data retuns null");
         }
-        return (Content) drRoot.getContent();
+        Content contentData;
+        try {
+            contentData = (Content) drRoot.getContent();
+        } catch (ClassCastException e) {
+            throw new RequestException(call.request().url(), ErrorCode.DR_CAST_ERR, e);
+        }
+        return contentData;
     }
 
     public <Item extends Entity> ArrayList<Item> getListData(Response<T> response, final Call<T> call) {
@@ -94,9 +104,15 @@ public class DrResponse<T extends Entity> {
             drList = (DrList) drRoot.getContent();
         }
         if (drList == null) {
-            return null;
+            throwRequestException(call.request().url(),"drList data retuns null");
         }
-        return drList.getList();
+        ArrayList<Item> list = null;
+        try {
+            list = drList.getList();
+        } catch (ClassCastException e) {
+            throw new RequestException(call.request().url(), ErrorCode.DR_CAST_ERR, e);
+        }
+        return list;
     }
 
 
@@ -176,6 +192,10 @@ public class DrResponse<T extends Entity> {
     // NOTE: 17-5-5 在父类中初始化此回调
     public void setLoginFailedCallBack(Action0 loginFailedCallBack) {
         this.loginFailedCallBack = loginFailedCallBack;
+    }
+
+    private void throwRequestException(HttpUrl url, String cause) {
+        throw new RequestException(url, ErrorCode.DR_CAST_ERR, cause);
     }
 
 

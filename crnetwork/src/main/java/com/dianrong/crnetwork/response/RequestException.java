@@ -40,6 +40,18 @@ public class RequestException extends RuntimeException implements Parcelable {
         this.errMsg=errMsg;
     }
 
+    public String getUrl() {
+        return url.toString();
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getErrMsg() {
+        return errMsg;
+    }
+
     @Override
     public String toString() {
         return new Gson().toJson(this);
@@ -68,6 +80,9 @@ public class RequestException extends RuntimeException implements Parcelable {
             return new RequestException[size];
         }
     };
+
+
+
 
 
 }

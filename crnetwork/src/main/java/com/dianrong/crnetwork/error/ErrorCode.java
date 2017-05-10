@@ -8,9 +8,9 @@ public @interface ErrorCode {
 
     int NETWORK_ERR = 100;
     int RESPONSE_NULL_ERR = 101;
-    int DIANRONG_ERR = 102;
+    int DR_CAST_ERR = 102;
     int MAIN_THREAD_ERR = 103;
-    int UNKNOWN_ERR = 103;
+    int UNKNOWN_ERR = 104;
 
     enum DrResultCode {
         //服务器返回的错误码
