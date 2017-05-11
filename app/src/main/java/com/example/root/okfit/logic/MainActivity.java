@@ -2,6 +2,7 @@ package com.example.root.okfit.logic;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,7 +13,7 @@ import com.dianrong.crnetwork.host.ServerType;
 import com.dianrong.crnetwork.response.DrResponse;
 import com.dianrong.crnetwork.response.ResponseCallback;
 import com.example.root.okfit.R;
-import com.example.root.okfit.base.BaseActivity;
+import com.example.root.okfit.base.CrBaseActivity;
 import com.example.root.okfit.net.bean.BreakerItem;
 import com.example.root.okfit.net.bean.ErrorItem;
 import com.example.root.okfit.uibinder.Hold;
@@ -27,14 +28,14 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends CrBaseActivity {
     private TextView textView;
     private TextView textView2;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected void init(Bundle savedInstanceState) {
+
         BaseUrlBindHelper.resetBaseUrl(ServerType.PRODUCT);
 
         textView = (TextView) this.findViewById(R.id.text);
@@ -42,7 +43,7 @@ public class MainActivity extends BaseActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, BubbleActivity.class));
+                startActivity(new Intent(MainActivity.this, SecondActivity.class));
             }
         });
         textView2.setOnClickListener(new View.OnClickListener() {
@@ -52,8 +53,13 @@ public class MainActivity extends BaseActivity {
                 getClassAsyncErrors();
             }
         });
+
     }
 
+    @Override
+    protected int getContentViewId() {
+        return R.layout.activity_main;
+    }
 
     private void loadData() {
         UiBinder<DrList<BreakerItem>> uiBinder = getUiBinder();
@@ -113,6 +119,10 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+    }
+
+    private void log(String tag, String text) {
+        Log.e(tag, text);
     }
 
 

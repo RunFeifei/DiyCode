@@ -21,6 +21,8 @@
         </activity>
         <activity android:name=".logic.BubbleActivity">
         </activity>
+        <activity android:name=".logic.SecondActivity">
+        </activity>
     </application>
 
 </manifest>

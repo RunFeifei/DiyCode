@@ -63,4 +63,5 @@ dependencies {
     //butterknife
     compile 'com.jakewharton:butterknife:8.5.1'
     apt 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
 }
