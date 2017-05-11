@@ -1,6 +1,7 @@
 package com.example.root.okfit;
 
 import com.dianrong.android.common.AppContext;
+import com.dianrong.android.common.CrashHandler;
 import com.dianrong.android.common.utils.Log;
 import com.dianrong.crnetwork.error.DrErrorMsgHelper;
 
@@ -20,6 +21,11 @@ public class OKFitApplication extends AppContext {
         super.onCreate();
         init(this);
         initCacheDir();
+        try {
+            CrashHandler.init(this.getApplicationContext());
+        } catch (Exception ex) {
+            Log.e("-->", "Cannot initialize the CrashHandler.", ex);
+        }
         DrErrorMsgHelper.initErrorMsgs();
     }
 
