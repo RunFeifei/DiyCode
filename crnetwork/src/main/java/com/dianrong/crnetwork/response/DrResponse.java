@@ -2,6 +2,7 @@ package com.dianrong.crnetwork.response;
 
 import com.dianrong.crnetwork.dataformat.DrList;
 import com.dianrong.crnetwork.dataformat.DrRoot;
+import com.dianrong.crnetwork.dataformat.EmptyEntity;
 import com.dianrong.crnetwork.dataformat.Entity;
 import com.dianrong.crnetwork.error.DrErrorMsgHelper;
 import com.dianrong.crnetwork.error.ErrorCode;
@@ -13,8 +14,7 @@ import okhttp3.HttpUrl;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.adapter.rxjava.Result;
-import rx.functions.Action0;
-import rx.functions.Action1;
+import rx.Subscriber;
 import util.Strings;
 
 /**
@@ -33,9 +33,8 @@ import util.Strings;
 //Note T=ContentWrapper<TemplateEntityList<ErrorItem>>>
 public class DrResponse<T extends Entity> {
 
-    private boolean logined;
+    private static volatile int logined;
     private ErrorCode.DrResultCode drResultCode;
-    private static Action0 loginFailedCallBack;
     //errMsg和errCode通过Exception的方式传递到UI
     private String drErrMsg;
     private String drCode;
@@ -58,7 +57,7 @@ public class DrResponse<T extends Entity> {
         }
         boolean result = isDianrongDataFormat && drRoot != null;
         if (!result) {
-            throwRequestException(call.request().url(),"can not cast to dainrong root data");
+            throwRequestException(call.request().url(), "can not cast to dainrong root data");
         }
         return true;
     }
@@ -83,7 +82,7 @@ public class DrResponse<T extends Entity> {
     public <Content extends Entity> Content getContentData(Response<T> response, final Call<T> call) {
         DrRoot drRoot = getRootData(response, call);
         if (drRoot == null) {
-            throwRequestException(call.request().url(),"drRoot data retuns null");
+            throwRequestException(call.request().url(), "drRoot data retuns null");
         }
         Content contentData;
         try {
@@ -104,7 +103,7 @@ public class DrResponse<T extends Entity> {
             drList = (DrList) drRoot.getContent();
         }
         if (drList == null) {
-            throwRequestException(call.request().url(),"drList data retuns null");
+            throwRequestException(call.request().url(), "drList data retuns null");
         }
         ArrayList<Item> list = null;
         try {
@@ -117,33 +116,50 @@ public class DrResponse<T extends Entity> {
 
 
     /**
-     * 勿在主线程执行此方法,防止死循环
+     * 勿在主线程执行此方法
+     * TODO 防止死循环 登录成功后还需要登录DC服务器
+     * 需要重新登录时候返回的数据结构
+     * 重新登录失败 成功和失败返回的数据结构
      *
-     * @param loginFailedCallBack 一般是跳转到登录页面的Callback
+     * A接口返回login 请求login接口B B成功再次请求A接口 B失败抛异常
+     * A接口再次返回login 抛异常
+     * C接口返回login 进行下一循环
+     * relogin次数最多3次 抛异常后计数器归零
      */
     @SuppressWarnings("unchecked")
-    private void tryLoginWithToken(final Call<T> call, Action0 loginFailedCallBack) {
-        if (logined) {
-            if (loginFailedCallBack != null) {
-                loginFailedCallBack.call();
-            }
-            return;
+    private synchronized void tryLoginWithToken(final Call<T> call) {
+        if (DrResponse.logined>2) {
+            DrResponse.logined=0;
+            throw new RequestException(call.request().url(), ErrorCode.DR_RELOGIN_ERR, "already did relogin");
         }
+
+        DrResponse.logined++;
         LoginServiceCreator.getAutoLoginServiceFactory().create()
-                .subscribe(new Action1() {
+                .subscribe(new Subscriber<Result<DrRoot<EmptyEntity>>>() {
                     @Override
-                    public void call(Object obj) {
-                        logined = true;
-                        Result<DrRoot<?>> result = (Result<DrRoot<?>>) obj;
-                        if (result != null) {
-                            Response<DrRoot<?>> response = result.response();
-                            if (response != null) {
-                                DrRoot root = response.body();
-                                if (root != null && root.isSuccessful()) {
-                                    ResponseHandler.getSyncResponse(call);
-                                }
-                            }
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        DrResponse.logined=0;
+                        throw new RequestException(call.request().url(), ErrorCode.DR_RELOGIN_ERR, e);
+                    }
+
+                    @Override
+                    public void onNext(Result<DrRoot<EmptyEntity>> result) {
+                        if (result == null) {
+                            DrResponse.logined=0;
+                            throw new RequestException(call.request().url(), ErrorCode.DR_RELOGIN_ERR, "auto relogin failed");
                         }
+                        Response<DrRoot<EmptyEntity>> response = result.response();
+                        boolean sucess = response.isSuccessful()
+                                && getRootData((Response<T>) response, call).isSuccessful();
+                        if (!sucess) {
+                            DrResponse.logined=0;
+                            throw new RequestException(call.request().url(), ErrorCode.DR_RELOGIN_ERR, "auto relogin failed");
+                        }
+                        ResponseHandler.getSyncResponse(call);
                     }
                 });
     }
@@ -161,7 +177,7 @@ public class DrResponse<T extends Entity> {
         String result = drRoot.getResult();
         this.drResultCode = getDrResultCode(result);
         if (drResultCode == ErrorCode.DrResultCode.Login || drResultCode == ErrorCode.DrResultCode.AuthFirst) {
-            tryLoginWithToken(call, loginFailedCallBack);
+            tryLoginWithToken(call);
             return false;
         }
         return drResultCode.equals(ErrorCode.DrResultCode.Success);
@@ -187,11 +203,6 @@ public class DrResponse<T extends Entity> {
             drResultCode = ErrorCode.DrResultCode.Unknown;
         }
         return drResultCode;
-    }
-
-    // NOTE: 17-5-5 在父类中初始化此回调
-    public void setLoginFailedCallBack(Action0 loginFailedCallBack) {
-        this.loginFailedCallBack = loginFailedCallBack;
     }
 
     private void throwRequestException(HttpUrl url, String cause) {
