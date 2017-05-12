@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.root.okfit.R;
-import com.example.root.okfit.logic.BubbleActivity;
+import com.example.root.okfit.logic.SecondActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -21,8 +21,8 @@ public final class MainToolFragment extends MainFragment {
     TextView text;
 
     @Override
-    protected void init(Bundle savedInstanceState,View view) {
-        text.setText("3333");
+    protected void init(Bundle savedInstanceState, View view) {
+        text.setText("MainToolFragment");
     }
 
     @Override
@@ -32,7 +32,7 @@ public final class MainToolFragment extends MainFragment {
 
     @OnClick(R.id.text)
     protected void toBubble() {
-        startActivity(new Intent(getActivity(), BubbleActivity.class));
+        startActivity(new Intent(getActivity(), SecondActivity.class));
     }
 
 }

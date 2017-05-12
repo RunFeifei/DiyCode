@@ -7,5 +7,4 @@ import com.example.root.okfit.base.CrBaseFragment;
  */
 
 public abstract class MainFragment extends CrBaseFragment {
-
 }

@@ -23,8 +23,6 @@
         </activity>
         <activity android:name=".logic.SecondActivity">
         </activity>
-        <activity android:name=".logic.bus.BusActivity">
-        </activity>
     </application>
 
 </manifest>

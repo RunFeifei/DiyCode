@@ -33,6 +33,5 @@ public class BubbleActivity extends AppCompatActivity {
                 }
             });
         }
-
     }
 }

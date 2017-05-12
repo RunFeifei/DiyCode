@@ -22,7 +22,7 @@ public class CrSubscriber {
     private FragmentLifecycleProvider fragmentLifecycleProvider;
     private ActivityLifecycleProvider activityLifecycleProvider;
 
-    private CrBusEvent crBusEvent;
+    private @CrBusEvent.EventId int eventId;
     private Action1<CrBusEvent> onNext;
     private Action1<Throwable> onError;
 
@@ -43,8 +43,8 @@ public class CrSubscriber {
     }
 
 
-    public CrSubscriber bindEvent(CrBusEvent event) {
-        this.crBusEvent = event;
+    public CrSubscriber bindEvent(@CrBusEvent.EventId int eventId) {
+        this.eventId =eventId;
         return this;
     }
 
@@ -80,7 +80,7 @@ public class CrSubscriber {
         Observable observable = isSticky ?
                 CrObservable.getInstance().getStickyObservable(CrBusEvent.class)
                 : CrObservable.getInstance().getObservable(CrBusEvent.class);
-        observable= observable.compose(fragmentLifecycleProvider != null
+        observable = observable.compose(fragmentLifecycleProvider != null
                 ? fragmentLifecycleProvider.<CrBusEvent>bindUntilEvent(FragmentEvent.DESTROY_VIEW) :
                 activityLifecycleProvider.<CrBusEvent>bindUntilEvent(ActivityEvent.DESTROY));
 
@@ -90,8 +90,8 @@ public class CrSubscriber {
                     @Override
                     public Boolean call(CrBusEvent events) {
                         //根据Id进行过滤
-//                        return events.getEventId() == crBusEvent.getEventId();
-                        return true;
+                        Log.e("CrRxbus-->", "filter");
+                        return events.getEventId() == eventId;
                     }
                 })
                 .subscribe(new rx.Subscriber<CrBusEvent>() {

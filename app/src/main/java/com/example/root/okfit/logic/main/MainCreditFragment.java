@@ -6,8 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.root.okfit.R;
-import com.example.root.okfit.logic.BubbleActivity;
-import com.example.root.okfit.logic.bus.BusActivity;
+import com.example.root.okfit.logic.SecondActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -22,13 +21,13 @@ public final class MainCreditFragment extends MainFragment {
     TextView text;
 
     @Override
-    protected void init(Bundle savedInstanceState,View view) {
-        text.setText("22222222");
+    protected void init(Bundle savedInstanceState, View view) {
+        text.setText("MainCreditFragment");
     }
 
     @OnClick(R.id.text)
     protected void toBubble() {
-        startActivity(new Intent(getActivity(), BusActivity.class));
+        startActivity(new Intent(getActivity(), SecondActivity.class));
     }
 
     @Override
