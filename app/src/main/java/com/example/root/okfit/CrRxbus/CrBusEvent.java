@@ -1,5 +1,7 @@
 package com.example.root.okfit.CrRxbus;
 
+import android.support.annotation.IntDef;
+
 /**
  * Created by PengFeifei on 17-5-12.
  */
@@ -16,13 +18,11 @@ public final class CrBusEvent {
         this.content=content;
     }
 
+
     public @interface EventId {
         int EVENT_LOGGED_IN = getAutoEeventId();
         int EVENT_LOGGED_OUT = getAutoEeventId();
-
-        int EVENT_MAINPAGE_CREDIT = getAutoEeventId();
-        int EVENT_MAINPAGE_DETECTIVE = getAutoEeventId();
-        int EVENT_MAINPAGE_TOOL = getAutoEeventId();
+        int EVENT_MAINPAGE_SWITCH = getAutoEeventId();
     }
 
     private static int getAutoEeventId() {

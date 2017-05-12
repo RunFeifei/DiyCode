@@ -1,116 +1,55 @@
 package com.example.root.okfit.logic;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.view.View;
+import android.widget.TextView;
 
-import com.ashokvarma.bottomnavigation.BottomNavigationBar;
-import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.dianrong.crnetwork.host.BaseUrlBindHelper;
+import com.dianrong.crnetwork.host.ServerType;
+import com.example.root.okfit.CrRxbus.CrBusEvent;
+import com.example.root.okfit.CrRxbus.CrObservable;
 import com.example.root.okfit.R;
 import com.example.root.okfit.base.CrBaseActivity;
-import com.example.root.okfit.logic.main.MainCreditFragment;
-import com.example.root.okfit.logic.main.MainDetectiveFragment;
-import com.example.root.okfit.logic.main.MainToolFragment;
 
-import butterknife.BindView;
-
-/**
- * Created by PengFeifei on 17-5-11.
- */
-
-public class SecondActivity extends CrBaseActivity implements BottomNavigationBar.OnTabSelectedListener {
-
-    @BindView(R.id.bottom_navigation_bar)
-    BottomNavigationBar bottomNavigationBar;
+public class SecondActivity extends CrBaseActivity {
+    private TextView textView2;
+    private static int tab = 0;
 
 
     @Override
     protected void init(Bundle savedInstanceState) {
-        initBottomBars();
-        addDefaultFragment();
+
+        BaseUrlBindHelper.resetBaseUrl(ServerType.PRODUCT);
+
+        textView2 = (TextView) this.findViewById(R.id.text2);
+        textView2.setText("SecondActivity");
+        this.findViewById(R.id.text).setVisibility(View.GONE);
+        textView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SecondActivity.this,MainActivity.class));
+                if (tab == 0) {
+                    CrObservable.getInstance().sendStickyEvent(new CrBusEvent(CrBusEvent.EventId.EVENT_MAINPAGE_SWITCH, MainActivity.DETECTIVE));
+                } else if (tab == 1) {
+                    CrObservable.getInstance().sendStickyEvent(new CrBusEvent(CrBusEvent.EventId.EVENT_MAINPAGE_SWITCH, MainActivity.CREDIT));
+
+                } else if (tab == 2) {
+                    CrObservable.getInstance().sendStickyEvent(new CrBusEvent(CrBusEvent.EventId.EVENT_MAINPAGE_SWITCH, MainActivity.TOOL));
+                }
+                tab++;
+                if (tab == 3) {
+                    tab = 0;
+                }
+
+            }
+        });
+
     }
 
     @Override
     protected int getContentViewId() {
-        return R.layout.activity_second;
-    }
-
-
-    private void initBottomBars() {
-        bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
-       /* bottomNavigationBar.setActiveColor(android.R.color.transparent);
-        bottomNavigationBar.setInActiveColor(android.R.color.transparent);
-        bottomNavigationBar.setBarBackgroundColor(android.R.color.transparent);*/
-        bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
-        bottomNavigationBar.setForegroundGravity(Gravity.CENTER);
-
-
-        bottomNavigationBar.addItem(getDetectiveItem())
-                .addItem(getCreditItem())
-                .addItem(getToolItem())
-                .setFirstSelectedPosition(0)
-                .initialise();
-        bottomNavigationBar.setTabSelectedListener(this);
-    }
-
-    private BottomNavigationItem getDetectiveItem() {
-        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_public_sentiment,"111");
-        item.setActiveColor(R.color.transparent);
-        item.setInactiveIconResource(R.drawable.ic_public_sentiment);
-        return item;
-    }
-
-
-    private BottomNavigationItem getCreditItem() {
-        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_blacklist,"222");
-        item.setActiveColor(R.color.transparent);
-        item.setInactiveIconResource(R.drawable.ic_blacklist);
-        return item;
-    }
-
-    private BottomNavigationItem getToolItem() {
-        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_loan_calculator,"333");
-        item.setActiveColor(R.color.transparent);
-        item.setInactiveIconResource(R.drawable.ic_loan_calculator);
-        return item;
-    }
-
-
-    private void addDefaultFragment() {
-        addFragment(new MainDetectiveFragment());
-    }
-
-    @Override
-    protected int getFragmentId() {
-        return R.id.layFrame;
-    }
-
-    @Override
-    public void onTabSelected(int position) {
-        switch (position) {
-            case 0: {
-                addFragment(new MainDetectiveFragment());
-                break;
-            }
-            case 1: {
-                addFragment(new MainCreditFragment());
-                break;
-            }
-            case 2: {
-                addFragment(new MainToolFragment());
-                break;
-            }
-        }
-
-    }
-
-    @Override
-    public void onTabUnselected(int position) {
-
-    }
-
-    @Override
-    public void onTabReselected(int position) {
-
+        return R.layout.activity_main;
     }
 
 
