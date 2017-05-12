@@ -58,10 +58,10 @@ dependencies {
     compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
     compile project(path: ':processor')
     testCompile 'junit:junit:4.12'
-    //for bubble
     compile 'com.github.lzyzsd.randomcolor:library:1.0.0'
-    //butterknife
     compile 'com.jakewharton:butterknife:8.5.1'
     apt 'com.jakewharton:butterknife-compiler:8.5.1'
     compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
+    compile 'com.trello:rxlifecycle:0.3.0'
+    compile 'com.trello:rxlifecycle-components:0.3.0'
 }

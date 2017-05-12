@@ -19,12 +19,13 @@ import com.example.root.okfit.uibinder.UiBinder;
 import com.example.root.okfit.uibinder.UiBinderAgent;
 import com.example.root.okfit.uibinder.UiBinderBatch;
 import com.example.root.okfit.uibinder.UiBinderView;
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public abstract class CrBaseActivity extends AppCompatActivity implements UiBinderView, CrBaseFragment.AppFragmentCallback {
+public abstract class CrBaseActivity extends RxAppCompatActivity implements UiBinderView, CrBaseFragment.AppFragmentCallback {
 
 
     private UiBinderAgent binderAgent;

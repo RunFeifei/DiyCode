@@ -18,12 +18,13 @@ import com.example.root.okfit.uibinder.UiBinder;
 import com.example.root.okfit.uibinder.UiBinderAgent;
 import com.example.root.okfit.uibinder.UiBinderBatch;
 import com.example.root.okfit.uibinder.UiBinderView;
+import com.trello.rxlifecycle.components.support.RxFragment;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public abstract class CrBaseFragment extends Fragment implements UiBinderView {
+public abstract class CrBaseFragment extends RxFragment implements UiBinderView {
 
     private UiBinderAgent activityBinderAgent;
     private UiBinderAgent fragmentBinderAgent;
@@ -79,7 +80,7 @@ public abstract class CrBaseFragment extends Fragment implements UiBinderView {
         super.onViewCreated(view, savedInstanceState);
         butterKinfeBinder = ButterKnife.bind(this, view);
         try {
-            init(savedInstanceState);
+            init(savedInstanceState,view);
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 Log.logStackTrace(e);
@@ -101,7 +102,7 @@ public abstract class CrBaseFragment extends Fragment implements UiBinderView {
 
     protected abstract int getContentViewId();
 
-    protected abstract void init(Bundle savedInstanceState);
+    protected abstract void init(Bundle savedInstanceState,View view);
 
     @Override
     public void onHiddenChanged(boolean hidden) {

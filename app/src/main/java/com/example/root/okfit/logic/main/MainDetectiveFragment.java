@@ -2,6 +2,7 @@ package com.example.root.okfit.logic.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.root.okfit.R;
@@ -20,7 +21,7 @@ public final class MainDetectiveFragment extends MainFragment {
     TextView text;
 
     @Override
-    protected void init(Bundle savedInstanceState) {
+    protected void init(Bundle savedInstanceState,View view) {
         text.setText("1111");
     }
 
