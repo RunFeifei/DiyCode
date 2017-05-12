@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.root.okfit.R;
-import com.example.root.okfit.logic.SecondActivity;
+import com.example.root.okfit.logic.map.LocationMapActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -22,7 +22,7 @@ public final class MainToolFragment extends MainFragment {
 
     @Override
     protected void init(Bundle savedInstanceState, View view) {
-        text.setText("MainToolFragment");
+        text.setText("ToMap");
     }
 
     @Override
@@ -32,7 +32,7 @@ public final class MainToolFragment extends MainFragment {
 
     @OnClick(R.id.text)
     protected void toBubble() {
-        startActivity(new Intent(getActivity(), SecondActivity.class));
+        startActivity(new Intent(getActivity(), LocationMapActivity.class));
     }
 
 }

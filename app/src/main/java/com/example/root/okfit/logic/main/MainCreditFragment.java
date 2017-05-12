@@ -22,7 +22,7 @@ public final class MainCreditFragment extends MainFragment {
 
     @Override
     protected void init(Bundle savedInstanceState, View view) {
-        text.setText("MainCreditFragment");
+        text.setText("ToSecond");
     }
 
     @OnClick(R.id.text)
