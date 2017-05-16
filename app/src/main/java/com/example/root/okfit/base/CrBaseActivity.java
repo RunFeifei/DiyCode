@@ -32,7 +32,7 @@ public abstract class CrBaseActivity extends RxAppCompatActivity implements UiBi
     private Unbinder butterKinfeBinder;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    final protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View content = getLayoutInflater().inflate(getContentViewId(), null);
         setContentView(content);
@@ -43,7 +43,6 @@ public abstract class CrBaseActivity extends RxAppCompatActivity implements UiBi
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        AutomaticViewHolderUtil.findAllViews(this, content);
         initVars();
         try {
             init(savedInstanceState);
