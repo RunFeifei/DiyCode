@@ -85,8 +85,8 @@ class RepositoryGenerator {
                     ParameterSpec parameterSpec = ParameterSpec.get(args.get(j).element);
                     mthBuild03.addParameter(parameterSpec);
                 }
-                ParameterSpec isInterceptionLogin = ParameterSpec.builder(boolean.class, "isInterceptionLogin").build();
-                mthBuild03.addParameter(isInterceptionLogin);
+                ParameterSpec isInterceptLogin = ParameterSpec.builder(boolean.class, "isInterceptLogin").build();
+                mthBuild03.addParameter(isInterceptLogin);
                 classBuilder.addMethod(mthBuild03.build());
 
 
@@ -163,11 +163,11 @@ class RepositoryGenerator {
     }
 
 
-    private static void addSyncMethodBody(Method method, MethodSpec.Builder builder, Clazz cls, boolean isInterceptionLogin) {
+    private static void addSyncMethodBody(Method method, MethodSpec.Builder builder, Clazz cls, boolean isInterceptLogin) {
 
         boolean isListData = method.getReturnClassName().contains("<");
         //第一行
-        String firstatement = isInterceptionLogin ? "$T drResponse = new $T<>( isInterceptionLogin )" : "$T drResponse = new $T<>()";
+        String firstatement = isInterceptLogin ? "$T drResponse = new $T<>( isInterceptLogin )" : "$T drResponse = new $T<>()";
         ParameterizedTypeName nameInFirst = isListData ?
                 ParameterizedTypeName.get(DrResponse, ParameterizedTypeName.get(DrRoot, ParameterizedTypeName.get(DrList, contentDataType)))
                 : ParameterizedTypeName.get(DrResponse, ParameterizedTypeName.get(DrRoot, contentDataType));

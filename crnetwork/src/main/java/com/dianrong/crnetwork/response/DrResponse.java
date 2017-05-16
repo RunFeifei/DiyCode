@@ -38,13 +38,13 @@ public class DrResponse<T extends Entity> {
     //errMsg和errCode通过Exception的方式传递到UI
     private String drErrMsg;
     private String drCode;
-    private boolean isInterceptionLogin;
+    private boolean isInterceptLogin;
 
     public DrResponse() {
     }
 
-    public DrResponse(boolean isInterceptionLogin) {
-        this.isInterceptionLogin = isInterceptionLogin;
+    public DrResponse(boolean isInterceptLogin) {
+        this.isInterceptLogin = isInterceptLogin;
     }
 
     /**
@@ -70,6 +70,12 @@ public class DrResponse<T extends Entity> {
         return true;
     }
 
+    /**
+     *  //TODO 当不拦截登录事件 但是返回login时 此时仍会返回droot
+     * @param response
+     * @param call
+     * @return
+     */
     private DrRoot getRootData(Response<T> response, final Call<T> call) {
         checkRootData(call, response);
         DrRoot drRoot = (DrRoot) response.body();
@@ -185,14 +191,14 @@ public class DrResponse<T extends Entity> {
         String result = drRoot.getResult();
         this.drResultCode = getDrResultCode(result);
         if (drResultCode == ErrorCode.DrResultCode.Login || drResultCode == ErrorCode.DrResultCode.AuthFirst) {
-            if (isInterceptionLogin) {
+            if (isInterceptLogin) {
                 String errMsg = new StringBuilder("USER INTERCEPTION LOGIN ERR")
                         .append(DrErrorMsgHelper.getErrorMsg(Integer.toString(drRoot.getCode())))
                         .toString();
                 throw new RequestException(call.request().url(), ErrorCode.DR_INTERCEPTION_LOGIN_ERR, errMsg);
             }
             tryLoginWithToken(call);
-            return true;
+            return false;
         }
         return drResultCode.equals(ErrorCode.DrResultCode.Success);
     }
