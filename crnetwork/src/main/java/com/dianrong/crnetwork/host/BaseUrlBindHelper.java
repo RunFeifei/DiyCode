@@ -131,4 +131,7 @@ public class BaseUrlBindHelper {
         throw new IllegalStateException("getMethodHost failed");
     }
 
+    public static int getSelectedServerType() {
+        return selectedServerType;
+    }
 }
