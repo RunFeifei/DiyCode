@@ -10,7 +10,8 @@ public @interface ErrorCode {
     int RESPONSE_NULL_ERR = 101;
     int DR_CAST_ERR = 102;
     int DR_RELOGIN_ERR = 103;
-    int UNKNOWN_ERR = 104;
+    int DR_INTERCEPTION_LOGIN_ERR = 104;
+    int UNKNOWN_ERR = 105;
 
     enum DrResultCode {
         //服务器返回的错误码

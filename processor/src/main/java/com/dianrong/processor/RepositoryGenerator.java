@@ -58,11 +58,11 @@ class RepositoryGenerator {
                 Method method = methodList.get(i);
                 TypeName modelClassType = getMethodReturnType(method.getReturnClassName());
 
-                //同步方法-->
+                //同步方法-->01
                 MethodSpec.Builder mthBuild = MethodSpec.methodBuilder(method.getName())
                         .addModifiers(Modifier.PUBLIC)
                         .returns(modelClassType);//方法返回值
-                addSyncMethodBody(method, mthBuild, cls);//方法体
+                addSyncMethodBody(method, mthBuild, cls, false);//方法体
 
                 //方法入参
                 ArrayList<Argument> args = method.getArguments();
@@ -72,12 +72,30 @@ class RepositoryGenerator {
                 }
                 classBuilder.addMethod(mthBuild.build());
 
+
+                //同步方法-->02
+                MethodSpec.Builder mthBuild03 = MethodSpec.methodBuilder(method.getName())
+                        .addModifiers(Modifier.PUBLIC)
+                        .returns(modelClassType);//方法返回值
+                addSyncMethodBody(method, mthBuild03, cls, true);//方法体
+
+                //方法入参
+                ArrayList<Argument> args03 = method.getArguments();
+                for (int j = 0; j < args03.size(); j++) {
+                    ParameterSpec parameterSpec = ParameterSpec.get(args.get(j).element);
+                    mthBuild03.addParameter(parameterSpec);
+                }
+                ParameterSpec isInterceptionLogin = ParameterSpec.builder(boolean.class, "isInterceptionLogin").build();
+                mthBuild03.addParameter(isInterceptionLogin);
+                classBuilder.addMethod(mthBuild03.build());
+
+
+                //异步方法-->
                 MethodSpec.Builder mthBuild02 = MethodSpec.methodBuilder(method.getName())
                         .addModifiers(Modifier.PUBLIC)
                         .returns(void.class);//方法返回值
                 addAsyncMethodBody(method, mthBuild02, cls);//方法体
 
-                //异步方法-->
                 //方法入参
                 for (int j = 0; j < args.size(); j++) {
                     ParameterSpec parameterSpec = ParameterSpec.get(args.get(j).element);
@@ -145,11 +163,11 @@ class RepositoryGenerator {
     }
 
 
-    private static void addSyncMethodBody(Method method, MethodSpec.Builder builder, Clazz cls) {
+    private static void addSyncMethodBody(Method method, MethodSpec.Builder builder, Clazz cls, boolean isInterceptionLogin) {
 
         boolean isListData = method.getReturnClassName().contains("<");
         //第一行
-        String firstatement = "$T drResponse = new $T<>()";
+        String firstatement = isInterceptionLogin ? "$T drResponse = new $T<>( isInterceptionLogin )" : "$T drResponse = new $T<>()";
         ParameterizedTypeName nameInFirst = isListData ?
                 ParameterizedTypeName.get(DrResponse, ParameterizedTypeName.get(DrRoot, ParameterizedTypeName.get(DrList, contentDataType)))
                 : ParameterizedTypeName.get(DrResponse, ParameterizedTypeName.get(DrRoot, contentDataType));

@@ -38,6 +38,14 @@ public class DrResponse<T extends Entity> {
     //errMsg和errCode通过Exception的方式传递到UI
     private String drErrMsg;
     private String drCode;
+    private boolean isInterceptionLogin;
+
+    public DrResponse() {
+    }
+
+    public DrResponse(boolean isInterceptionLogin) {
+        this.isInterceptionLogin = isInterceptionLogin;
+    }
 
     /**
      * @return 点融统一的数据格式 && 数据非空
@@ -120,7 +128,7 @@ public class DrResponse<T extends Entity> {
      * TODO 防止死循环 登录成功后还需要登录DC服务器
      * 需要重新登录时候返回的数据结构
      * 重新登录失败 成功和失败返回的数据结构
-     *
+     * <p>
      * A接口返回login 请求login接口B B成功再次请求A接口 B失败抛异常
      * A接口再次返回login 抛异常
      * C接口返回login 进行下一循环
@@ -128,8 +136,8 @@ public class DrResponse<T extends Entity> {
      */
     @SuppressWarnings("unchecked")
     private synchronized void tryLoginWithToken(final Call<T> call) {
-        if (DrResponse.logined>2) {
-            DrResponse.logined=0;
+        if (DrResponse.logined > 2) {
+            DrResponse.logined = 0;
             throw new RequestException(call.request().url(), ErrorCode.DR_RELOGIN_ERR, "already did relogin");
         }
 
@@ -142,21 +150,21 @@ public class DrResponse<T extends Entity> {
 
                     @Override
                     public void onError(Throwable e) {
-                        DrResponse.logined=0;
+                        DrResponse.logined = 0;
                         throw new RequestException(call.request().url(), ErrorCode.DR_RELOGIN_ERR, e);
                     }
 
                     @Override
                     public void onNext(Result<DrRoot<EmptyEntity>> result) {
                         if (result == null) {
-                            DrResponse.logined=0;
+                            DrResponse.logined = 0;
                             throw new RequestException(call.request().url(), ErrorCode.DR_RELOGIN_ERR, "auto relogin failed");
                         }
                         Response<DrRoot<EmptyEntity>> response = result.response();
                         boolean sucess = response.isSuccessful()
                                 && getRootData((Response<T>) response, call).isSuccessful();
                         if (!sucess) {
-                            DrResponse.logined=0;
+                            DrResponse.logined = 0;
                             throw new RequestException(call.request().url(), ErrorCode.DR_RELOGIN_ERR, "auto relogin failed");
                         }
                         ResponseHandler.getSyncResponse(call);
@@ -177,8 +185,14 @@ public class DrResponse<T extends Entity> {
         String result = drRoot.getResult();
         this.drResultCode = getDrResultCode(result);
         if (drResultCode == ErrorCode.DrResultCode.Login || drResultCode == ErrorCode.DrResultCode.AuthFirst) {
+            if (isInterceptionLogin) {
+                String errMsg = new StringBuilder("USER INTERCEPTION LOGIN ERR")
+                        .append(DrErrorMsgHelper.getErrorMsg(Integer.toString(drRoot.getCode())))
+                        .toString();
+                throw new RequestException(call.request().url(), ErrorCode.DR_INTERCEPTION_LOGIN_ERR, errMsg);
+            }
             tryLoginWithToken(call);
-            return false;
+            return true;
         }
         return drResultCode.equals(ErrorCode.DrResultCode.Success);
     }

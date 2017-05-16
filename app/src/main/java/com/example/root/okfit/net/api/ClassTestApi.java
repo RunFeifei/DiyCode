@@ -20,6 +20,6 @@ public interface ClassTestApi {
     @GET("feapi/errors")
     Call<DrRoot<DrList<ErrorItem>>> getErros();
 
-    @GET("feapi/breakers")
-    Call<DrRoot<DrList<BreakerItem>>> getBreakers(@Query("platform") String platform);
+    /*@GET("feapi/breakers")
+    Call<DrRoot<DrList<BreakerItem>>> getBreakers(@Query("platform") String platform);*/
 }
