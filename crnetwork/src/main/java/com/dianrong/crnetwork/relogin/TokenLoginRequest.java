@@ -2,6 +2,7 @@ package com.dianrong.crnetwork.relogin;
 
 import com.dianrong.crnetwork.dataformat.EmptyEntity;
 import com.dianrong.crnetwork.dataformat.DrRoot;
+import com.dianrong.crnetwork.host.dianrong.annotation.DrClassHostMap;
 
 import retrofit2.adapter.rxjava.Result;
 import retrofit2.http.Field;
@@ -13,6 +14,7 @@ import rx.Observable;
  * <p>
  * Created by yangcheng on 16/9/19.
  */
+@DrClassHostMap
 public interface TokenLoginRequest {
     @POST("api/v2/users/login/token")
     @FormUrlEncoded

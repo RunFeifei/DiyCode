@@ -162,13 +162,6 @@ public class CrOkCookieStore implements CookieJar {
 
     private void setCookie(Cookie cookie) {
         cookieManager.setCookie(cookie.domain(), cookie.toString());
-        // 将sessionId保存到slSessionId
-        if (cookie.name().equals("JSESSIONID")) {
-            cookieManager.setCookie("forum.dianrong.com", "slSessionId=" + cookie.value());
-            cookieManager.setCookie("store.dianrong.com", "slSessionId=" + cookie.value());
-            cookieManager.setCookie("read.dianrong.com", "slSessionId=" + cookie.value());
-        }
-        //Added-->
         String domains = UserStorageUtils.getDRPreferences().getString(CrOkCookieStore.DOMAINS_PREFERENCES, null);
         if (Strings.isEmpty(domains)) {
             return;
@@ -179,8 +172,11 @@ public class CrOkCookieStore implements CookieJar {
         if (Collections.isEmpty(set)) {
             return;
         }
+        // 将sessionId保存到slSessionId
         for (String domain : set) {
-            cookieManager.setCookie(domain, "slSessionId=" + cookie.value());
+            if (cookie.name().equals("JSESSIONID")) {
+                cookieManager.setCookie(domain, "slSessionId=" + cookie.value());
+            }
         }
     }
 
