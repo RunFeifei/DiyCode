@@ -7,5 +7,5 @@ package com.dianrong.crnetwork.host.dianrong.hosts;
 public interface CreditRoadHosts {
     String DEV = "https://dev.onehands.top/";
     String DEMO = "https://demo.onehands.top/";
-    String PRODUCT = "https://creditroad.dianrong.com:15050/";
+    String PRODUCT = "https://creditroad.dianrong.com/";
 }
