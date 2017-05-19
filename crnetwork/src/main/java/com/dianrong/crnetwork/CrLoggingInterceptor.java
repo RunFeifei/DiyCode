@@ -129,7 +129,7 @@ public final class CrLoggingInterceptor implements Interceptor {
                         buffer = decodeGzip(buffer);
                     }
                     //Log the Json
-                    logger.log(buffer.readString(charset));
+                    logger.log("rawResponse" + buffer.readString(charset));
                 }
 
                 logger.log("--> END " + request.method()
@@ -307,8 +307,10 @@ public final class CrLoggingInterceptor implements Interceptor {
         Logger DEFAULT = new Logger() {
             @Override
             public void log(String message) {
-                // Platform.get().log(Platform.INFO, message, null);
-                Log.i("OkHttp", message);
+                if (message.contains("rawResponse")) {
+                    Log.w("CrOkHttp", message.replace("rawResponse",""));
+                }
+                Log.i("CrOkHttp", message);
             }
         };
 
