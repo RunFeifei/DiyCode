@@ -36,8 +36,6 @@ public class DrResponse<T extends Entity> {
     private static volatile int logined;
     private ErrorCode.DrResultCode drResultCode;
     //errMsg和errCode通过Exception的方式传递到UI
-    private String drErrMsg;
-    private String drCode;
     private boolean isInterceptLogin;
 
     public DrResponse() {
@@ -85,10 +83,9 @@ public class DrResponse<T extends Entity> {
         }
         if (!result) {
             int code = drRoot.getCode();
-            drCode = Integer.toString(code);
-            drErrMsg = DrErrorMsgHelper.getErrorMsg(drCode);
-            String errMsg = new StringBuilder("dr API returns failed").append(drErrMsg).toString();
-            throw new RequestException(call.request().url(), code, errMsg);
+            String drCode = Integer.toString(code);
+            String drErrMsg = DrErrorMsgHelper.getErrorMsg(drCode);
+            throw new RequestException(call.request().url(), code, drErrMsg);
         }
         return drRoot;
     }
@@ -192,9 +189,7 @@ public class DrResponse<T extends Entity> {
         this.drResultCode = getDrResultCode(result);
         if (drResultCode == ErrorCode.DrResultCode.Login || drResultCode == ErrorCode.DrResultCode.AuthFirst) {
             if (isInterceptLogin) {
-                String errMsg = new StringBuilder("USER INTERCEPTION LOGIN ERR")
-                        .append(DrErrorMsgHelper.getErrorMsg(Integer.toString(drRoot.getCode())))
-                        .toString();
+                String errMsg =DrErrorMsgHelper.getErrorMsg(Integer.toString(drRoot.getCode()));
                 throw new RequestException(call.request().url(), ErrorCode.DR_INTERCEPTION_LOGIN_ERR, errMsg);
             }
             tryLoginWithToken(call);
