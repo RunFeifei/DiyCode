@@ -69,7 +69,8 @@ public class DrResponse<T extends Entity> {
     }
 
     /**
-     *  //TODO 当不拦截登录事件 但是返回login时 此时仍会返回droot
+     * //TODO 当不拦截登录事件 但是返回login时 此时仍会返回droot
+     *
      * @param response
      * @param call
      * @return
@@ -188,12 +189,8 @@ public class DrResponse<T extends Entity> {
         String result = drRoot.getResult();
         this.drResultCode = getDrResultCode(result);
         if (drResultCode == ErrorCode.DrResultCode.Login || drResultCode == ErrorCode.DrResultCode.AuthFirst) {
-            if (isInterceptLogin) {
-                String errMsg =DrErrorMsgHelper.getErrorMsg(Integer.toString(drRoot.getCode()));
-                throw new RequestException(call.request().url(), ErrorCode.DR_INTERCEPTION_LOGIN_ERR, errMsg);
-            }
-            tryLoginWithToken(call);
-            return false;
+            String errMsg = DrErrorMsgHelper.getErrorMsg(Integer.toString(drRoot.getCode()));
+            throw new RequestException(call.request().url(), ErrorCode.DR_INTERCEPTION_LOGIN_ERR, errMsg);
         }
         return drResultCode.equals(ErrorCode.DrResultCode.Success);
     }
