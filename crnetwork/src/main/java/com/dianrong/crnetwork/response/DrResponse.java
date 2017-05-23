@@ -86,6 +86,9 @@ public class DrResponse<T extends Entity> {
             int code = drRoot.getCode();
             String drCode = Integer.toString(code);
             String drErrMsg = DrErrorMsgHelper.getErrorMsg(drCode);
+            if (drErrMsg.contains("登录") || drErrMsg.contains("登陆")) {
+                throw new RequestException(call.request().url(), ErrorCode.DR_INTERCEPTION_LOGIN_ERR, drErrMsg);
+            }
             throw new RequestException(call.request().url(), code, drErrMsg);
         }
         return drRoot;
