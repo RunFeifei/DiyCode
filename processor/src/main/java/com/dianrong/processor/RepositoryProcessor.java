@@ -99,7 +99,9 @@ public class RepositoryProcessor extends AbstractProcessor {
             List<? extends VariableElement> variables = executableElement.getParameters();
             Method method = new Method(executableElement.getSimpleName().toString(), 3);
             method.setPrimaryReturnType(returnType);
-            method.setReturnClassName(parseReturnType(returnType.toString()));
+            boolean isDiSanFangData=!returnType.toString().contains("DrRoot");
+            method.setReturnClassName(isDiSanFangData ? parseReturnTypeNew(returnType.toString()) : parseReturnType(returnType
+                    .toString()));
             // TODO: 17-5-5 在此不能识别crnetwork模块中的Host注解 造成在app模块中使用compile非apt方式引入此processor模块
             MethodHostSurpported methodHostMap = executableElement.getAnnotation(MethodHostSurpported.class);
             method.setAssignedMethodHost(methodHostMap != null && methodHostMap.Surpported());
@@ -116,7 +118,7 @@ public class RepositoryProcessor extends AbstractProcessor {
             String cls = clsTypeMirror.toString();
             Clazz clsInfo = bucket.get(cls);
             if (clsInfo == null) {
-                clsInfo = new Clazz(clsTypeMirror);
+                clsInfo = new Clazz(clsTypeMirror,isDiSanFangData);
                 bucket.put(cls, clsInfo);
             }
             clsInfo.addMethod(method);
@@ -138,6 +140,23 @@ public class RepositoryProcessor extends AbstractProcessor {
         }
         final String endMark = ">>";
         int beginIndex = index + startMark.length();
+        int index2 = primary.lastIndexOf(endMark);
+        return primary.substring(beginIndex, index2);
+    }
+
+
+    /**
+     * 第三方的数据结构
+     * @param primary
+     * @return
+     */
+    private static String parseReturnTypeNew(String primary) {
+        int index = primary.indexOf("<", 1);
+        if (index < 0) {
+            return primary;
+        }
+        final String endMark = ">";
+        int beginIndex = index + 1;
         int index2 = primary.lastIndexOf(endMark);
         return primary.substring(beginIndex, index2);
     }

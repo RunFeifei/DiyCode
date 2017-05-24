@@ -56,13 +56,13 @@ class RepositoryGenerator {
             int size = methodList.size();
             for (int i = 0; i < size; i++) {
                 Method method = methodList.get(i);
-                TypeName modelClassType = getMethodReturnType(method.getReturnClassName());
+                TypeName modelClassType = getMethodReturnType(method.getReturnClassName(), cls.isDiSanFangData());
 
                 //同步方法-->01
                 MethodSpec.Builder mthBuild = MethodSpec.methodBuilder(method.getName())
                         .addModifiers(Modifier.PUBLIC)
                         .returns(modelClassType);//方法返回值
-                addSyncMethodBody(method, mthBuild, cls, false);//方法体
+                addSyncMethodBody(method, mthBuild, cls, false, cls.isDiSanFangData());//方法体
 
                 //方法入参
                 ArrayList<Argument> args = method.getArguments();
@@ -72,41 +72,43 @@ class RepositoryGenerator {
                 }
                 classBuilder.addMethod(mthBuild.build());
 
+                if (!cls.isDiSanFangData()) {
+                    //同步方法-->02
+                    MethodSpec.Builder mthBuild03 = MethodSpec.methodBuilder(method.getName())
+                            .addModifiers(Modifier.PUBLIC)
+                            .returns(modelClassType);//方法返回值
+                    addSyncMethodBody(method, mthBuild03, cls, true, cls.isDiSanFangData());//方法体
 
-                //同步方法-->02
-                MethodSpec.Builder mthBuild03 = MethodSpec.methodBuilder(method.getName())
-                        .addModifiers(Modifier.PUBLIC)
-                        .returns(modelClassType);//方法返回值
-                addSyncMethodBody(method, mthBuild03, cls, true);//方法体
-
-                //方法入参
-                ArrayList<Argument> args03 = method.getArguments();
-                for (int j = 0; j < args03.size(); j++) {
-                    ParameterSpec parameterSpec = ParameterSpec.get(args.get(j).element);
-                    mthBuild03.addParameter(parameterSpec);
-                }
-                ParameterSpec isInterceptLogin = ParameterSpec.builder(boolean.class, "isInterceptLogin").build();
-                mthBuild03.addParameter(isInterceptLogin);
-                classBuilder.addMethod(mthBuild03.build());
+                    //方法入参
+                    ArrayList<Argument> args03 = method.getArguments();
+                    for (int j = 0; j < args03.size(); j++) {
+                        ParameterSpec parameterSpec = ParameterSpec.get(args.get(j).element);
+                        mthBuild03.addParameter(parameterSpec);
+                    }
+                    ParameterSpec isInterceptLogin = ParameterSpec.builder(boolean.class, "isInterceptLogin").build();
+                    mthBuild03.addParameter(isInterceptLogin);
+                    classBuilder.addMethod(mthBuild03.build());
 
 
-                //异步方法-->
-                MethodSpec.Builder mthBuild02 = MethodSpec.methodBuilder(method.getName())
-                        .addModifiers(Modifier.PUBLIC)
-                        .returns(void.class);//方法返回值
-                addAsyncMethodBody(method, mthBuild02, cls);//方法体
+                    //异步方法-->
+                    MethodSpec.Builder mthBuild02 = MethodSpec.methodBuilder(method.getName())
+                            .addModifiers(Modifier.PUBLIC)
+                            .returns(void.class);//方法返回值
+                    addAsyncMethodBody(method, mthBuild02, cls);//方法体
 
-                //方法入参
-                for (int j = 0; j < args.size(); j++) {
-                    ParameterSpec parameterSpec = ParameterSpec.get(args.get(j).element);
+                    //方法入参
+                    for (int j = 0; j < args.size(); j++) {
+                        ParameterSpec parameterSpec = ParameterSpec.get(args.get(j).element);
+                        mthBuild02.addParameter(parameterSpec);
+                    }
+                    ParameterSpec parameterSpec = ParameterSpec.builder(
+                            ParameterizedTypeName.get(ResponseCallback, ParameterizedTypeName.get(DrRoot, modelClassType)),
+                            "callback").build();
                     mthBuild02.addParameter(parameterSpec);
-                }
-                ParameterSpec parameterSpec = ParameterSpec.builder(
-                        ParameterizedTypeName.get(ResponseCallback, ParameterizedTypeName.get(DrRoot, modelClassType)),
-                        "callback").build();
-                mthBuild02.addParameter(parameterSpec);
 
-                classBuilder.addMethod(mthBuild02.build());
+                    classBuilder.addMethod(mthBuild02.build());
+                }
+
             }
 
             TypeSpec repository = classBuilder.build();
@@ -116,6 +118,13 @@ class RepositoryGenerator {
         }
     }
 
+    /**
+     * 点融的数据结构时
+     *
+     * @param method
+     * @param builder
+     * @param cls
+     */
     private static void generateCallStatement(Method method, MethodSpec.Builder builder, Clazz cls) {
         ClassName clazz = ClassName.get(cls.getPackageName(), cls.getClassSimpleName());
         boolean isListData = method.getReturnClassName().contains("<");
@@ -162,8 +171,61 @@ class RepositoryGenerator {
         }
     }
 
+    /**
+     * 第三方的数据结构时
+     */
+    private static void generateCallStatementNew(Method method, MethodSpec.Builder builder, Clazz cls) {
+        ClassName clazz = ClassName.get(cls.getPackageName(), cls.getClassSimpleName());
 
-    private static void addSyncMethodBody(Method method, MethodSpec.Builder builder, Clazz cls, boolean isInterceptLogin) {
+        if (!method.isAssignedMethodHost()) {
+            String secondStatemet = "$T call = $T.getService($T.class)." + generateInvokeMethod(method);
+
+            ParameterizedTypeName nameInSecond = ParameterizedTypeName.get(Call, contentDataType);
+
+            builder.addStatement(secondStatemet, nameInSecond, RequestHandler, clazz);
+        } else {
+            int numOfParams = method.getArguments().size();
+            String secondStatemet = "$T call =($T)$T.getMethodCall($T.class, \"" + method.getName() + "\", ";
+            secondStatemet += numOfParams <= 0 ? "null)" : arguments2array(method.getArguments()) + ", new Class[] {";
+
+            //前四个$T
+            Object[] typeNames = new Object[numOfParams + 4];
+            int tyNamesNum = 0;
+            typeNames[0] = ParameterizedTypeName.get(Call, contentDataType);
+            typeNames[1] = typeNames[0];
+            typeNames[2] = RequestHandler;
+            typeNames[3] = clazz;
+
+            for (int i = 0; i < numOfParams; i++) {
+                Argument argument = method.getArguments().get(i);
+                if (argument.primaryType.getKind().isPrimitive()) {
+                    secondStatemet += (argument.className + ".class");
+                } else {
+                    typeNames[tyNamesNum + 4] = parseClassName(argument.className);
+                    tyNamesNum++;
+                    secondStatemet += "$T.class";
+                }
+                if (i < numOfParams - 1) {
+                    secondStatemet += ", ";
+                }
+            }
+            secondStatemet += numOfParams <= 0 ? "" : "})";
+            Object[] objs = new Object[tyNamesNum + 4];
+            System.arraycopy(typeNames, 0, objs, 0, tyNamesNum + 4);
+            builder.addStatement(secondStatemet, objs);
+        }
+    }
+
+
+    private static void addSyncMethodBody(Method method, MethodSpec.Builder builder, Clazz cls, boolean isInterceptLogin, boolean isDiSanFangData) {
+        if (isDiSanFangData) {
+            //第一行
+            generateCallStatementNew(method, builder, cls);
+            //第二行
+            builder.addStatement("return ($T)$T.getSyncResponse(call).body()", contentDataType, ResponseHandler);
+
+            return;
+        }
 
         boolean isListData = method.getReturnClassName().contains("<");
         //第一行
@@ -275,7 +337,7 @@ class RepositoryGenerator {
      *                 带有完整包名!!!
      *                 或者是Void
      */
-    private static TypeName getMethodReturnType(String typeName) {
+    private static TypeName getMethodReturnType(String typeName, boolean isDisanfang) {
         int index = typeName.indexOf("<");
         if (index > 0) {
             String parentType = typeName.substring(0, index);
@@ -286,6 +348,9 @@ class RepositoryGenerator {
         }
         ClassName className = parseClassName(typeName);
         contentDataType = className;
+        if (isDisanfang) {
+            return contentDataType;
+        }
         return className;
     }
 

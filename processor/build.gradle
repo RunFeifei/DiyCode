@@ -18,7 +18,7 @@ uploadArchives {
         mavenDeployer {
             pom.artifactId = "crprocessor"
             pom.groupId = "com.dianrong.android"
-            pom.version = "1.0.3"
+            pom.version = "1.0.4"
             repository(url: uri('http://10.8.12.133:8099/repository/internal/'))
         }
     }

@@ -15,13 +15,15 @@ class Clazz {
     private final String className;
     private final TypeMirror typeMirror;
     private final ArrayList<Method> methods;
+    private final boolean isDiSanFangData;
 
-    public Clazz(TypeMirror typeMirror) {
+    public Clazz(TypeMirror typeMirror,boolean isDiSanFangData) {
         this.typeMirror = typeMirror;
         String clsName = typeMirror.toString();
         this.className = clsName;
         setNameAndPackage(clsName);
         this.methods = new ArrayList<>(5);
+        this.isDiSanFangData = isDiSanFangData;
     }
 
     private void setNameAndPackage(String className) {
@@ -62,6 +64,10 @@ class Clazz {
 
     public String getPackageName() {
         return this.packageName;
+    }
+
+    public boolean isDiSanFangData() {
+        return isDiSanFangData;
     }
 
     @Override

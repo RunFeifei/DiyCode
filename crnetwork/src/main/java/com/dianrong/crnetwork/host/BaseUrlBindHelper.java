@@ -49,18 +49,12 @@ public class BaseUrlBindHelper {
 
     /**
      * 优先获取点融 & 信途的hosts
-     * 同时指定了>=2 or <1 个是视作非法
      */
     public static <S> String checkClassHosts(Class<S> serviceClass) {
         int type = BaseUrlBindHelper.selectedServerType;
         DrClassHostMap drClassHostMap = serviceClass.getAnnotation(DrClassHostMap.class);
         CrClassHostMap crClassHostMap = serviceClass.getAnnotation(CrClassHostMap.class);
         ClassHostMap classHostMap = serviceClass.getAnnotation(ClassHostMap.class);
-        if ((drClassHostMap != null && crClassHostMap != null)
-                || (crClassHostMap != null && classHostMap != null)
-                || (drClassHostMap != null && classHostMap != null)) {
-            throw new IllegalStateException("multiple hosts assigned in " + serviceClass.getSimpleName());
-        }
 
         if (drClassHostMap != null) {
             if (type == ServerType.PRODUCT) {
@@ -94,6 +88,11 @@ public class BaseUrlBindHelper {
 
 
     private static <S> String getClassHost(Class<S> serviceClass) {
+        ClassHost classHost = serviceClass.getAnnotation(ClassHost.class);
+        if (classHost != null && !Strings.isEmpty(classHost.HOST())) {
+            return classHost.HOST();
+        }
+
         ClassHostMap classHostMap = serviceClass.getAnnotation(ClassHostMap.class);
         if (classHostMap == null || Strings.isEmpty(classHostMap.PRODUCT()) ||
                 !classHostMap.PRODUCT().startsWith("http://") && !classHostMap.PRODUCT().startsWith("https://")) {
@@ -113,6 +112,11 @@ public class BaseUrlBindHelper {
     }
 
     public static String getMethodHost(Method method) {
+        MethodHost methodHost = method.getAnnotation(MethodHost.class);
+        if (methodHost != null && !Strings.isEmpty(methodHost.HOST())) {
+            return methodHost.HOST();
+        }
+
         MethodHostMap methodHostMap = method.getAnnotation(MethodHostMap.class);
         if (methodHostMap == null || Strings.isEmpty(methodHostMap.PRODUCT()) ||
                 !methodHostMap.PRODUCT().startsWith("http://") && !methodHostMap.PRODUCT().startsWith("https://")) {
