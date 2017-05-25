@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.example.root.okfit.R;
 import com.example.root.okfit.logic.BubbleActivity;
-import com.example.root.okfit.logic.SecondActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -22,7 +21,7 @@ public final class MainDetectiveFragment extends MainFragment {
     TextView text;
 
     @Override
-    protected void init(Bundle savedInstanceState,View view) {
+    protected void init(Bundle savedInstanceState, View view) {
         text.setText("ToBubble");
     }
 
