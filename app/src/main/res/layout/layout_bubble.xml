@@ -21,6 +21,8 @@
         android:paddingRight="10dp"
         android:paddingTop="10dp"
         android:paddingBottom="2dp"
+        android:text="小学生"
+        android:textColor="@color/black"
         />
 
     <TextView
@@ -34,6 +36,8 @@
         android:paddingRight="10dp"
         android:paddingTop="2dp"
         android:paddingBottom="10dp"
+        android:text="急急急"
+        android:textColor="@color/black"
         />
 
 </LinearLayout>

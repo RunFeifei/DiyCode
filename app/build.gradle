@@ -75,4 +75,6 @@ dependencies {
     compile 'com.amap.api:map2d:latest.integration'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile 'com.facebook.rebound:rebound:0.3.8'
+
 }

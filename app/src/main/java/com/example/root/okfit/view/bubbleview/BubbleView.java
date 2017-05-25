@@ -4,13 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.widget.LinearLayout;
@@ -99,6 +97,10 @@ public class BubbleView extends LinearLayout {
         circlePaint.setColor(color);
     }
 
+    public int getCircleColor() {
+        return circlePaint.getColor();
+    }
+
     public void setBubbleInfo(BubbleInfo bubbleInfo) {
         this.bubbleInfo = bubbleInfo;
     }
@@ -112,7 +114,7 @@ public class BubbleView extends LinearLayout {
     }
 
 
-    @Override
+   /* @Override
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getActionMasked();
         int index = event.getActionIndex();
@@ -171,7 +173,7 @@ public class BubbleView extends LinearLayout {
                 break;
         }
         return super.onTouchEvent(event);
-    }
+    }*/
 
     @Override
     protected void onDraw(Canvas canvas) {

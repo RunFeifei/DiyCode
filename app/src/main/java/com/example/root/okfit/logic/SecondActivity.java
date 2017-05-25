@@ -1,56 +1,42 @@
 package com.example.root.okfit.logic;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
+import android.util.Log;
+import android.widget.Button;
 
-import com.dianrong.crnetwork.host.BaseUrlBindHelper;
-import com.dianrong.crnetwork.host.ServerType;
-import com.example.root.okfit.CrRxbus.CrBusEvent;
-import com.example.root.okfit.CrRxbus.CrObservable;
 import com.example.root.okfit.R;
 import com.example.root.okfit.base.CrBaseActivity;
+import com.example.root.okfit.view.slide.SlideViewGroup;
 
-public class SecondActivity extends CrBaseActivity {
-    private TextView textView2;
-    private static int tab = 0;
+import butterknife.BindView;
+import butterknife.OnClick;
 
+public class SecondActivity extends CrBaseActivity implements SlideViewGroup.OnBubbleClick {
+
+
+    @BindView(R.id.btn)
+    Button btn;
+    @BindView(R.id.view)
+    SlideViewGroup view;
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        view.setOnBubbleClick(this);
+    }
 
-        BaseUrlBindHelper.resetBaseUrl(ServerType.PRODUCT);
-
-        textView2 = (TextView) this.findViewById(R.id.text2);
-        textView2.setText("SecondActivity");
-        this.findViewById(R.id.text).setVisibility(View.GONE);
-        textView2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SecondActivity.this,MainActivity.class));
-                if (tab == 0) {
-                    CrObservable.getInstance().sendStickyEvent(new CrBusEvent(CrBusEvent.EventId.EVENT_MAINPAGE_SWITCH, MainActivity.DETECTIVE));
-                } else if (tab == 1) {
-                    CrObservable.getInstance().sendStickyEvent(new CrBusEvent(CrBusEvent.EventId.EVENT_MAINPAGE_SWITCH, MainActivity.CREDIT));
-
-                } else if (tab == 2) {
-                    CrObservable.getInstance().sendStickyEvent(new CrBusEvent(CrBusEvent.EventId.EVENT_MAINPAGE_SWITCH, MainActivity.TOOL));
-                }
-                tab++;
-                if (tab == 3) {
-                    tab = 0;
-                }
-
-            }
-        });
-
+    @OnClick(R.id.btn)
+    protected void pop() {
+        view.popUp();
     }
 
     @Override
     protected int getContentViewId() {
-        return R.layout.activity_main;
+        return R.layout.activity_slide;
     }
 
+    @Override
+    public void onBubbleClick(String content, String num) {
+        Log.e("onBubbleClick-->",content+"-->"+num);
 
+    }
 }
