@@ -57,13 +57,15 @@ dependencies {
     debugCompile "com.dianrong.android:druser:1.0.0-debug"
     releaseCompile "com.dianrong.android:druser:1.0.0-release"
 
+    compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+
     //maven上传配置
     uploadArchives {
         repositories {
             mavenDeployer {
                 pom.artifactId = "crnetwork"
                 pom.groupId = "com.dianrong.android"
-                pom.version = "1.1.0"
+                pom.version = "1.1.1"
                 repository(url: uri('http://10.8.12.133:8099/repository/internal/'))
             }
         }
