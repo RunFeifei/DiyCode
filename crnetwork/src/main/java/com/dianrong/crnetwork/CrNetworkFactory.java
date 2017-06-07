@@ -160,12 +160,16 @@ public class CrNetworkFactory {
             throw new IllegalStateException("baseUrl is illegal: " + baseUrl);
         }
         CrNetworkFactory.baseUrl = baseUrl;
-        boolean needUpdateCookie = CrOkCookieStore.updateCookie(baseUrl);
-        rebuildRetrofit(needUpdateCookie);
+        CrOkCookieStore.getInstance().checkWebCookieUpdate(baseUrl);
+        rebuildRetrofit();
     }
 
-    private static void rebuildRetrofit(boolean needUpdateCookie) {
-        if (client == null || needUpdateCookie) {
+    /**
+     * navite->web 域名切换的同时 需要把cookie同步过去
+     * 此时需要重新将CrOkcookieStore重新和OkHttpClient绑定吗??
+     */
+    private static void rebuildRetrofit() {
+        if (client == null) {
             init();
         }
         initRetrofit(CrNetworkFactory.baseUrl);
