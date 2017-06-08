@@ -2,6 +2,7 @@ package com.dianrong.crnetwork;
 
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.text.TextUtils;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 
@@ -107,8 +108,14 @@ public class CrOkCookieStore extends PersistentCookieJar {
         if (!needUpdate) {
             return false;
         }
-        Set<String> set = new HashSet<String>();
         Gson gson = new Gson();
+        Set<String> set = new HashSet<String>();
+        if (TextUtils.isEmpty(domains)) {
+            set.add(domain);
+            String strJson = gson.toJson(set);
+            sharedPreferences.edit().putString(DOMAINS_PREFERENCES, strJson).commit();
+            return true;
+        }
         set = gson.fromJson(domains, new TypeToken<HashSet<String>>() {
         }.getType());
         if (Collections.isEmpty(set)) {
