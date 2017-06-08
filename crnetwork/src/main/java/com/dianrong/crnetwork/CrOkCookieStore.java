@@ -68,6 +68,11 @@ public class CrOkCookieStore extends PersistentCookieJar {
             cookieManager.setCookie(cookie.domain(), cookie.toString());
             String domains = UserStorageUtils.getDRPreferences().getString(CrOkCookieStore.DOMAINS_PREFERENCES, null);
             if (Strings.isEmpty(domains)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    cookieManager.flush();
+                } else {
+                    cookieSyncManager.sync();
+                }
                 return;
             }
             Gson gson = new Gson();
@@ -98,7 +103,7 @@ public class CrOkCookieStore extends PersistentCookieJar {
         }
         SharedPreferences sharedPreferences = UserStorageUtils.getDRPreferences();
         String domains = sharedPreferences.getString(CrOkCookieStore.DOMAINS_PREFERENCES, null);
-        boolean needUpdate = domains != null && !domains.contains(domain);
+        boolean needUpdate = domains == null || !domains.contains(domain);
         if (!needUpdate) {
             return false;
         }
