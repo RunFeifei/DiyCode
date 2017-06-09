@@ -76,18 +76,23 @@ public class CrOkCookieStore extends PersistentCookieJar {
                 }
                 return;
             }
-            Gson gson = new Gson();
-            Set<String> set = gson.fromJson(domains, new TypeToken<HashSet<String>>() {
-            }.getType());
-            if (Collections.isEmpty(set)) {
-                return;
-            }
-            // 将sessionId保存到slSessionId
-            for (String domain : set) {
-                if (cookie.name().equals("JSESSIONID")) {
-                    cookieManager.setCookie(domain, "slSessionId=" + cookie.value());
+            try {
+                Gson gson = new Gson();
+                Set<String> set = gson.fromJson(domains, new TypeToken<HashSet<String>>() {
+                }.getType());
+                if (Collections.isEmpty(set)) {
+                    return;
                 }
+                // 将sessionId保存到slSessionId
+                for (String domain : set) {
+                    if (cookie.name().equals("JSESSIONID")) {
+                        cookieManager.setCookie(domain, "slSessionId=" + cookie.value());
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("syncToManager", "syncCookieToWebManager fail");
             }
+
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             cookieManager.flush();
@@ -108,23 +113,29 @@ public class CrOkCookieStore extends PersistentCookieJar {
         if (!needUpdate) {
             return false;
         }
-        Gson gson = new Gson();
-        Set<String> set = new HashSet<String>();
-        if (TextUtils.isEmpty(domains)) {
+        try {
+            Gson gson = new Gson();
+            Set<String> set = new HashSet<String>();
+            if (TextUtils.isEmpty(domains)) {
+                set.add(domain);
+                String strJson = gson.toJson(set);
+                sharedPreferences.edit().putString(DOMAINS_PREFERENCES, strJson).commit();
+                return true;
+            }
+            set = gson.fromJson(domains, new TypeToken<HashSet<String>>() {
+            }.getType());
+            if (Collections.isEmpty(set)) {
+                set = new HashSet<String>();
+            }
             set.add(domain);
             String strJson = gson.toJson(set);
             sharedPreferences.edit().putString(DOMAINS_PREFERENCES, strJson).commit();
             return true;
+        } catch (Exception e) {
+            Log.e("checkWebCookieUpdate", "checkWebCookieUpdate fail");
+            return false;
         }
-        set = gson.fromJson(domains, new TypeToken<HashSet<String>>() {
-        }.getType());
-        if (Collections.isEmpty(set)) {
-            set = new HashSet<String>();
-        }
-        set.add(domain);
-        String strJson = gson.toJson(set);
-        sharedPreferences.edit().putString(DOMAINS_PREFERENCES, strJson).commit();
-        return true;
+
     }
 
 
