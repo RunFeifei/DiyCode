@@ -36,7 +36,7 @@ public class MainActivity extends CrBaseActivity implements BottomNavigationBar.
     protected void init(Bundle savedInstanceState) {
         initBottomBars();
         addDefaultFragment();
-        subscribeEvent(true);
+        subscribeEvent();
     }
 
     @Override
@@ -47,9 +47,6 @@ public class MainActivity extends CrBaseActivity implements BottomNavigationBar.
 
     private void initBottomBars() {
         bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
-       /* bottomNavigationBar.setActiveColor(android.R.color.transparent);
-        bottomNavigationBar.setInActiveColor(android.R.color.transparent);
-        bottomNavigationBar.setBarBackgroundColor(android.R.color.transparent);*/
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         bottomNavigationBar.setForegroundGravity(Gravity.CENTER);
 
@@ -63,7 +60,7 @@ public class MainActivity extends CrBaseActivity implements BottomNavigationBar.
     }
 
     private BottomNavigationItem getDetectiveItem() {
-        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_public_sentiment, "111");
+        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_public_sentiment, "detective");
         item.setActiveColor(R.color.transparent);
         item.setInactiveIconResource(R.drawable.ic_public_sentiment);
         return item;
@@ -71,14 +68,14 @@ public class MainActivity extends CrBaseActivity implements BottomNavigationBar.
 
 
     private BottomNavigationItem getCreditItem() {
-        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_blacklist, "222");
+        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_blacklist, "credit");
         item.setActiveColor(R.color.transparent);
         item.setInactiveIconResource(R.drawable.ic_blacklist);
         return item;
     }
 
     private BottomNavigationItem getToolItem() {
-        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_loan_calculator, "333");
+        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_loan_calculator, "tool");
         item.setActiveColor(R.color.transparent);
         item.setInactiveIconResource(R.drawable.ic_loan_calculator);
         return item;
@@ -95,13 +92,13 @@ public class MainActivity extends CrBaseActivity implements BottomNavigationBar.
     }
 
 
-    private void subscribeEvent(boolean isSticky) {
+    private void subscribeEvent() {
         CrSubscriber.getActivitySubscriber(this)
                 .bindEvent(CrBusEvent.EventId.EVENT_MAINPAGE_SWITCH)
                 .onNext(new Action1<CrBusEvent>() {
                     @Override
                     public void call(CrBusEvent crBusEvent) {
-                        Log.e("TAG-->","-------------------------------");
+                        Log.e("TAG-->", "-------------------------------");
                         if (crBusEvent == null) {
                             return;
                         }
@@ -126,7 +123,7 @@ public class MainActivity extends CrBaseActivity implements BottomNavigationBar.
                         Log.e(TAG, throwable.getCause().toString());
                     }
                 })
-                .create(isSticky);
+                .create();
     }
 
 

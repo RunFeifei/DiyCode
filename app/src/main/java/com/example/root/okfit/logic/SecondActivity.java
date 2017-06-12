@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 
+import com.example.root.okfit.CrRxbus.CrBusEvent;
+import com.example.root.okfit.CrRxbus.CrObservable;
 import com.example.root.okfit.R;
 import com.example.root.okfit.base.CrBaseActivity;
 import com.example.root.okfit.view.slide.SlideViewGroup;
@@ -36,7 +38,7 @@ public class SecondActivity extends CrBaseActivity implements SlideViewGroup.OnB
 
     @Override
     public void onBubbleClick(String content, String num) {
-        Log.e("onBubbleClick-->",content+"-->"+num);
-
+        Log.e("onBubbleClick-->", content + "-->" + num);
+        CrObservable.getInstance().sendEvent(new CrBusEvent(CrBusEvent.EventId.EVENT_MAINPAGE_SWITCH, MainActivity.TOOL));
     }
 }

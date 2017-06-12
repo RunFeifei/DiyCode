@@ -1,12 +1,13 @@
 package com.example.root.okfit.logic.main;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.root.okfit.CrRxbus.CrBusEvent;
+import com.example.root.okfit.CrRxbus.CrObservable;
 import com.example.root.okfit.R;
-import com.example.root.okfit.logic.BubbleActivity;
+import com.example.root.okfit.logic.MainActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -22,7 +23,7 @@ public final class MainDetectiveFragment extends MainFragment {
 
     @Override
     protected void init(Bundle savedInstanceState, View view) {
-        text.setText("ToBubble");
+        text.setText("ToToolPage");
     }
 
     @Override
@@ -32,7 +33,7 @@ public final class MainDetectiveFragment extends MainFragment {
 
     @OnClick(R.id.text)
     protected void toBubble() {
-        startActivity(new Intent(getActivity(), BubbleActivity.class));
+        CrObservable.getInstance().sendStickyEvent(new CrBusEvent(CrBusEvent.EventId.EVENT_MAINPAGE_SWITCH, MainActivity.TOOL));
     }
 
 }

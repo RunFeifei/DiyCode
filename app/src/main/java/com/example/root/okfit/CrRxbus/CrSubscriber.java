@@ -22,7 +22,9 @@ public class CrSubscriber {
     private FragmentLifecycleProvider fragmentLifecycleProvider;
     private ActivityLifecycleProvider activityLifecycleProvider;
 
-    private @CrBusEvent.EventId int eventId;
+    private
+    @CrBusEvent.EventId
+    int eventId;
     private Action1<CrBusEvent> onNext;
     private Action1<Throwable> onError;
 
@@ -44,7 +46,7 @@ public class CrSubscriber {
 
 
     public CrSubscriber bindEvent(@CrBusEvent.EventId int eventId) {
-        this.eventId =eventId;
+        this.eventId = eventId;
         return this;
     }
 
@@ -62,6 +64,10 @@ public class CrSubscriber {
     public CrSubscriber onError(Action1<Throwable> action) {
         this.onError = action;
         return this;
+    }
+
+    public Subscription create() {
+        return create(false);
     }
 
     /**
@@ -87,13 +93,13 @@ public class CrSubscriber {
         //return CrObservable.getInstance().getObservable(CrBusEvent.class)
         //compose()将生命周期包装成了Observable
         return observable.filter(new Func1<CrBusEvent, Boolean>() {
-                    @Override
-                    public Boolean call(CrBusEvent events) {
-                        //根据Id进行过滤
-                        Log.e("CrRxbus-->", "filter");
-                        return events.getEventId() == eventId;
-                    }
-                })
+            @Override
+            public Boolean call(CrBusEvent events) {
+                //根据Id进行过滤
+                Log.e("CrRxbus-->", "filter");
+                return events.getEventId() == eventId;
+            }
+        })
                 .subscribe(new rx.Subscriber<CrBusEvent>() {
                     @Override
                     public void onCompleted() {
