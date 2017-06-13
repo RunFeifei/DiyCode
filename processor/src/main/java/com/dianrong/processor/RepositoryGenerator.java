@@ -62,7 +62,7 @@ class RepositoryGenerator {
                 MethodSpec.Builder mthBuild = MethodSpec.methodBuilder(method.getName())
                         .addModifiers(Modifier.PUBLIC)
                         .returns(modelClassType);//方法返回值
-                addSyncMethodBody(method, mthBuild, cls, false, cls.isDiSanFangData());//方法体
+                addSyncMethodBody(method, mthBuild, cls, cls.isDiSanFangData());//方法体
 
                 //方法入参
                 ArrayList<Argument> args = method.getArguments();
@@ -73,23 +73,6 @@ class RepositoryGenerator {
                 classBuilder.addMethod(mthBuild.build());
 
                 if (!cls.isDiSanFangData()) {
-                    //同步方法-->02
-                    MethodSpec.Builder mthBuild03 = MethodSpec.methodBuilder(method.getName())
-                            .addModifiers(Modifier.PUBLIC)
-                            .returns(modelClassType);//方法返回值
-                    addSyncMethodBody(method, mthBuild03, cls, true, cls.isDiSanFangData());//方法体
-
-                    //方法入参
-                    ArrayList<Argument> args03 = method.getArguments();
-                    for (int j = 0; j < args03.size(); j++) {
-                        ParameterSpec parameterSpec = ParameterSpec.get(args.get(j).element);
-                        mthBuild03.addParameter(parameterSpec);
-                    }
-                    ParameterSpec isInterceptLogin = ParameterSpec.builder(boolean.class, "isInterceptLogin").build();
-                    mthBuild03.addParameter(isInterceptLogin);
-                    classBuilder.addMethod(mthBuild03.build());
-
-
                     //异步方法-->
                     MethodSpec.Builder mthBuild02 = MethodSpec.methodBuilder(method.getName())
                             .addModifiers(Modifier.PUBLIC)
@@ -217,7 +200,7 @@ class RepositoryGenerator {
     }
 
 
-    private static void addSyncMethodBody(Method method, MethodSpec.Builder builder, Clazz cls, boolean isInterceptLogin, boolean isDiSanFangData) {
+    private static void addSyncMethodBody(Method method, MethodSpec.Builder builder, Clazz cls, boolean isDiSanFangData) {
         if (isDiSanFangData) {
             //第一行
             generateCallStatementNew(method, builder, cls);
@@ -229,7 +212,7 @@ class RepositoryGenerator {
 
         boolean isListData = method.getReturnClassName().contains("<");
         //第一行
-        String firstatement = isInterceptLogin ? "$T drResponse = new $T<>( isInterceptLogin )" : "$T drResponse = new $T<>()";
+        String firstatement = "$T drResponse = new $T<>()";
         ParameterizedTypeName nameInFirst = isListData ?
                 ParameterizedTypeName.get(DrResponse, ParameterizedTypeName.get(DrRoot, ParameterizedTypeName.get(DrList, contentDataType)))
                 : ParameterizedTypeName.get(DrResponse, ParameterizedTypeName.get(DrRoot, contentDataType));

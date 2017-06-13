@@ -14,12 +14,27 @@ import util.Strings;
 
 /**
  * Created by PengFeifei on 17-4-18.
+ * 重新绑定baseUrl
+ * optionA:重新初始化retrofit,因为retrofit的baseUrl只能通过Builder设置,而Builder只能new出来
+ * optionB:通过retrofit提供的@Url注解提供完整的域名,详见http://www.jianshu.com/p/4268e434150a
+ * optionA开销大 optionB代码书写不友好,在此采用的optionA
+ *
+ *
  */
 
 public class BaseUrlBindHelper {
 
     @ServerType
     private static int selectedServerType = ServerType.PRODUCT;
+
+    private static String baseUrl;
+
+    public static void initBaseUrl(String baseUrl) {
+        if (Strings.isEmpty(baseUrl) || !baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+            throw new IllegalStateException("baseUrl is illegal: " + baseUrl);
+        }
+        BaseUrlBindHelper.baseUrl = baseUrl;
+    }
 
     /**
      * 只重置ServerType:Product or Demo or...
@@ -148,5 +163,9 @@ public class BaseUrlBindHelper {
 
     public static int getSelectedServerType() {
         return selectedServerType;
+    }
+
+    public static String getBaseUrl() {
+        return baseUrl;
     }
 }

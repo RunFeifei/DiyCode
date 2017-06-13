@@ -7,6 +7,7 @@ import com.dianrong.android.common.utils.ContextUtils;
 import com.dianrong.android.common.utils.DRPreferences;
 import com.dianrong.android.common.utils.Log;
 import com.dianrong.android.user.UserStatus;
+import com.dianrong.crnetwork.host.BaseUrlBindHelper;
 import com.dianrong.crnetwork.internal.ExtendInterceptor;
 import com.example.crnetwork.BuildConfig;
 
@@ -49,17 +50,8 @@ public class CrNetworkFactory {
     private static HeaderInterceptor headerInterceptor;
     private static ExtendInterceptor applicationInterceptor;
     private static ExtendInterceptor networkInterceptor;
-    private static String baseUrl;
 
-    public static final OkHttpClient getClient() {
-
-        if (client == null) {
-            init();
-        }
-        return client;
-    }
-
-    private static void init() {
+    private static void initHttpClient() {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
@@ -121,17 +113,12 @@ public class CrNetworkFactory {
         client = builder.build();
     }
 
-    private static Retrofit getRetrofit() {
-        if (client == null) {
-            init();
-        }
-        synchronized (retrofitInitLock) {
-            if (retrofit == null) {
-                initRetrofit(CrNetworkFactory.baseUrl);
-            }
-        }
+    public static final OkHttpClient getClient() {
 
-        return retrofit;
+        if (client == null) {
+            initHttpClient();
+        }
+        return client;
     }
 
     /**
@@ -151,6 +138,19 @@ public class CrNetworkFactory {
         Log.i(TAG, "Now: baseUrl is " + getBaseUrl());
     }
 
+    private static Retrofit getRetrofit() {
+        if (client == null) {
+            initHttpClient();
+        }
+        synchronized (retrofitInitLock) {
+            if (retrofit == null) {
+                initRetrofit(BaseUrlBindHelper.getBaseUrl());
+            }
+        }
+
+        return retrofit;
+    }
+
     public static void resetBaseUrl(@NonNull String baseUrl) {
         if (Strings.isEqual(baseUrl, getBaseUrl())) {
             Log.i(TAG, "baseUrl stays in " + baseUrl);
@@ -159,20 +159,19 @@ public class CrNetworkFactory {
         if (Strings.isEmpty(baseUrl) || !baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
             throw new IllegalStateException("baseUrl is illegal: " + baseUrl);
         }
-        CrNetworkFactory.baseUrl = baseUrl;
         CrOkCookieStore.getInstance().checkWebCookieUpdate(baseUrl);
-        rebuildRetrofit();
+        rebuildRetrofit(baseUrl);
     }
 
     /**
      * navite->web 域名切换的同时 需要把cookie同步过去
      * 此时需要重新将CrOkcookieStore重新和OkHttpClient绑定吗??
      */
-    private static void rebuildRetrofit() {
+    private static void rebuildRetrofit(String baseUrl) {
         if (client == null) {
-            init();
+            initHttpClient();
         }
-        initRetrofit(CrNetworkFactory.baseUrl);
+        initRetrofit(baseUrl);
     }
 
     public static <S> S createService(Class<S> serviceClass) {
@@ -257,7 +256,7 @@ public class CrNetworkFactory {
             requestBuilder.header("X-SL-UUID", DRPreferences.getSlUUID());
             requestBuilder.header("IMEI", ContextUtils.getImei());
             //TODO 非空判断
-            requestBuilder.header("Referer", CrNetworkFactory.baseUrl);
+            requestBuilder.header("Referer", BaseUrlBindHelper.getBaseUrl());
             // headers.forEach((k, v) -> requestBuilder.header(k, v));
             for (Map.Entry<String, String> item : headers.entrySet()) {
                 requestBuilder.header(item.getKey(), item.getValue());

@@ -9,6 +9,7 @@ import okhttp3.HttpUrl;
 
 /**
  * Created by PengFeifei on 17-4-21.
+ * errMsg和errCode通过Exception的方式传递到UI
  */
 
 public class RequestException extends RuntimeException implements Parcelable {

@@ -2,19 +2,15 @@ package com.dianrong.crnetwork.response;
 
 import com.dianrong.crnetwork.dataformat.DrList;
 import com.dianrong.crnetwork.dataformat.DrRoot;
-import com.dianrong.crnetwork.dataformat.EmptyEntity;
 import com.dianrong.crnetwork.dataformat.Entity;
 import com.dianrong.crnetwork.error.DrErrorMsgHelper;
 import com.dianrong.crnetwork.error.ErrorCode;
-import com.dianrong.crnetwork.relogin.LoginServiceCreator;
 
 import java.util.ArrayList;
 
 import okhttp3.HttpUrl;
 import retrofit2.Call;
 import retrofit2.Response;
-import retrofit2.adapter.rxjava.Result;
-import rx.Subscriber;
 import util.Strings;
 
 /**
@@ -33,16 +29,7 @@ import util.Strings;
 //Note T=ContentWrapper<TemplateEntityList<ErrorItem>>>
 public class DrResponse<T extends Entity> {
 
-    private static volatile int logined;
-    private ErrorCode.DrResultCode drResultCode;
-    //errMsg和errCode通过Exception的方式传递到UI
-    private boolean isInterceptLogin;
-
     public DrResponse() {
-    }
-
-    public DrResponse(boolean isInterceptLogin) {
-        this.isInterceptLogin = isInterceptLogin;
     }
 
     /**
@@ -129,57 +116,6 @@ public class DrResponse<T extends Entity> {
         return list;
     }
 
-
-    /**
-     * 勿在主线程执行此方法
-     * TODO 防止死循环 登录成功后还需要登录DC服务器
-     * 需要重新登录时候返回的数据结构
-     * 重新登录失败 成功和失败返回的数据结构
-     * <p>
-     * A接口返回login 请求login接口B B成功再次请求A接口 B失败抛异常
-     * A接口再次返回login 抛异常
-     * C接口返回login 进行下一循环
-     * relogin次数最多3次 抛异常后计数器归零
-     */
-    @SuppressWarnings("unchecked")
-    private synchronized void tryLoginWithToken(final Call<T> call) {
-        if (DrResponse.logined > 2) {
-            DrResponse.logined = 0;
-            throw new RequestException(call.request().url(), ErrorCode.DR_RELOGIN_ERR, "already did relogin");
-        }
-
-        DrResponse.logined++;
-        LoginServiceCreator.getAutoLoginServiceFactory().create()
-                .subscribe(new Subscriber<Result<DrRoot<EmptyEntity>>>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        DrResponse.logined = 0;
-                        throw new RequestException(call.request().url(), ErrorCode.DR_RELOGIN_ERR, e);
-                    }
-
-                    @Override
-                    public void onNext(Result<DrRoot<EmptyEntity>> result) {
-                        if (result == null) {
-                            DrResponse.logined = 0;
-                            throw new RequestException(call.request().url(), ErrorCode.DR_RELOGIN_ERR, "auto relogin failed");
-                        }
-                        Response<DrRoot<EmptyEntity>> response = result.response();
-                        boolean sucess = response.isSuccessful()
-                                && getRootData((Response<T>) response, call).isSuccessful();
-                        if (!sucess) {
-                            DrResponse.logined = 0;
-                            throw new RequestException(call.request().url(), ErrorCode.DR_RELOGIN_ERR, "auto relogin failed");
-                        }
-                        ResponseHandler.getSyncResponse(call);
-                    }
-                });
-    }
-
-
     /**
      * //NOTE 只处理login和Auth
      * 解析Response的result字段
@@ -190,7 +126,7 @@ public class DrResponse<T extends Entity> {
      */
     private boolean dispatchResult(DrRoot drRoot, final Call<T> call) {
         String result = drRoot.getResult();
-        this.drResultCode = getDrResultCode(result);
+        ErrorCode.DrResultCode drResultCode = getDrResultCode(result);
         if (drResultCode == ErrorCode.DrResultCode.Login || drResultCode == ErrorCode.DrResultCode.AuthFirst) {
             String errMsg = DrErrorMsgHelper.getErrorMsg(Integer.toString(drRoot.getCode()));
             throw new RequestException(call.request().url(), ErrorCode.DR_INTERCEPTION_LOGIN_ERR, errMsg);
