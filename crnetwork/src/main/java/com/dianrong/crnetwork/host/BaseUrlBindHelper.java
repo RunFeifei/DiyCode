@@ -18,8 +18,6 @@ import util.Strings;
  * optionA:重新初始化retrofit,因为retrofit的baseUrl只能通过Builder设置,而Builder只能new出来
  * optionB:通过retrofit提供的@Url注解提供完整的域名,详见http://www.jianshu.com/p/4268e434150a
  * optionA开销大 optionB代码书写不友好,在此采用的optionA
- *
- *
  */
 
 public class BaseUrlBindHelper {
@@ -166,6 +164,9 @@ public class BaseUrlBindHelper {
     }
 
     public static String getBaseUrl() {
+        if (Strings.isEmpty(baseUrl)) {
+            throw new RuntimeException("you should init baseUrl in Application init");
+        }
         return baseUrl;
     }
 }

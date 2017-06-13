@@ -1,21 +1,19 @@
 package com.dianrong.crnetwork;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 
 import com.dianrong.android.common.AppContext;
-import com.dianrong.android.common.utils.ContextUtils;
-import com.dianrong.android.common.utils.DRPreferences;
 import com.dianrong.android.common.utils.Log;
-import com.dianrong.android.user.UserStatus;
 import com.dianrong.crnetwork.host.BaseUrlBindHelper;
 import com.dianrong.crnetwork.internal.ExtendInterceptor;
+import com.dianrong.crnetwork.internal.HeaderInterceptor;
 import com.example.crnetwork.BuildConfig;
 
 import java.io.File;
-import java.io.IOException;
 import java.security.cert.CertificateException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
@@ -26,8 +24,6 @@ import javax.net.ssl.X509TrustManager;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -91,7 +87,7 @@ public class CrNetworkFactory {
             }
         }
 
-        // 设置缓存大小
+        // 设置缓存大小(只有在服务器返回的Header中的Cache-Control字段maxAge>0才生效 否则需要客户端改写Header see:HeaderInterceptor.class)
         File file = new File(AppContext.getInstance().getCacheDir().getAbsolutePath(), "okhttp");
         builder.cache(new Cache(file, 4 * 1024 * 1024));
 
@@ -227,62 +223,21 @@ public class CrNetworkFactory {
         getHeaderInterceptor().addHeader(key, value);
     }
 
-    private static class HeaderInterceptor implements Interceptor {
-
-        private String userAgent = "";
-        private HashMap<String, String> headers = new HashMap<>();
-
-        /**
-         * userAgent是一个特殊字符串头
-         * 使得服务器能够识别客户使用的操作系统及版本、CPU 类型、浏览器及版本...
-         */
-        HeaderInterceptor() {
-            userAgent = "Android/" + ContextUtils.getSystemVersion()
-                    + " " + ContextUtils.getAppName() + "/" + ContextUtils.getVersionCode(AppContext.getInstance())
-                    + " ClientType/" + ContextUtils.getClientType()
-                    + " ChannelId/" + ContextUtils.getChannelName();
-        }
-
-        @Override
-        public Response intercept(Chain chain) throws IOException {
-
-            Request request = chain.request();
-            Request.Builder requestBuilder = request.newBuilder();
-
-            requestBuilder.header("User-Agent", userAgent);
-            if (UserStatus.isLoggedIn() && UserStatus.getUser() != null && UserStatus.getUser().getAid() != null) {
-                requestBuilder.header("X-SL-Username", UserStatus.getUser().getAid());
-            }
-            requestBuilder.header("X-SL-UUID", DRPreferences.getSlUUID());
-            requestBuilder.header("IMEI", ContextUtils.getImei());
-            //TODO 非空判断
-            requestBuilder.header("Referer", BaseUrlBindHelper.getBaseUrl());
-            // headers.forEach((k, v) -> requestBuilder.header(k, v));
-            for (Map.Entry<String, String> item : headers.entrySet()) {
-                requestBuilder.header(item.getKey(), item.getValue());
-            }
-
-            Response response = chain.proceed(requestBuilder.build());
-            return response;
-        }
-
-        public String getUserAgent() {
-            return userAgent;
-        }
-
-        public void setUserAgent(String userAgent) {
-            this.userAgent = userAgent;
-        }
-
-        public void addHeader(String key, String value) {
-            headers.put(key, value);
-        }
-    }
-
     public static String getBaseUrl() {
         if (retrofit == null || client == null) {
             return null;
         }
         return retrofit.baseUrl().toString();
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) AppContext.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] infos = cm.getAllNetworkInfo();
+        for (NetworkInfo info : infos) {
+            if (info != null && info.isConnected()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

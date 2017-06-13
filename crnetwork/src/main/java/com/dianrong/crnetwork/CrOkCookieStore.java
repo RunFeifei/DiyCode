@@ -30,6 +30,8 @@ import util.Strings;
 /**
  * 适配Okhttp3.0
  * Created by yangcheng on 15/12/25.
+ * Set-Cookie报头包含于Web服务器的响应头（ResponseHeader）中
+ * Cookie报头包含在浏览器客户端请求头（ReguestHeader）中
  */
 public class CrOkCookieStore extends PersistentCookieJar {
 
@@ -150,6 +152,9 @@ public class CrOkCookieStore extends PersistentCookieJar {
         return true;
     }
 
+    /**
+     * 打印webview的cookie
+     */
     public void logCookies(String url) {
         if (BuildConfig.DEBUG && instance != null && url != null) {
             Log.d("cookie", "logCookies : " + instance.cookieManager.getCookie(url));
