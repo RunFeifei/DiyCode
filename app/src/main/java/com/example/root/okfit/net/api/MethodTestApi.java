@@ -8,6 +8,7 @@ import com.example.root.okfit.net.bean.ErrorItem;
 import com.example.root.okfit.net.host.DianRongHosts;
 
 import annotation.MethodHostSurpported;
+import annotation.EscapeProcessorMap;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -26,6 +27,7 @@ public interface MethodTestApi {
     @MethodHostMap(PRODUCT = DianRongHosts.PRODUCT, DEMO = DianRongHosts.DEMO, DEV = DianRongHosts.DEV)
     @GET("feapi/breakers")
     @MethodHostSurpported(Surpported = true)
+    @EscapeProcessorMap(Escape = false)
     Call<DrRoot<DrList<BreakerItem>>> getBreakers(@Query("platform") String platform);
 
 }

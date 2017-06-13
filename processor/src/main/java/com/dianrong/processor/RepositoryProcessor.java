@@ -4,6 +4,7 @@ import com.google.auto.service.AutoService;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -24,6 +25,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
 import annotation.MethodHostSurpported;
+import annotation.EscapeProcessorMap;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -86,7 +88,10 @@ public class RepositoryProcessor extends AbstractProcessor {
 
 
     private void doProcess(Set<? extends Element> set, HashMap<String, Clazz> bucket) {
-        for (Element element : set) {
+        Iterator<? extends Element> iterator = set.iterator();
+
+        while (iterator.hasNext()) {
+            Element element = iterator.next();
             if (element.getKind() != ElementKind.METHOD) {
                 messager.printMessage(Diagnostic.Kind.ERROR,
                         String.format("Invalid annotation: Only METHOD can be annotated with %s)", element.getSimpleName()));
@@ -99,12 +104,19 @@ public class RepositoryProcessor extends AbstractProcessor {
             List<? extends VariableElement> variables = executableElement.getParameters();
             Method method = new Method(executableElement.getSimpleName().toString(), 3);
             method.setPrimaryReturnType(returnType);
-            boolean isDiSanFangData=!returnType.toString().contains("DrRoot");
+            boolean isDiSanFangData = !returnType.toString().contains("DrRoot");
             method.setReturnClassName(isDiSanFangData ? parseReturnTypeNew(returnType.toString()) : parseReturnType(returnType
                     .toString()));
             // TODO: 17-5-5 在此不能识别crnetwork模块中的Host注解 造成在app模块中使用compile非apt方式引入此processor模块
             MethodHostSurpported methodHostMap = executableElement.getAnnotation(MethodHostSurpported.class);
             method.setAssignedMethodHost(methodHostMap != null && methodHostMap.Surpported());
+
+
+            EscapeProcessorMap escapeProcessorMap = executableElement.getAnnotation(EscapeProcessorMap.class);
+            if (escapeProcessorMap != null && escapeProcessorMap.Escape()) {
+                iterator.remove();
+                continue;
+            }
 
             //入参
             for (VariableElement ve : variables) {
@@ -118,7 +130,7 @@ public class RepositoryProcessor extends AbstractProcessor {
             String cls = clsTypeMirror.toString();
             Clazz clsInfo = bucket.get(cls);
             if (clsInfo == null) {
-                clsInfo = new Clazz(clsTypeMirror,isDiSanFangData);
+                clsInfo = new Clazz(clsTypeMirror, isDiSanFangData);
                 bucket.put(cls, clsInfo);
             }
             clsInfo.addMethod(method);
@@ -147,6 +159,7 @@ public class RepositoryProcessor extends AbstractProcessor {
 
     /**
      * 第三方的数据结构
+     *
      * @param primary
      * @return
      */
