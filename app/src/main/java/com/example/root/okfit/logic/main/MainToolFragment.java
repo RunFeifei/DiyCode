@@ -1,12 +1,11 @@
 package com.example.root.okfit.logic.main;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.root.okfit.R;
-import com.example.root.okfit.logic.map.LocationMapActivity;
+import com.example.root.okfit.view.LoadingDialog;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -32,7 +31,8 @@ public final class MainToolFragment extends MainFragment {
 
     @OnClick(R.id.text)
     protected void toBubble() {
-        startActivity(new Intent(getActivity(), LocationMapActivity.class));
+        LoadingDialog loadingDialog = new LoadingDialog();
+        loadingDialog.show(getFragmentManager());
     }
 
 }

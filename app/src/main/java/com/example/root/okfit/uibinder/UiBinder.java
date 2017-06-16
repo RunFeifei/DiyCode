@@ -11,13 +11,6 @@ public interface UiBinder<T> {
     int BEHAVIOR_SILENCE = 0x0f << 27;
 
     /**
-     * Optional
-     * <p>
-     * {@link #workInBackground}执行前的预处理， e.g 显示加载进度
-     */
-    UiBinder<T> precedeInUi(Runnable precededTask);
-
-    /**
      * Required
      */
     UiBinder<T> workInBackground(Work<T> work);
@@ -32,10 +25,6 @@ public interface UiBinder<T> {
      */
     UiBinder<T> holdDataInUi(Hold<T> hold);
 
-    /**
-     * Optional
-     */
-    UiBinder<T> completeInUi(Runnable completedTask);
 
     /**
      * Must be invoked in Main thread

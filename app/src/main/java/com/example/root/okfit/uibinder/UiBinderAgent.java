@@ -6,7 +6,6 @@ import com.dianrong.crnetwork.error.ErrorCode;
 import com.dianrong.crnetwork.response.RequestException;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.HttpUrl;
@@ -35,10 +34,6 @@ public final class UiBinderAgent {
         return new SimpleUiBinder<T>(this.view);
     }
 
-    public UiBinderBatch bornUiBinderBatch() {
-        return new SimpleUiBinderBatch(this.view);
-    }
-
     /**
      * 在父Activity Fragment中把当前对象把Activity fragment实例传进来
      * 并实现了UiBinderView的三个事件 onUiBinderStat...
@@ -57,26 +52,10 @@ public final class UiBinderAgent {
 
         private int type;
         private UiBinderView view;
-        private Runnable precededTask;
-        private Runnable completedTask;
 
-        private AtomicInteger batchCount;
-        private AtomicBoolean isBatchStart;
 
         SimpleUiBinder(UiBinderView view) {
             this.view = view;
-        }
-
-        SimpleUiBinder(UiBinderView view, AtomicInteger batchCount) {
-            this.view = view;
-            this.batchCount = batchCount;
-            this.isBatchStart = new AtomicBoolean(false);
-        }
-
-        @Override
-        public UiBinder precedeInUi(Runnable precededTask) {
-            this.precededTask = precededTask;
-            return this;
         }
 
         @Override
@@ -103,22 +82,13 @@ public final class UiBinderAgent {
             return this;
         }
 
-        @Override
-        public UiBinder completeInUi(Runnable completedTask) {
-            this.completedTask = completedTask;
-            return this;
-        }
-
         /**
          * 将请求任务Work 和 后续处理任务Hold传进来后
          * 进行实施
          */
         @Override
         public UiBinder apply() {
-            if (batchCount == null) {
-                return applyInner(UiBinder.BEHAVIOR_LOADING_NORMAL);
-            }
-            return this;
+            return applyInner(UiBinder.BEHAVIOR_LOADING_NORMAL);
         }
 
         /**
@@ -127,10 +97,7 @@ public final class UiBinderAgent {
          */
         @Override
         public UiBinder applySilence() {
-            if (batchCount == null) {
-                return applyInner(UiBinder.BEHAVIOR_SILENCE);
-            }
-            return this;
+            return applyInner(UiBinder.BEHAVIOR_SILENCE);
         }
 
         /**
@@ -139,10 +106,7 @@ public final class UiBinderAgent {
          */
         @Override
         public UiBinder apply(int behavior) {
-            if (batchCount == null) {
-                return applyInner(behavior);
-            }
-            return this;
+            return applyInner(behavior);
         }
 
         /**
@@ -158,23 +122,12 @@ public final class UiBinderAgent {
             final Work<T> work = this.mWork;
             final Hold<T> hold = this.mHold;
 
-            AtomicBoolean isBatchStart = this.isBatchStart;
-            if (BEHAVIOR_SILENCE != behavior && (isBatchStart == null || !isBatchStart.get())) {
-                //非静态模式
-                if (isBatchStart != null) {
-                    isBatchStart.set(true);
-                }
+            if (BEHAVIOR_SILENCE != behavior) {
                 UiBinderView view = this.view;
                 if (view != null) {
                     //显示loading dialog
                     view.onUiBinderStart(behavior);
                 }
-            }
-
-            // NOTE: 17-4-27 precededTask没有进行同步?
-            Runnable precededTask = this.precededTask;
-            if (precededTask != null) {
-                precededTask.run();
             }
 
             Observable.create(new Observable.OnSubscribe<T>() {
@@ -190,17 +143,10 @@ public final class UiBinderAgent {
                         @Override
                         public void onCompleted() {
                             SimpleUiBinder binder = SimpleUiBinder.this;
-                            Runnable completedTask = binder.completedTask;
-                            if (completedTask != null) {
-                                completedTask.run();
-                            }
 
                             int type = binder.type;
                             UiBinderView view = binder.view;
-                            AtomicInteger batchCount = binder.batchCount;
-                            if (view != null &&
-                                    BEHAVIOR_SILENCE != type
-                                    && (batchCount == null || batchCount.decrementAndGet() == 0)) {
+                            if (view != null && BEHAVIOR_SILENCE != type) {
                                 view.onUiBinderEnd(type);
                             }
                         }
@@ -260,40 +206,4 @@ public final class UiBinderAgent {
         static final Scheduler uiScheduler = AndroidSchedulers.mainThread();
     }
 
-    private static class SimpleUiBinderBatch implements UiBinderBatch {
-        private UiBinderView view;
-        private AtomicInteger batchCount = new AtomicInteger();
-
-        private ArrayList<SimpleUiBinder> binderList = new ArrayList<>(5);
-
-        SimpleUiBinderBatch(UiBinderView view) {
-            this.view = view;
-        }
-
-        @Override
-        public <T> UiBinder<T> born() {
-            batchCount.incrementAndGet();
-            SimpleUiBinder<T> binder = new SimpleUiBinder<>(this.view, batchCount);
-            binderList.add(binder);
-            return binder;
-        }
-
-        @Override
-        public void apply() {
-            apply(UiBinder.BEHAVIOR_LOADING_NORMAL);
-        }
-
-        @Override
-        public void apply(int type) {
-            ArrayList<SimpleUiBinder> list = this.binderList;
-            int size = list.size();
-            if (size == 0) {
-                return;
-            }
-
-            for (int i = 0; i < size; i++) {
-                list.get(i).applyInner(type);
-            }
-        }
-    }
 }

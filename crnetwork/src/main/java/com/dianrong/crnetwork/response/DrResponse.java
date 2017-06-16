@@ -1,5 +1,7 @@
 package com.dianrong.crnetwork.response;
 
+import android.support.annotation.NonNull;
+
 import com.dianrong.crnetwork.dataformat.DrList;
 import com.dianrong.crnetwork.dataformat.DrRoot;
 import com.dianrong.crnetwork.dataformat.Entity;
@@ -56,8 +58,6 @@ public class DrResponse<T extends Entity> {
     }
 
     /**
-     * //TODO 当不拦截登录事件 但是返回login时 此时仍会返回droot
-     *
      * @param response
      * @param call
      * @return
@@ -65,20 +65,27 @@ public class DrResponse<T extends Entity> {
     private DrRoot getRootData(Response<T> response, final Call<T> call) {
         checkRootData(call, response);
         DrRoot drRoot = (DrRoot) response.body();
+        if (drRoot != null) {
+            checkRootData(drRoot, call.request().url());
+        }
+        return drRoot;
+    }
+
+    public static boolean checkRootData(@NonNull DrRoot drRoot, HttpUrl url) {
         boolean result = false;
         if (!Strings.isEmpty(drRoot.getResult())) {
-            result = dispatchResult(drRoot, call);
+            result = dispatchResult(drRoot, url);
         }
         if (!result) {
             int code = drRoot.getCode();
             String drCode = Integer.toString(code);
             String drErrMsg = DrErrorMsgHelper.getErrorMsg(drCode);
             if (drErrMsg.contains("登录") || drErrMsg.contains("登陆")) {
-                throw new RequestException(call.request().url(), ErrorCode.DR_INTERCEPTION_LOGIN_ERR, drErrMsg);
+                throw new RequestException(url, ErrorCode.DR_INTERCEPTION_LOGIN_ERR, drErrMsg);
             }
-            throw new RequestException(call.request().url(), code, drErrMsg);
+            throw new RequestException(url, code, drErrMsg);
         }
-        return drRoot;
+        return true;
     }
 
     public <Content extends Entity> Content getContentData(Response<T> response, final Call<T> call) {
@@ -120,21 +127,19 @@ public class DrResponse<T extends Entity> {
      * //NOTE 只处理login和Auth
      * 解析Response的result字段
      *
-     * @param drRoot
-     * @param call
      * @return
      */
-    private boolean dispatchResult(DrRoot drRoot, final Call<T> call) {
+    private static boolean dispatchResult(DrRoot drRoot, HttpUrl url) {
         String result = drRoot.getResult();
         ErrorCode.DrResultCode drResultCode = getDrResultCode(result);
         if (drResultCode == ErrorCode.DrResultCode.Login || drResultCode == ErrorCode.DrResultCode.AuthFirst) {
             String errMsg = DrErrorMsgHelper.getErrorMsg(Integer.toString(drRoot.getCode()));
-            throw new RequestException(call.request().url(), ErrorCode.DR_INTERCEPTION_LOGIN_ERR, errMsg);
+            throw new RequestException(url, ErrorCode.DR_INTERCEPTION_LOGIN_ERR, errMsg);
         }
         return drResultCode.equals(ErrorCode.DrResultCode.Success);
     }
 
-    private ErrorCode.DrResultCode getDrResultCode(String result) {
+    private static ErrorCode.DrResultCode getDrResultCode(String result) {
         ErrorCode.DrResultCode drResultCode;
         if (result == null) {
             drResultCode = ErrorCode.DrResultCode.Unknown;

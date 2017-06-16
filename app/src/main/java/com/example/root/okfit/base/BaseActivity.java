@@ -8,7 +8,6 @@ import android.util.Log;
 import com.dianrong.crnetwork.response.RequestException;
 import com.example.root.okfit.uibinder.UiBinder;
 import com.example.root.okfit.uibinder.UiBinderAgent;
-import com.example.root.okfit.uibinder.UiBinderBatch;
 import com.example.root.okfit.uibinder.UiBinderView;
 
 /**
@@ -53,10 +52,6 @@ public class BaseActivity extends AppCompatActivity implements UiBinderView{
 
     protected <T> UiBinder<T> getUiBinder() {
         return this.binderAgent.bornUiBinder();
-    }
-
-    protected UiBinderBatch getUiBinderBatch() {
-        return this.binderAgent.bornUiBinderBatch();
     }
 
 

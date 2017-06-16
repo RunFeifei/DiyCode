@@ -1,10 +1,8 @@
 package com.example.root.okfit.base;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,6 @@ import com.example.root.okfit.BuildConfig;
 import com.example.root.okfit.R;
 import com.example.root.okfit.uibinder.UiBinder;
 import com.example.root.okfit.uibinder.UiBinderAgent;
-import com.example.root.okfit.uibinder.UiBinderBatch;
 import com.example.root.okfit.uibinder.UiBinderView;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
@@ -26,7 +23,6 @@ import butterknife.Unbinder;
 
 public abstract class CrBaseFragment extends RxFragment implements UiBinderView {
 
-    private UiBinderAgent activityBinderAgent;
     private UiBinderAgent fragmentBinderAgent;
     private Unbinder butterKinfeBinder;
 
@@ -40,16 +36,6 @@ public abstract class CrBaseFragment extends RxFragment implements UiBinderView 
 
     protected View getRoot() {
         return root;
-    }
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof AppFragmentCallback) {
-            AppFragmentCallback callback = (AppFragmentCallback) context;
-            this.activityBinderAgent = callback.getUiBinderAgent();
-        }
     }
 
 
@@ -136,12 +122,6 @@ public abstract class CrBaseFragment extends RxFragment implements UiBinderView 
 
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        this.activityBinderAgent = null;
-    }
-
-    @Override
     public void onUiBinderStart(int type) {
         /*Not implement*/
     }
@@ -166,28 +146,9 @@ public abstract class CrBaseFragment extends RxFragment implements UiBinderView 
         return helper;
     }
 
-    protected UiBinderAgent getActivityUiBinderAgent() {
-        return this.activityBinderAgent;
-    }
-
-    protected <T> UiBinder<T> getActivityUiBinder() {
-        return this.activityBinderAgent.bornUiBinder();
-    }
-
-    protected UiBinderBatch getActivityUiBinderBatch() {
-        return this.activityBinderAgent.bornUiBinderBatch();
-    }
 
     protected <T> UiBinder<T> getFragmentUiBinder() {
         return getFragmentUiBinderAgent().bornUiBinder();
-    }
-
-    protected UiBinderBatch getFragmentUiBinderBatch() {
-        return getFragmentUiBinderAgent().bornUiBinderBatch();
-    }
-
-    public interface AppFragmentCallback {
-        UiBinderAgent getUiBinderAgent();
     }
 
 

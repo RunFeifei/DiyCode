@@ -5,19 +5,16 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.dianrong.android.common.CrashHandler;
 import com.dianrong.android.common.utils.Log;
-import com.dianrong.android.common.viewholder.AutomaticViewHolderUtil;
 import com.dianrong.crnetwork.error.ErrorCode;
 import com.dianrong.crnetwork.response.RequestException;
 import com.example.root.okfit.BuildConfig;
 import com.example.root.okfit.uibinder.UiBinder;
 import com.example.root.okfit.uibinder.UiBinderAgent;
-import com.example.root.okfit.uibinder.UiBinderBatch;
 import com.example.root.okfit.uibinder.UiBinderView;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
@@ -25,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public abstract class CrBaseActivity extends RxAppCompatActivity implements UiBinderView, CrBaseFragment.AppFragmentCallback {
+public abstract class CrBaseActivity extends RxAppCompatActivity implements UiBinderView{
 
 
     private UiBinderAgent binderAgent;
@@ -36,7 +33,7 @@ public abstract class CrBaseActivity extends RxAppCompatActivity implements UiBi
         super.onCreate(savedInstanceState);
         View content = getLayoutInflater().inflate(getContentViewId(), null);
         setContentView(content);
-        butterKinfeBinder= ButterKnife.bind(this);
+        butterKinfeBinder = ButterKnife.bind(this);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -120,8 +117,6 @@ public abstract class CrBaseActivity extends RxAppCompatActivity implements UiBi
                 break;
             case ErrorCode.DR_CAST_ERR:
                 break;
-            case ErrorCode.DR_RELOGIN_ERR:
-                break;
             case ErrorCode.UNKNOWN_ERR:
                 break;
             default:
@@ -144,10 +139,5 @@ public abstract class CrBaseActivity extends RxAppCompatActivity implements UiBi
     protected <T> UiBinder<T> getUiBinder() {
         return this.binderAgent.bornUiBinder();
     }
-
-    protected UiBinderBatch getUiBinderBatch() {
-        return this.binderAgent.bornUiBinderBatch();
-    }
-
 
 }

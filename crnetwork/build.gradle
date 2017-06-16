@@ -58,6 +58,10 @@ dependencies {
     releaseCompile "com.dianrong.android:druser:1.0.0-release"
 
     compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+    compile 'com.trello:rxlifecycle:0.3.0'
+    compile 'com.trello:rxlifecycle-components:0.3.0'
+
+    compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
 
     //maven上传配置
     uploadArchives {

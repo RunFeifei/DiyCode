@@ -18,27 +18,30 @@ public class RequestException extends RuntimeException implements Parcelable {
     private int code;
     private String errMsg;
 
+    public static HttpUrl ILLEGAL_URL = HttpUrl.parse("http://www.exception.com");
+    public static HttpUrl REQUESTS_URL = HttpUrl.parse("http://www.requests.com");
+
     public RequestException(Parcel source) {
         super((Throwable) source.readSerializable());
         this.url = HttpUrl.parse(source.readString());
         this.code = source.readInt();
-        this.errMsg=source.readString();
+        this.errMsg = source.readString();
     }
 
 
     public RequestException(HttpUrl url, int code, Throwable cause) {
         super(cause);
-        this.url=url;
-        this.code=code;
-        this.errMsg=cause.getMessage();
+        this.url = url;
+        this.code = code;
+        this.errMsg = cause.getMessage();
     }
 
 
     public RequestException(HttpUrl url, int code, String errMsg) {
         super(new Throwable(errMsg));
-        this.url=url;
-        this.code=code;
-        this.errMsg=errMsg;
+        this.url = url;
+        this.code = code;
+        this.errMsg = errMsg;
     }
 
     public String getUrl() {
@@ -81,9 +84,6 @@ public class RequestException extends RuntimeException implements Parcelable {
             return new RequestException[size];
         }
     };
-
-
-
 
 
 }
