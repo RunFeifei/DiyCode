@@ -74,7 +74,7 @@ public class DrResponse<T extends Entity> {
     public static boolean checkRootData(@NonNull DrRoot drRoot, HttpUrl url) {
         boolean result = false;
         if (!Strings.isEmpty(drRoot.getResult())) {
-            result = dispatchResult(drRoot, url);
+            result = checkDrResult(drRoot, url);
         }
         if (!result) {
             int code = drRoot.getCode();
@@ -129,36 +129,13 @@ public class DrResponse<T extends Entity> {
      *
      * @return
      */
-    private static boolean dispatchResult(DrRoot drRoot, HttpUrl url) {
+    private static boolean checkDrResult(DrRoot drRoot, HttpUrl url) {
+        String errMsg = DrErrorMsgHelper.getErrorMsg(Integer.toString(drRoot.getCode()));
         String result = drRoot.getResult();
-        ErrorCode.DrResultCode drResultCode = getDrResultCode(result);
-        if (drResultCode == ErrorCode.DrResultCode.Login || drResultCode == ErrorCode.DrResultCode.AuthFirst) {
-            String errMsg = DrErrorMsgHelper.getErrorMsg(Integer.toString(drRoot.getCode()));
+        if (Strings.isEqual(result, "login") || Strings.isEqual(result, "AuthFirst")) {
             throw new RequestException(url, ErrorCode.DR_INTERCEPTION_LOGIN_ERR, errMsg);
         }
-        return drResultCode.equals(ErrorCode.DrResultCode.Success);
-    }
-
-    private static ErrorCode.DrResultCode getDrResultCode(String result) {
-        ErrorCode.DrResultCode drResultCode;
-        if (result == null) {
-            drResultCode = ErrorCode.DrResultCode.Unknown;
-        } else if (result.equals("success")) {
-            drResultCode = ErrorCode.DrResultCode.Success;
-        } else if (result.equals("error")) {
-            drResultCode = ErrorCode.DrResultCode.Error;
-        } else if (result.equals("login")) {
-            drResultCode = ErrorCode.DrResultCode.Login;
-        } else if (result.equals("service_disabled")) {
-            drResultCode = ErrorCode.DrResultCode.ServiceDisabled;
-        } else if (result.equals("session_timeout")) {
-            drResultCode = ErrorCode.DrResultCode.SessionTimeout;
-        } else if (result.equals("lender_not_a_member")) {
-            drResultCode = ErrorCode.DrResultCode.LenderNotAMember;
-        } else {
-            drResultCode = ErrorCode.DrResultCode.Unknown;
-        }
-        return drResultCode;
+        return Strings.isEqual(result, "success");
     }
 
     private void throwRequestException(HttpUrl url, String cause) {

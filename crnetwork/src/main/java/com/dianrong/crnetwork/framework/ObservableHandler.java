@@ -64,13 +64,15 @@ public class ObservableHandler<T extends Entity> {
     }
 
     public Observable<Entity> getContentObservable(Call<T> call) {
+        checkMainThread();
         if (call == null || call.request() == null) {
             throw new RequestException(RequestException.ILLEGAL_URL, ErrorCode.REQUEST_NULL_ERR, "request is null");
         }
         HttpUrl url = call.request().url();
         Observable<T> observable = Call2ObservableAdapter.adapt(call, SchedulerAdapter.backScheduler);
         return observable
-                .map(map2Content(url))
+                .filter(filterResult(url))
+                .map(map2Content())
                 .compose(bindUntilEvent())
                 .observeOn(SchedulerAdapter.uiScheduler)
                 .subscribeOn(SchedulerAdapter.backScheduler);
@@ -97,11 +99,13 @@ public class ObservableHandler<T extends Entity> {
                 .create(new Observable.OnSubscribe<T>() {
                     @Override
                     public void call(Subscriber<? super T> subscriber) {
+                        subscriber.onStart();
                         subscriber.onNext(requests.onRequests());
                         subscriber.onCompleted();
                     }
                 })
-                .map(map2Content(RequestException.REQUESTS_URL))
+                .filter(filterResult(RequestException.REQUESTS_URL))
+                .map(map2Content())
                 .subscribeOn(SchedulerAdapter.backScheduler)
                 .observeOn(SchedulerAdapter.uiScheduler);
     }
@@ -115,19 +119,34 @@ public class ObservableHandler<T extends Entity> {
     }
 
     /**
+     * 1、用Observable<Response<T>>``Observable<T> ,这里的Response指retrofit2.Response
+     * 2、用Observable<Result<T>> 代替Observable<T>，这里的Result是指retrofit2.adapter.rxjava.Result,这个Result中包含了Response的实例
+     * TODO filter增加httpCode的判断
+     * TODO 用responseBody包裹Drroot
+     *
      * @return DrRoot mapTo DrRoot的content字段
      */
-    private Func1<T, Entity> map2Content(HttpUrl httpUrl) {
+    private Func1<T, Entity> map2Content() {
         return new Func1<T, Entity>() {
             @Override
             public Entity call(T t) {
                 if (t != null && t instanceof DrRoot) {
-                    DrRoot root = (DrRoot) t;
-                    if (DrResponse.checkRootData(root, httpUrl)) {
-                        return ((DrRoot) t).getContent();
-                    }
+                    return ((DrRoot) t).getContent();
                 }
                 return t;
+            }
+        };
+    }
+
+    private Func1<T, Boolean> filterResult(HttpUrl httpUrl) {
+        return new Func1<T, Boolean>() {
+            @Override
+            public Boolean call(T t) {
+                if (t != null && t instanceof DrRoot) {
+                    DrRoot root = (DrRoot) t;
+                    return DrResponse.checkRootData(root, httpUrl);
+                }
+                return true;
             }
         };
     }
