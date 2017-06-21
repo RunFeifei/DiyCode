@@ -67,9 +67,9 @@ dependencies {
     uploadArchives {
         repositories {
             mavenDeployer {
-                pom.artifactId = "crnetwork"
+                pom.artifactId = "rxnetwork"
                 pom.groupId = "com.dianrong.android"
-                pom.version = "1.2.2"
+                pom.version = "1.0.8"
                 repository(url: uri('http://10.8.12.133:8099/repository/internal/'))
             }
         }

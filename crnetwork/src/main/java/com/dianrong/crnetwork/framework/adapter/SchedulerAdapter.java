@@ -19,6 +19,7 @@ import rx.schedulers.Schedulers;
 
 public class SchedulerAdapter {
 
+    //// TODO: 17-6-21 升级rx导致类型不匹配 编译失败
     public static final Scheduler backScheduler = Schedulers.from(ExecutorManager.get().getBackExecutor());
     public static final Scheduler uiScheduler = AndroidSchedulers.mainThread();
 

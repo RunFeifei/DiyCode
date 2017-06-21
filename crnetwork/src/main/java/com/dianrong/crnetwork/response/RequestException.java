@@ -18,8 +18,7 @@ public class RequestException extends RuntimeException implements Parcelable {
     private int code;
     private String errMsg;
 
-    public static HttpUrl ILLEGAL_URL = HttpUrl.parse("http://www.exception.com");
-    public static HttpUrl REQUESTS_URL = HttpUrl.parse("http://www.requests.com");
+    public static HttpUrl REQUEST_UNKNOWN = HttpUrl.parse("http://www.unKnownAPI.com");
 
     public RequestException(Parcel source) {
         super((Throwable) source.readSerializable());

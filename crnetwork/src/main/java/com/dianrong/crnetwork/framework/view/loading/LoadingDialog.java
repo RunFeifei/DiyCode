@@ -1,15 +1,16 @@
 package com.dianrong.crnetwork.framework.view.loading;
 
-import android.app.Dialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.example.crnetwork.BuildConfig;
 import com.example.crnetwork.R;
 import com.trello.rxlifecycle.components.support.RxDialogFragment;
 
@@ -20,6 +21,10 @@ import com.trello.rxlifecycle.components.support.RxDialogFragment;
 public class LoadingDialog extends RxDialogFragment implements View.OnClickListener {
 
     private static final String TAG = LoadingDialog.class.getSimpleName();
+    public static final int TOTAL_TIME = BuildConfig.DEBUG ? 1 * 60 * 1000 : 10 * 1000;
+
+    private OnDismissListener onDismissListener;
+    private CountDownTimer timer;
 
     @Nullable
     @Override
@@ -31,49 +36,76 @@ public class LoadingDialog extends RxDialogFragment implements View.OnClickListe
         return view;
     }
 
-    public static Dialog showLoading(FragmentManager fragmentManager) {
-        final FragmentManager manager=fragmentManager;
+    public static LoadingDialog showLoading(FragmentManager fragmentManager) {
+        final FragmentManager manager = fragmentManager;
         LoadingDialog loadingDialog = new LoadingDialog();
         loadingDialog.show(manager);
-        return loadingDialog.getDialog();
+        return loadingDialog;
+    }
+
+    private void initTimer() {
+        timer = new CountDownTimer(TOTAL_TIME, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                Log.i("crOkhttp", "reuqest take " + (10 * 1000 - (int) millisUntilFinished) + " millis");
+            }
+
+            @Override
+            public void onFinish() {
+                if (onDismissListener != null) {
+                    onDismissListener.onTimeOutDismiss();
+                    onDismissListener = null;
+                }
+                dismiss();
+            }
+        };
     }
 
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.imgDismiss) {
+            if (onDismissListener != null) {
+                onDismissListener.onCancell();
+                onDismissListener = null;
+            }
             dismiss();
         }
     }
 
     public void dismiss() {
-        if (isVisible()) {
-            super.dismiss();
+        super.dismiss();
+        if (onDismissListener != null) {
+            onDismissListener.onDismiss();
+            onDismissListener = null;
+        }
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
         }
     }
 
     public void show(FragmentManager manager) {
         super.show(manager, TAG);
-        new TimerAsyncs().execute();
-    }
-
-
-    private class TimerAsyncs extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            try {
-                Thread.sleep(10 * 1000);
-            } catch (InterruptedException e) {
-                //do nothing
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            dismiss();
-            //            throw new RequestException();
+        if (timer != null) {
+            timer.start();
+        } else {
+            initTimer();
+            timer.start();
         }
     }
+
+
+    public void setOnDismissListener(OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
+    }
+
+    public interface OnDismissListener {
+        void onDismiss();
+
+        void onCancell();
+
+        void onTimeOutDismiss();
+    }
+
 }

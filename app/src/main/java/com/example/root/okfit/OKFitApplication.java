@@ -4,6 +4,9 @@ import com.dianrong.android.common.AppContext;
 import com.dianrong.android.common.CrashHandler;
 import com.dianrong.android.common.utils.Log;
 import com.dianrong.crnetwork.error.DrErrorMsgHelper;
+import com.dianrong.crnetwork.host.BaseUrlBindHelper;
+import com.dianrong.crnetwork.host.ServerType;
+import com.dianrong.crnetwork.host.dianrong.hosts.DianRongHosts;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +29,8 @@ public class OKFitApplication extends AppContext {
         } catch (Exception ex) {
             Log.e("-->", "Cannot initialize the CrashHandler.", ex);
         }
+        BaseUrlBindHelper.resetBaseUrl(ServerType.PRODUCT);
+        BaseUrlBindHelper.initBaseUrl(DianRongHosts.PRODUCT);
         DrErrorMsgHelper.initErrorMsgs();
     }
 

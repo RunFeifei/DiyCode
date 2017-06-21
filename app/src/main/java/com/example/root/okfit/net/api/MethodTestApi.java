@@ -24,8 +24,8 @@ public interface MethodTestApi {
     Call<DrRoot<DrList<ErrorItem>>> getErros();
 
 
-    @MethodHostMap(PRODUCT = DianRongHosts.PRODUCT, DEMO = DianRongHosts.DEMO, DEV = DianRongHosts.DEV)
-    @GET("feapi/breakers")
+    @MethodHostMap(PRODUCT = DianRongHosts.DEMO, DEMO = DianRongHosts.DEMO, DEV = DianRongHosts.DEV)
+    @GET("f/breakers")
     @MethodHostSurpported(Surpported = true)
     @EscapeProcessorMap(Escape = false)
     Call<DrRoot<DrList<BreakerItem>>> getBreakers(@Query("platform") String platform);

@@ -3,10 +3,10 @@ package com.dianrong.crnetwork.error;
 import com.dianrong.android.common.AppContext;
 import com.dianrong.android.common.utils.Log;
 import com.dianrong.android.common.utils.UserStorageUtils;
-import com.dianrong.crnetwork.dataformat.DrList;
-import com.dianrong.crnetwork.response.DrResponse;
 import com.dianrong.crnetwork.RequestHandler;
+import com.dianrong.crnetwork.dataformat.DrList;
 import com.dianrong.crnetwork.dataformat.DrRoot;
+import com.dianrong.crnetwork.response.DrResponse;
 import com.dianrong.crnetwork.response.ResponseHandler;
 
 import java.util.ArrayList;
@@ -40,7 +40,9 @@ public class DrErrorMsgHelper {
                     if (Collections.isEmpty(list)) {
                         return;
                     }
-                    errMsgMap.clear();
+                    if (!Collections.isEmpty(errMsgMap)) {
+                        errMsgMap.clear();
+                    }
                     for (DrErrorItemBean bean : list) {
                         errMsgMap.put(bean.getCode(), bean.getZhCN());
                     }

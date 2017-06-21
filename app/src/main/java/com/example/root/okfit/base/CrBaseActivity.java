@@ -1,5 +1,6 @@
 package com.example.root.okfit.base;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -17,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public abstract class CrBaseActivity extends RxAppCompatActivity {
+public abstract class CrBaseActivity extends BasePermissionsActivity {
     private Unbinder butterKinfeBinder;
 
     @Override
@@ -88,4 +89,11 @@ public abstract class CrBaseActivity extends RxAppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected String[] getPermissions() {
+        return new String[] {
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.READ_PHONE_STATE
+        };
+    }
 }

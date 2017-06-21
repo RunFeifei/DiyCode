@@ -2,6 +2,7 @@ package com.dianrong.crnetwork.response;
 
 import com.dianrong.crnetwork.error.ErrorCode;
 import com.dianrong.crnetwork.dataformat.Entity;
+import com.dianrong.crnetwork.framework.ObservableHandler;
 
 import okhttp3.HttpUrl;
 import retrofit2.Call;
@@ -19,8 +20,10 @@ public abstract class ResponseCallback<T extends Entity> implements retrofit2.Ca
         try {
             url = call.request().url();
         } catch (NullPointerException e) {
-            url = HttpUrl.parse("https://www.null.com/");
+            url = RequestException.REQUEST_UNKNOWN;
         }
+         /*not good!!! 不利于解耦*/
+        ObservableHandler.setHttpUrl(url);
 
         if (response == null) {
             throw new RequestException(url, ErrorCode.RESPONSE_NULL_ERR, "response is null");

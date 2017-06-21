@@ -11,11 +11,13 @@ import com.dianrong.crnetwork.response.RequestException;
 
 public interface IBaseView {
 
-    void onRequestStart();
+    boolean onRequestStart();
 
-    void onRequestEnd();
+    boolean onRequestCacell();
 
-    void onRequestError(RequestException exception);
+    boolean onRequestEnd();
+
+    boolean onRequestError(RequestException exception);
 
     boolean onPageVisible();
 

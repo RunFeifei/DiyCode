@@ -1,17 +1,13 @@
 package com.dianrong.crnetwork.framework;
 
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 
 import com.dianrong.crnetwork.dataformat.Entity;
 import com.dianrong.crnetwork.framework.error.ErrorHandler;
 import com.dianrong.crnetwork.framework.requests.Requests;
 import com.dianrong.crnetwork.framework.view.IBaseView;
-import com.trello.rxlifecycle.components.ActivityLifecycleProvider;
-import com.trello.rxlifecycle.components.FragmentLifecycleProvider;
 
-import retrofit2.Call;
+import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -22,69 +18,70 @@ import rx.functions.Action1;
 public class RequestAgent<T extends Entity> {
 
     private final IBaseView baseView;
-    private FragmentLifecycleProvider fragmentLifecycle;
-    private ActivityLifecycleProvider activityLifecycle;
     private ErrorHandler errorHandler;
-    private Call<T> call;
     private Requests<T> requests;
+    private Observable observable;
 
-    public RequestAgent(IBaseView baseView) {
+    public RequestAgent(@NonNull IBaseView baseView) {
         this.baseView = baseView;
-        if (baseView instanceof Fragment) {
-            this.fragmentLifecycle = (FragmentLifecycleProvider) baseView;
-            return;
-        }
-        if (baseView instanceof ActivityCompat) {
-            this.activityLifecycle = (ActivityLifecycleProvider) baseView;
-            return;
-        }
-        throw new RuntimeException("activity of fragment must implement IBaseView & one of (FragmentLifecycleProvider or ActivityLifecycleProvider)");
     }
 
-    public RequestAgent bindErrorHandler(ErrorHandler errorHandler) {
+    /**
+     * 只对回调方式获取Data的方式有效,onData() or onRequestData()
+     */
+    public RequestAgent<T> bindErrorHandler(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
         return this;
     }
 
     private ObservableHandler getObservableHandler() {
-        if (activityLifecycle == null) {
-            return new ObservableHandler(baseView, fragmentLifecycle);
+        return new ObservableHandler(baseView);
+    }
+
+    public void onData(Action1<T> onData) {
+        final Observable<T> observable = this.observable;
+        final Requests<T> requestsWork = requests;
+        if (observable != null && requestsWork != null) {
+            throw new RuntimeException("can not do requets & observable");
         }
-        return new ObservableHandler(baseView, activityLifecycle);
+        if (observable == null && requestsWork == null) {
+            throw new RuntimeException("not notify requets or observable");
+        }
+        final ErrorHandler errorHandlerWork = errorHandler;
+        if (observable != null) {
+            getObservableHandler().getData(observable, onData, errorHandlerWork);
+            return;
+        }
+        getObservableHandler().getRequestsData(requestsWork, onData, errorHandlerWork);
+    }
+
+    public Observable<T> onObservable() {
+        final Observable<T> observable = this.observable;
+        final Requests<T> requestsWork = requests;
+        if (observable != null && requestsWork != null) {
+            throw new RuntimeException("can not do requets & observable");
+        }
+        if (observable == null && requestsWork == null) {
+            throw new RuntimeException("not notify requets or observable");
+        }
+        if (observable != null) {
+            return getObservableHandler().getObservable(observable);
+        }
+        return getObservableHandler().getRequestsObservable(requestsWork).asObservable();
     }
 
     /***************************************Single Request Part***************************************/
-    public RequestAgent bindCall(@NonNull Call<T> call) {
-        this.call = call;
+
+    public <R extends Response> RequestAgent<T> bindObservable(Observable<R> observable) {
+        this.observable = observable;
         return this;
-    }
-
-    public void singleRequestData(Action1<Entity> onData) {
-        final ErrorHandler errorHandlerWork = errorHandler;
-        getObservableHandler().getContentData(call.clone(), onData, errorHandlerWork);
-    }
-
-    public Observable<Entity> singleRequestObservable() {
-        return getObservableHandler().getContentObservable(call.clone());
     }
 
     /***************************************Multiple Requests Part***************************************/
 
-    public RequestAgent bindRequests(@NonNull Requests<T> requests) {
+    public RequestAgent<T> bindRequests(@NonNull Requests<T> requests) {
         this.requests = requests;
         return this;
     }
-
-    public void multipleRequestData(Action1<Entity> onData) {
-        final Requests<T> requestsWork = requests;
-        final ErrorHandler errorHandlerWork = errorHandler;
-        getObservableHandler().getRequestsData(requestsWork, onData, errorHandlerWork);
-    }
-
-    public void multipleRequestObservable() {
-        final Requests<T> requestsWork = requests;
-        getObservableHandler().getRequestsObservable(requestsWork);
-    }
-
 
 }

@@ -16,9 +16,9 @@ targetCompatibility = JavaVersion.VERSION_1_7
 uploadArchives {
     repositories {
         mavenDeployer {
-            pom.artifactId = "crprocessor"
+            pom.artifactId = "rxprocessor"
             pom.groupId = "com.dianrong.android"
-            pom.version = "1.0.4"
+            pom.version = "1.0.0"
             repository(url: uri('http://10.8.12.133:8099/repository/internal/'))
         }
     }

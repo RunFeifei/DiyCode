@@ -97,16 +97,6 @@ public class BaseUrlBindHelper {
             return getClassHost(serviceClass);
         }
 
-        if (type == ServerType.PRODUCT) {
-            return CreditRoadHosts.PRODUCT;
-        }
-        if (type == ServerType.DEMO) {
-            return CreditRoadHosts.DEMO;
-        }
-        if (type == ServerType.DEV) {
-            return CreditRoadHosts.DEV;
-        }
-
         throw new IllegalStateException("no hosts assigned in " + serviceClass.getSimpleName());
     }
 

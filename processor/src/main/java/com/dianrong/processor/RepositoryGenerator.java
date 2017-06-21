@@ -22,7 +22,7 @@ import javax.lang.model.element.Modifier;
 class RepositoryGenerator {
 
     //生成类的包名
-    private static final String REPOSITORY_PACKAGE_NAME = "com.okfit.repository";
+    private static final String REPOSITORY_PACKAGE_NAME = "com.kotfit.repository";
     //生成类的类名
     private static final String REPOSITORY_CLASS_TEMPLATE = "%1$sRepository";
     //用于存放包名和类名

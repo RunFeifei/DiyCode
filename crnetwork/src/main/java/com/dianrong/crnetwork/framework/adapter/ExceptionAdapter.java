@@ -16,9 +16,6 @@ public class ExceptionAdapter {
         if (isdefinedException) {
             return (RequestException) e;
         } else {
-            if (httpUrl == null) {
-                httpUrl = RequestException.ILLEGAL_URL;
-            }
             return new RequestException(httpUrl, ErrorCode.UNKNOWN_ERR, e);
         }
     }

@@ -1,12 +1,8 @@
 package com.dianrong.crnetwork.response;
 
-import android.app.ActivityManager;
-import android.content.Context;
-import android.os.Process;
-
-import com.dianrong.android.common.AppContext;
-import com.dianrong.crnetwork.error.ErrorCode;
 import com.dianrong.crnetwork.dataformat.Entity;
+import com.dianrong.crnetwork.error.ErrorCode;
+import com.dianrong.crnetwork.framework.ObservableHandler;
 
 import okhttp3.HttpUrl;
 import retrofit2.Call;
@@ -29,8 +25,10 @@ public class ResponseHandler {
         try {
             url = call.request().url();
         } catch (NullPointerException e) {
-            url = HttpUrl.parse("https://www.null.com/");
+            url = RequestException.REQUEST_UNKNOWN;
         }
+        /*not good!!! 不利于解耦*/
+        ObservableHandler.setHttpUrl(url);
 
         Response<T> response = null;
         try {
@@ -54,23 +52,6 @@ public class ResponseHandler {
      */
     public static <T extends Entity> void getAsyncResponse(Call<T> call, ResponseCallback<T> callback) {
         call.enqueue(callback);
-    }
-
-
-    private static boolean isMainProcess() {
-        int pid = Process.myPid();
-        String processName = "";
-        ActivityManager mActivityManager = (ActivityManager) AppContext.getInstance().getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager.getRunningAppProcesses()) {
-            if (appProcess.pid == pid) {
-                processName = appProcess.processName;
-                break;
-            }
-        }
-        if (processName.equals(AppContext.getInstance().getPackageName())) {
-            return true;
-        }
-        return false;
     }
 
 }

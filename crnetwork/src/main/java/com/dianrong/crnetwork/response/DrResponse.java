@@ -71,7 +71,7 @@ public class DrResponse<T extends Entity> {
         return drRoot;
     }
 
-    public static boolean checkRootData(@NonNull DrRoot drRoot, HttpUrl url) {
+    private boolean checkRootData(@NonNull DrRoot drRoot, HttpUrl url) {
         boolean result = false;
         if (!Strings.isEmpty(drRoot.getResult())) {
             result = checkDrResult(drRoot, url);
@@ -129,7 +129,7 @@ public class DrResponse<T extends Entity> {
      *
      * @return
      */
-    private static boolean checkDrResult(DrRoot drRoot, HttpUrl url) {
+    private boolean checkDrResult(DrRoot drRoot, HttpUrl url) {
         String errMsg = DrErrorMsgHelper.getErrorMsg(Integer.toString(drRoot.getCode()));
         String result = drRoot.getResult();
         if (Strings.isEqual(result, "login") || Strings.isEqual(result, "AuthFirst")) {
