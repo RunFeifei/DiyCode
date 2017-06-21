@@ -9,21 +9,16 @@ import android.view.ViewGroup;
 
 import com.dianrong.android.common.CrashHandler;
 import com.dianrong.android.common.utils.Log;
-import com.dianrong.crnetwork.response.RequestException;
 import com.example.root.okfit.BuildConfig;
 import com.example.root.okfit.R;
-import com.example.root.okfit.uibinder.UiBinder;
-import com.example.root.okfit.uibinder.UiBinderAgent;
-import com.example.root.okfit.uibinder.UiBinderView;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public abstract class CrBaseFragment extends RxFragment implements UiBinderView {
+public abstract class CrBaseFragment extends RxFragment {
 
-    private UiBinderAgent fragmentBinderAgent;
     private Unbinder butterKinfeBinder;
 
 
@@ -66,7 +61,7 @@ public abstract class CrBaseFragment extends RxFragment implements UiBinderView 
         super.onViewCreated(view, savedInstanceState);
         butterKinfeBinder = ButterKnife.bind(this, view);
         try {
-            init(savedInstanceState,view);
+            init(savedInstanceState, view);
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
                 Log.logStackTrace(e);
@@ -88,7 +83,7 @@ public abstract class CrBaseFragment extends RxFragment implements UiBinderView 
 
     protected abstract int getContentViewId();
 
-    protected abstract void init(Bundle savedInstanceState,View view);
+    protected abstract void init(Bundle savedInstanceState, View view);
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -118,37 +113,6 @@ public abstract class CrBaseFragment extends RxFragment implements UiBinderView 
      * fragment由不可见变为可见时被调用，首次调用时（Fragment刚加载），根View是没有WindowToken的。
      */
     protected void onVisible() {
-    }
-
-
-    @Override
-    public void onUiBinderStart(int type) {
-        /*Not implement*/
-    }
-
-    @Override
-    public void onUiBinderError(RequestException error) {
-        /*Not implement*/
-    }
-
-    @Override
-    public void onUiBinderEnd(int type) {
-        /*Not implement*/
-    }
-
-    protected UiBinderAgent getFragmentUiBinderAgent() {
-        UiBinderAgent helper = this.fragmentBinderAgent;
-        if (helper == null) {
-            helper = UiBinderAgent.newInstance();
-            helper.setUiBinderView(this);
-            this.fragmentBinderAgent = helper;
-        }
-        return helper;
-    }
-
-
-    protected <T> UiBinder<T> getFragmentUiBinder() {
-        return getFragmentUiBinderAgent().bornUiBinder();
     }
 
 

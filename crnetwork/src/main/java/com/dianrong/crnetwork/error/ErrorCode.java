@@ -12,27 +12,4 @@ public @interface ErrorCode {
     int DR_CAST_ERR = 103;
     int DR_INTERCEPTION_LOGIN_ERR = 104;
     int UNKNOWN_ERR = 105;
-
-    enum DrResultCode {
-        //服务器返回的错误码
-        Success,
-        Login,
-        AuthFirst,
-        Error,
-        ServiceDisabled,
-        SessionTimeout,
-        LenderNotAMember,
-        //其他错误
-        Timeout,
-        NoConnection,
-        Exception,
-        MelformedResponse,
-        Unknown,
-        //token过期
-        TokenIsExpired;
-
-        private DrResultCode() {
-        }
-    }
-
 }

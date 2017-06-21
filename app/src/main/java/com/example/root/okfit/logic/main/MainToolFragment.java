@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.root.okfit.R;
-import com.example.root.okfit.view.LoadingDialog;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -31,8 +30,6 @@ public final class MainToolFragment extends MainFragment {
 
     @OnClick(R.id.text)
     protected void toBubble() {
-        LoadingDialog loadingDialog = new LoadingDialog();
-        loadingDialog.show(getFragmentManager());
     }
 
 }

@@ -10,22 +10,14 @@ import android.view.View;
 
 import com.dianrong.android.common.CrashHandler;
 import com.dianrong.android.common.utils.Log;
-import com.dianrong.crnetwork.error.ErrorCode;
-import com.dianrong.crnetwork.response.RequestException;
 import com.example.root.okfit.BuildConfig;
-import com.example.root.okfit.uibinder.UiBinder;
-import com.example.root.okfit.uibinder.UiBinderAgent;
-import com.example.root.okfit.uibinder.UiBinderView;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public abstract class CrBaseActivity extends RxAppCompatActivity implements UiBinderView{
-
-
-    private UiBinderAgent binderAgent;
+public abstract class CrBaseActivity extends RxAppCompatActivity {
     private Unbinder butterKinfeBinder;
 
     @Override
@@ -62,9 +54,6 @@ public abstract class CrBaseActivity extends RxAppCompatActivity implements UiBi
     }
 
     private void initVars() {
-        UiBinderAgent agent = UiBinderAgent.newInstance();
-        agent.setUiBinderView(this);
-        binderAgent = agent;
     }
 
     @LayoutRes
@@ -97,47 +86,6 @@ public abstract class CrBaseActivity extends RxAppCompatActivity implements UiBi
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public void onUiBinderStart(int type) {
-        if (type == UiBinder.BEHAVIOR_SILENCE) {
-            return;
-        }
-    }
-
-    @Override
-    public void onUiBinderError(RequestException exception) {
-        Log.e(getClass().getSimpleName(), exception.toString());
-        switch (exception.getCode()) {
-            case ErrorCode.NETWORK_ERR:
-                break;
-            case ErrorCode.RESPONSE_NULL_ERR:
-                break;
-            case ErrorCode.DR_CAST_ERR:
-                break;
-            case ErrorCode.UNKNOWN_ERR:
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    @Override
-    public void onUiBinderEnd(int type) {
-        if (type == UiBinder.BEHAVIOR_SILENCE) {
-            return;
-        }
-    }
-
-    public UiBinderAgent getUiBinderAgent() {
-        return binderAgent;
-    }
-
-    protected <T> UiBinder<T> getUiBinder() {
-        return this.binderAgent.bornUiBinder();
     }
 
 }
