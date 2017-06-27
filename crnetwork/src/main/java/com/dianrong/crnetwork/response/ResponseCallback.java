@@ -1,8 +1,9 @@
 package com.dianrong.crnetwork.response;
 
 import com.dianrong.crnetwork.error.ErrorCode;
-import com.dianrong.crnetwork.dataformat.Entity;
 import com.dianrong.crnetwork.framework.ObservableHandler;
+
+import java.io.Serializable;
 
 import okhttp3.HttpUrl;
 import retrofit2.Call;
@@ -12,7 +13,7 @@ import retrofit2.Response;
  * Created by PengFeifei on 17-4-20.
  */
 
-public abstract class ResponseCallback<T extends Entity> implements retrofit2.Callback<T> {
+public abstract class ResponseCallback<T extends Serializable> implements retrofit2.Callback<T> {
 
     @Override
     public void onResponse(Call<T> call, Response<T> response) {

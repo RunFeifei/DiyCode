@@ -55,8 +55,16 @@ android {
     }
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile(name: 'recater-release', ext: 'aar')
+    compile(name: 'common', ext: 'aar')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -64,7 +72,8 @@ dependencies {
     releaseCompile project(path: ':crnetwork', configuration: 'release')
     compile "com.android.support:support-v4:$ANDROID_SUPPORT_VERSION"
     compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
-    compile project(path: ':processor')
+
+
     compile 'com.github.lzyzsd.randomcolor:library:1.0.0'
     compile 'com.jakewharton:butterknife:8.5.1'
     compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
@@ -73,8 +82,8 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
     compile 'com.amap.api:location:latest.integration'
     compile 'com.amap.api:map2d:latest.integration'
+    compile 'com.facebook.rebound:rebound:0.3.8'
+    compile 'com.android.support:multidex:1.0.1'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.5.1'
-    compile 'com.facebook.rebound:rebound:0.3.8'
-
 }

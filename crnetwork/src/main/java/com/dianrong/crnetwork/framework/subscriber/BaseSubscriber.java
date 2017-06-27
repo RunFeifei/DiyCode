@@ -44,7 +44,7 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Loading
         super.onStart();
         boolean onStart = baseView.onRequestStart();
         if (!onStart) {
-            loadingDialog = LoadingDialog.showLoading(baseView.onLoading());
+            loadingDialog = LoadingDialog.showLoading(baseView.onRequestIng());
             if (loadingDialog != null) {
                 loadingDialog.setOnDismissListener(this);
             }

@@ -15,7 +15,6 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.Arrays;
 
 /**
  * 继承了Activity，实现Android6.0的运行时权限检测
@@ -35,7 +34,7 @@ public class BasePermissionsActivity extends RxAppCompatActivity implements Acti
     @Override
     protected void onResume() {
         super.onResume();
-        if (isNeedCheck && !Arrays.isEmpty(getPermissions())) {
+        if (isNeedCheck && !isEmpty(getPermissions())) {
             checkPermissions(getPermissions());
         }
     }
@@ -135,6 +134,10 @@ public class BasePermissionsActivity extends RxAppCompatActivity implements Acti
                 Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + getPackageName()));
         startActivity(intent);
+    }
+
+    private boolean isEmpty(Object[] array) {
+        return array == null || array.length == 0;
     }
 
 }

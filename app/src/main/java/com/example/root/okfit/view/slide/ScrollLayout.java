@@ -1,30 +1,24 @@
 package com.example.root.okfit.view.slide;
 
-/**
- * Created by PengFeifei on 17-5-25.
- */
+import android.content.Context;
+import android.graphics.Rect;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
+import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.Scroller;
 
+import com.example.root.okfit.view.bubbleview.BubbleView;
+import com.facebook.rebound.SimpleSpringListener;
+import com.facebook.rebound.Spring;
+import com.facebook.rebound.SpringChain;
+import com.github.lzyzsd.randomcolor.RandomColor;
 
-        import android.content.Context;
-        import android.graphics.Rect;
-        import android.support.v4.view.ViewCompat;
-        import android.util.AttributeSet;
-        import android.util.Log;
-        import android.view.MotionEvent;
-        import android.view.VelocityTracker;
-        import android.view.View;
-        import android.view.ViewConfiguration;
-        import android.view.ViewGroup;
-        import android.widget.LinearLayout;
-        import android.widget.Scroller;
-
-        import com.example.root.okfit.view.bubbleview.BubbleView;
-        import com.facebook.rebound.SimpleSpringListener;
-        import com.facebook.rebound.Spring;
-        import com.facebook.rebound.SpringChain;
-        import com.github.lzyzsd.randomcolor.RandomColor;
-
-        import java.util.List;
+import java.util.List;
 
 /**
  * Created by PengFeifei on 17-5-25.

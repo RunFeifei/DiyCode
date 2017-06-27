@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OKfit</string>
+    <string name="app_name">DiyCode</string>
     <string name="notifyTitle">提示</string>
     <string name="notifyMsg">当前应用缺少必要权限。\n\n请点击\"设置\"-\"权限\"-打开所需权限。</string>
     <string name="setting">设置</string>
@@ -23,5 +23,50 @@
 
     <string name="startLocation">开始定位</string>
     <string name="stopLocation">停止定位</string>
+
+    <!--Main-->
+    <string name="main_homepage">&#xe603;</string>
+    <string name="main_notice">&#xe605;</string>
+    <string name="main_myself">&#xe607;</string>
+
+    <!--Normal-->
+    <string name="normal_replies_count">评论 %1$d</string>
+
+    <!--My-->
+    <string name="my_topic">&#xe63e;</string>
+    <string name="my_reply">&#xe60a;</string>
+    <string name="my_favorite">&#xe616;</string>
+    <string name="my_logout">&#xe608;</string>
+    <string name="my_about">&#xe606;</string>
+    <string name="my_setting">&#xe619;</string>
+    <string name="my_right">&#xe60f;</string>
+
+    <!--Login-->
+    <string name="login_account">Email/用户名</string>
+    <string name="login_password">密码</string>
+    <string name="login">登录</string>
+    <string name="account_or_password_is_empty">Email/用户名或密码为空</string>
+
+    <!--TopicDetail-->
+    <string name="topic_detail_reply_count">共收到 %1$d 条回复</string>
+    <string name="topic_detail_like">&#xe623;</string>
+    <string name="topic_detail_favorite">&#xe64a;</string>
+    <string name="topic_detail_reply">&#xe609;</string>
+    <string name="topic_detail_position_and_time">%1$d楼  ·  %2$s</string>
+
+    <!--Personal-->
+    <string name="personal_other">%1$d帖子/%2$d收藏/%3$d关注</string>
+
+    <!--Reply-->
+    <string name="reply_content">请输入评论内容</string>
+    <string name="reply_send">发送</string>
+
+    <!--AddNews-->
+    <string name="add_news_input_title">请输入标题</string>
+    <string name="add_news_input_link">请输入链接</string>
+    <string name="add_news_share_success">分享成功，请等待审核</string>
+
+    <string name="add_topic_select_type">分类：  %1$s  ---  %2$s</string>
+    <string name="add_topic_content">请输入内容</string>
 
 </resources>

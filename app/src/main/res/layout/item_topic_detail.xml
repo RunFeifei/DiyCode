@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    >
+
+    <LinearLayout
+        android:id="@+id/base_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/white"
+        >
+
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_margin="@dimen/avatar_text_margin"
+            android:src="@mipmap/ic_launcher"
+            />
+
+        <TextView
+            android:id="@+id/author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/gray_66"
+            tools:text="欣赏欣赏"
+            />
+
+        <TextView
+            android:id="@+id/type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/avatar_text_margin"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/gray"
+            tools:text="欣赏欣赏"
+            />
+
+    </LinearLayout>
+
+    <com.example.root.okfit.view.CustomWebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/base_info"
+        android:scrollbars="none"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/avatar_text_margin"
+        android:layout_below="@id/web_view"
+        >
+
+        <TextView
+            android:id="@+id/reply_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            tools:text="欣赏欣赏"
+            android:textColor="@color/black_text"
+            />
+
+        <TextView
+            android:id="@+id/favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/avatar_text_margin"
+            android:layout_marginStart="@dimen/avatar_text_margin"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            tools:text="欣赏欣赏"
+            android:textColor="@color/black_text"
+            />
+
+        <TextView
+            android:id="@+id/like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/avatar_text_margin"
+            android:layout_marginStart="@dimen/avatar_text_margin"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/favorite"
+            tools:text="欣赏欣赏"
+            android:textColor="@color/black_text"
+            />
+
+        <TextView
+            android:id="@+id/like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/like_count"
+            tools:text="欣赏欣赏"
+            android:textColor="@color/black_text"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

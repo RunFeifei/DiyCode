@@ -21,6 +21,6 @@ public interface IBaseView {
 
     boolean onPageVisible();
 
-    FragmentManager onLoading();
+    FragmentManager onRequestIng();
 
 }

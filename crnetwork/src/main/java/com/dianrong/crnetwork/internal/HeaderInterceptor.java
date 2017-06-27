@@ -1,10 +1,9 @@
 package com.dianrong.crnetwork.internal;
 
-import com.dianrong.android.common.AppContext;
-import com.dianrong.android.common.utils.ContextUtils;
-import com.dianrong.android.common.utils.DRPreferences;
-import com.dianrong.android.user.UserStatus;
-import com.dianrong.crnetwork.host.BaseUrlBindHelper;
+import com.dianrong.crnetwork.host.BaseUrlBinder;
+import com.feifei.common.MultiApplication;
+import com.feifei.common.utils.ContextUtils;
+import com.feifei.common.utils.PreferenceUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,12 +24,11 @@ public class HeaderInterceptor implements Interceptor {
     private HashMap<String, String> headers = new HashMap<>();
 
     /**
-     * userAgent是一个特殊字符串头
-     * 使得服务器能够识别客户使用的操作系统及版本、CPU 类型、浏览器及版本...
+     * userAgent是一个特殊字符串头,使得服务器能够识别客户端
      */
     public HeaderInterceptor() {
         userAgent = "Android/" + ContextUtils.getSystemVersion()
-                + " " + ContextUtils.getAppName() + "/" + ContextUtils.getVersionCode(AppContext.getInstance())
+                + " " + ContextUtils.getAppName() + "/" + ContextUtils.getVersionCode(MultiApplication.getContext())
                 + " ClientType/" + ContextUtils.getClientType()
                 + " ChannelId/" + ContextUtils.getChannelName();
     }
@@ -42,12 +40,12 @@ public class HeaderInterceptor implements Interceptor {
         Request.Builder requestBuilder = request.newBuilder();
 
         requestBuilder.header("User-Agent", userAgent);
-        if (UserStatus.isLoggedIn() && UserStatus.getUser() != null && UserStatus.getUser().getAid() != null) {
+        /*if (UserStatus.isLoggedIn() && UserStatus.getUser() != null && UserStatus.getUser().getAid() != null) {
             requestBuilder.header("X-SL-Username", UserStatus.getUser().getAid());
-        }
-        requestBuilder.header("X-SL-UUID", DRPreferences.getSlUUID());
+        }*/
+        requestBuilder.header("X-SL-UUID", PreferenceUtil.getSlUUID());
         requestBuilder.header("IMEI", ContextUtils.getImei());
-        requestBuilder.header("Referer", BaseUrlBindHelper.getBaseUrl());
+        requestBuilder.header("Referer", BaseUrlBinder.getBaseUrl());
         requestBuilder.removeHeader("Pragma");//在HTTP1.0中Pragma: no-cache,删除旧的
         //requestBuilder.removeHeader("Cache-Control");//删除旧的
         requestBuilder.header("Cache-Control", "public, max-age=" + 3600 * 24);//强制复写为24h

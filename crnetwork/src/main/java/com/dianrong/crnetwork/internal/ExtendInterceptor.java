@@ -9,10 +9,6 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/**
- * <p/>
- * Created by yangcheng on 2017/3/20.
- */
 public class ExtendInterceptor implements Interceptor {
     private List<Interceptor> interceptors = new ArrayList<>(2);
 

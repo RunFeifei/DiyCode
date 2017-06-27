@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    >
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/notice_avatar_small_size"
+        android:layout_height="@dimen/notice_avatar_small_size"
+        android:layout_margin="@dimen/normal_margin"
+        />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_margin"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/gray_cc"
+        tools:text="time"
+        />
+
+    <TextView
+        android:id="@+id/notice_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_margin"
+        android:layout_toEndOf="@id/avatar"
+        android:layout_toStartOf="@id/time"
+        android:textColor="@color/colorPrimary"
+        tools:text="notice_action"
+        />
+
+    <TextView
+        android:id="@+id/notice_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_margin"
+        android:layout_below="@id/notice_action"
+        android:layout_toEndOf="@id/avatar"
+        tools:text="notice_content"
+        />
+
+    <!--<ezy.ui.view.BadgeButton
+        android:id="@+id/read_flag"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/time"
+        android:layout_marginEnd="@dimen/normal_margin"
+        app:btnBadgeVisible="true" />-->
+
+</RelativeLayout>

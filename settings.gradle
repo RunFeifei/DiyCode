@@ -1,1 +1,1 @@
-include ':app', ':crnetwork', ':processor'
+include ':app', ':crnetwork', ':common'

@@ -7,6 +7,8 @@ import com.dianrong.crnetwork.framework.error.ErrorHandler;
 import com.dianrong.crnetwork.framework.requests.Requests;
 import com.dianrong.crnetwork.framework.view.IBaseView;
 
+import java.io.Serializable;
+
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
@@ -15,7 +17,7 @@ import rx.functions.Action1;
  * Created by PengFeifei on 17-6-19.
  */
 
-public class RequestAgent<T extends Entity> {
+public class RequestAgent<T extends Serializable> {
 
     private final IBaseView baseView;
     private ErrorHandler errorHandler;

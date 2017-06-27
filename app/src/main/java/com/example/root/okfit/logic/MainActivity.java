@@ -1,81 +1,78 @@
 package com.example.root.okfit.logic;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
-import com.example.root.okfit.CrRxbus.CrBusEvent;
-import com.example.root.okfit.CrRxbus.CrSubscriber;
 import com.example.root.okfit.R;
-import com.example.root.okfit.base.CrBaseActivity;
-import com.example.root.okfit.logic.main.MainCreditFragment;
-import com.example.root.okfit.logic.main.MainDetectiveFragment;
-import com.example.root.okfit.logic.main.MainToolFragment;
+import com.example.root.okfit.base.BaseActivity;
+import com.example.root.okfit.logic.main.MainNewsFragment;
+import com.example.root.okfit.logic.main.MainSiteFragment;
+import com.example.root.okfit.logic.main.MainTopicFragment;
 
 import butterknife.BindView;
-import rx.functions.Action1;
-import util.Strings;
 
 /**
  * Created by PengFeifei on 17-5-11.
  */
 
-public class MainActivity extends CrBaseActivity implements BottomNavigationBar.OnTabSelectedListener {
-
-    private static final String TAG = MainActivity.class.getSimpleName();
-    public static final String DETECTIVE = MainDetectiveFragment.class.getSimpleName();
-    public static final String CREDIT = MainCreditFragment.class.getSimpleName();
-    public static final String TOOL = MainToolFragment.class.getSimpleName();
+public class MainActivity extends BaseActivity implements BottomNavigationBar.OnTabSelectedListener {
 
     @BindView(R.id.bottom_navigation_bar)
     BottomNavigationBar bottomNavigationBar;
+    private Fragment[] fragments;
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        initFragments();
         initBottomBars();
         addDefaultFragment();
-        subscribeEvent();
     }
 
     @Override
-    protected int getContentViewId() {
+    protected int getContentLayoutId() {
         return R.layout.activity_second;
     }
 
+    private void initFragments() {
+        fragments = new Fragment[3];
+        fragments[0] = new MainTopicFragment();
+        fragments[1] = new MainNewsFragment();
+        fragments[2] = new MainSiteFragment();
+    }
 
     private void initBottomBars() {
         bottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
         bottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         bottomNavigationBar.setForegroundGravity(Gravity.CENTER);
-
-
-        bottomNavigationBar.addItem(getDetectiveItem())
-                .addItem(getCreditItem())
-                .addItem(getToolItem())
+        bottomNavigationBar.addItem(getTopicItem())
+                .addItem(getNewsItem())
+                .addItem(getSitesItem())
                 .setFirstSelectedPosition(0)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(this);
     }
 
-    private BottomNavigationItem getDetectiveItem() {
-        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_public_sentiment, "detective");
+    private BottomNavigationItem getTopicItem() {
+        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_public_sentiment, "topic");
         item.setActiveColor(R.color.transparent);
         item.setInactiveIconResource(R.drawable.ic_public_sentiment);
         return item;
     }
 
 
-    private BottomNavigationItem getCreditItem() {
-        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_blacklist, "credit");
+    private BottomNavigationItem getNewsItem() {
+        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_blacklist, "news");
         item.setActiveColor(R.color.transparent);
         item.setInactiveIconResource(R.drawable.ic_blacklist);
         return item;
     }
 
-    private BottomNavigationItem getToolItem() {
-        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_loan_calculator, "tool");
+    private BottomNavigationItem getSitesItem() {
+        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_loan_calculator, "sites");
         item.setActiveColor(R.color.transparent);
         item.setInactiveIconResource(R.drawable.ic_loan_calculator);
         return item;
@@ -83,7 +80,7 @@ public class MainActivity extends CrBaseActivity implements BottomNavigationBar.
 
 
     private void addDefaultFragment() {
-        addFragment(new MainDetectiveFragment());
+        addFragment(fragments[0]);
     }
 
     @Override
@@ -91,64 +88,14 @@ public class MainActivity extends CrBaseActivity implements BottomNavigationBar.
         return R.id.layFrame;
     }
 
-
-    private void subscribeEvent() {
-        CrSubscriber.getActivitySubscriber(this)
-                .bindEvent(CrBusEvent.EventId.EVENT_MAINPAGE_SWITCH)
-                .onNext(new Action1<CrBusEvent>() {
-                    @Override
-                    public void call(CrBusEvent crBusEvent) {
-                        Log.e("TAG-->", "-------------------------------");
-                        if (crBusEvent == null) {
-                            return;
-                        }
-                        String action = crBusEvent.getContent();
-                        if (Strings.isEqual(action, DETECTIVE)) {
-                            bottomNavigationBar.selectTab(0);
-                            return;
-                        }
-                        if (Strings.isEqual(action, CREDIT)) {
-                            bottomNavigationBar.selectTab(1);
-                            return;
-                        }
-                        if (Strings.isEqual(action, TOOL)) {
-                            bottomNavigationBar.selectTab(2);
-                        }
-
-                    }
-                })
-                .onError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Log.e(TAG, throwable.getCause().toString());
-                    }
-                })
-                .create();
-    }
-
-
     @Override
     public void onTabSelected(int position) {
-        switch (position) {
-            case 0: {
-                addFragment(new MainDetectiveFragment());
-                break;
-            }
-            case 1: {
-                addFragment(new MainCreditFragment());
-                break;
-            }
-            case 2: {
-                addFragment(new MainToolFragment());
-                break;
-            }
-        }
-
+        switchFragment(position,true);
     }
 
     @Override
     public void onTabUnselected(int position) {
-
+        switchFragment(position,false);
     }
 
     @Override
@@ -156,5 +103,23 @@ public class MainActivity extends CrBaseActivity implements BottomNavigationBar.
 
     }
 
+    private Fragment switchFragment(int position, boolean selected) {
+        Fragment fragment = fragments[position];
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (!fragment.isAdded()) {
+            transaction.add(R.id.layFrame, fragment);
+        }
+        if (selected) {
+            transaction.show(fragment);
+        } else {
+            transaction.hide(fragment);
+        }
+        transaction.commitAllowingStateLoss();
+        return fragment;
+    }
 
+    @Override
+    protected boolean hasToolbar() {
+        return false;
+    }
 }

@@ -37,6 +37,9 @@ public class LoadingDialog extends RxDialogFragment implements View.OnClickListe
     }
 
     public static LoadingDialog showLoading(FragmentManager fragmentManager) {
+        if (fragmentManager == null) {
+            return null;
+        }
         final FragmentManager manager = fragmentManager;
         LoadingDialog loadingDialog = new LoadingDialog();
         loadingDialog.show(manager);

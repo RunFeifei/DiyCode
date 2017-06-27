@@ -20,8 +20,14 @@ public abstract class DefaultSubscriber<T> extends BaseSubscriber<T> {
 
     public DefaultSubscriber(@NonNull IBaseView baseView, ErrorHandler errorHandler) {
         super(baseView);
-        this.errorHandler = errorHandler;
         this.baseView = baseView;
+        this.errorHandler = errorHandler;
+    }
+
+    public DefaultSubscriber(@NonNull IBaseView baseView) {
+        super(baseView);
+        this.baseView = baseView;
+        this.errorHandler = null;
     }
 
     @Override
@@ -29,9 +35,9 @@ public abstract class DefaultSubscriber<T> extends BaseSubscriber<T> {
         try {
             RequestException requestException = ExceptionAdapter.toRequestException(e, ObservableHandler.getHttpUrl());
             if (errorHandler != null && errorHandler.onErrorOccurs(requestException)) {
-                super.onError(e,true);
+                super.onError(e, true);
             } else {
-                super.onError(e,false);
+                super.onError(e, false);
                 baseView.onRequestError(ExceptionAdapter.toRequestException(e, ObservableHandler.getHttpUrl()));
             }
         } catch (Exception e1) {

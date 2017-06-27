@@ -3,10 +3,23 @@ apply from: "./subproject-build.gradle"
 buildscript {
     repositories {
         repositories {
-            maven {
-                url "${HTTP_MAVEN_INTERNAL}"
-            }
             jcenter()
+            mavenCentral()
+            maven {
+                url "${HTTP_MAVEN_ALI}"
+            }
+            maven {
+                url "${HTTP_MAVEN_JBOSSS}"
+            }
+            maven {
+                url "${HTTP_MAVEN_LIB}"
+            }
+            maven {
+                url "${HTTP_MAVEN_SECOND}"
+            }
+            maven {
+                url "${HTTP_MAVEN_JIT}"
+            }
         }
     }
     dependencies {
@@ -22,8 +35,21 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        mavenCentral()
         maven {
-            url "${HTTP_MAVEN_INTERNAL}"
+            url "${HTTP_MAVEN_ALI}"
+        }
+        maven {
+            url "${HTTP_MAVEN_JBOSSS}"
+        }
+        maven {
+            url "${HTTP_MAVEN_LIB}"
+        }
+        maven {
+            url "${HTTP_MAVEN_SECOND}"
+        }
+        maven {
+            url "${HTTP_MAVEN_JIT}"
         }
     }
 }

@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/OkFit.iml" filepath="$PROJECT_DIR$/OkFit.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/crnetwork/crnetwork.iml" filepath="$PROJECT_DIR$/crnetwork/crnetwork.iml" />
       <module fileurl="file://$PROJECT_DIR$/okfit.iml" filepath="$PROJECT_DIR$/okfit.iml" />
-      <module fileurl="file://$PROJECT_DIR$/processor/processor.iml" filepath="$PROJECT_DIR$/processor/processor.iml" />
     </modules>
   </component>
 </project>

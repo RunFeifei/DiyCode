@@ -1,8 +1,9 @@
 package com.dianrong.crnetwork.response;
 
-import com.dianrong.crnetwork.dataformat.Entity;
 import com.dianrong.crnetwork.error.ErrorCode;
 import com.dianrong.crnetwork.framework.ObservableHandler;
+
+import java.io.Serializable;
 
 import okhttp3.HttpUrl;
 import retrofit2.Call;
@@ -20,7 +21,7 @@ public class ResponseHandler {
      * 同步方法
      * 勿在主线程执行此方法
      */
-    public static <T extends Entity> Response<T> getSyncResponse(Call<T> call) {
+    public static <T extends Serializable> Response<T> getSyncResponse(Call<T> call) {
         HttpUrl url;
         try {
             url = call.request().url();
@@ -50,7 +51,7 @@ public class ResponseHandler {
     /**
      * 异步方法
      */
-    public static <T extends Entity> void getAsyncResponse(Call<T> call, ResponseCallback<T> callback) {
+    public static <T extends Serializable> void getAsyncResponse(Call<T> call, ResponseCallback<T> callback) {
         call.enqueue(callback);
     }
 

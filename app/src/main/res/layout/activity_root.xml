@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="top"
+    android:background="@color/grey_background"
+    >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:id="@+id/textTitle"
+            style="@style/ToolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/app_name"
+            />
+
+        <TextView
+            android:id="@+id/textMenu"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/abc_action_bar_overflow_padding_end_material"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical|right"
+            android:ellipsize="end"
+            android:gravity="center_vertical|right"
+            android:maxLength="16"
+            android:text="@string/cancel"
+            android:visibility="gone"
+            />
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:id="@+id/layContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        ></FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/layFail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+
+
+        <LinearLayout
+            android:id="@+id/layoutEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_empty_content"
+                />
+
+            <TextView
+                android:id="@+id/txtResultEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:text="网络失信了！"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textErr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:textColor="@color/red_text"
+            android:text="test"
+            android:textSize="12dp"
+            android:visibility="gone"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>
+

@@ -3,7 +3,6 @@ package com.dianrong.crnetwork.framework;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 
-import com.dianrong.crnetwork.dataformat.Entity;
 import com.dianrong.crnetwork.framework.adapter.SchedulerAdapter;
 import com.dianrong.crnetwork.framework.error.ErrorHandler;
 import com.dianrong.crnetwork.framework.requests.Requests;
@@ -17,6 +16,8 @@ import com.trello.rxlifecycle.components.FragmentLifecycleProvider;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
+import java.io.Serializable;
+
 import okhttp3.HttpUrl;
 import retrofit2.Response;
 import rx.Observable;
@@ -28,7 +29,7 @@ import rx.functions.Func1;
  * Created by PengFeifei on 17-4-20.
  */
 
-public class ObservableHandler<T, Data extends Entity> {
+public class ObservableHandler<T, Data extends Serializable> {
 
     private IBaseView baseView;
     private FragmentLifecycleProvider fragmentLifecycle;
