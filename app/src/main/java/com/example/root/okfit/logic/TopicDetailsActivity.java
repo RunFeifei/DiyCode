@@ -20,7 +20,7 @@ import com.example.root.okfit.base.BaseActivity;
 import com.example.root.okfit.net.api.TopicApi;
 import com.example.root.okfit.net.bean.TopicDetail;
 import com.example.root.okfit.net.bean.TopicReply;
-import com.example.root.okfit.util.CommonUtils;
+import com.example.root.okfit.util.TimerUtils;
 import com.example.root.okfit.view.CustomWebView;
 import com.fei.root.recater.adapter.multi.ItemModule;
 import com.fei.root.recater.adapter.multi.MultiAdapter;
@@ -89,7 +89,6 @@ public class TopicDetailsActivity extends BaseActivity {
                 .subscribe(new DefaultSubscriber<AList<TopicReply>>(this) {
                     @Override
                     public void onHandleData(AList<TopicReply> topicReplys) {
-                        //                        listDatas.addAll(new ItemWrapper<>(topicReplys,R.layout.item_topic_detail_replys));
                         listDatas.addAll(topicReplys);
                         adapter.notifyDataSetChanged();
                     }
@@ -134,12 +133,11 @@ public class TopicDetailsActivity extends BaseActivity {
                             .load(item.getUser().getAvatar_url()).dontAnimate().placeholder(imageView.getDrawable()).into(imageView);
                     holder.setText(R.id.author, item.getUser().getName());
                     holder.setText(R.id.position_and_time, String.format(getString(R.string.topic_detail_position_and_time),
-                            holder.getAdapterPosition(), CommonUtils.getHowLongAgo(item.getUpdated_at())));
+                            holder.getAdapterPosition(), TimerUtils.getHowLongAgo(item.getUpdated_at())));
                     Typeface typeface = Typeface.createFromAsset(getAssets(), "iconfont.ttf");
                     holder.getTextView(R.id.reply).setTypeface(typeface);
                     holder.setText(R.id.reply, getString(R.string.topic_detail_reply));
                     holder.setText(R.id.content, Html.fromHtml(item.getBody_html()));
-
                 }
             }
         };

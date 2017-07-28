@@ -212,11 +212,11 @@ public class ClientBuilder {
         getHeaderInterceptor().setUserAgent(userAgent);
     }
 
-    public static void addHeader(String key, String value) {
+    public static void putHeader(String key, String value) {
         if (value == null) {
             return;
         }
-        getHeaderInterceptor().addHeader(key, value);
+        getHeaderInterceptor().putHeader(key, value);
     }
 
     public static String getBaseUrl() {
