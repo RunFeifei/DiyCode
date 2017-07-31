@@ -9,9 +9,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dianrong.crnetwork.framework.view.IBaseView;
 import com.dianrong.crnetwork.response.RequestException;
@@ -63,6 +65,14 @@ public abstract class BaseActivity extends BasePermissionsActivity implements IB
         return !(isDestroyed() || isFinishing());
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return false;
+    }
 
     /*****************************Fragment*****************************/
     protected int getFragmentId() {
@@ -166,6 +176,11 @@ public abstract class BaseActivity extends BasePermissionsActivity implements IB
     @Override
     public FragmentManager onRequestIng() {
         return getSupportFragmentManager();
+    }
+
+    /*****************************Utils*****************************/
+    protected void toast(String content) {
+        Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
     }
 
 

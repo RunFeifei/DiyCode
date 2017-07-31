@@ -66,7 +66,7 @@ public class HeaderInterceptor implements Interceptor {
         this.userAgent = userAgent;
     }
 
-    public void addHeader(String key, String value) {
+    public void putHeader(String key, String value) {
         headers.put(key, value);
     }
 }

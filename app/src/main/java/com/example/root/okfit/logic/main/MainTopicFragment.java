@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -19,7 +18,7 @@ import com.example.root.okfit.logic.TopicDetailsActivity;
 import com.example.root.okfit.net.api.TopicApi;
 import com.example.root.okfit.net.bean.Topic;
 import com.example.root.okfit.net.bean.User;
-import com.example.root.okfit.util.CommonUtils;
+import com.example.root.okfit.util.TimerUtils;
 import com.fei.root.recater.action.OnLoadMoreData;
 import com.fei.root.recater.action.OnRefreshData;
 import com.fei.root.recater.adapter.RefloadAdapter;
@@ -63,7 +62,7 @@ public final class MainTopicFragment extends MainFragment implements OnLoadMoreD
     private void initRecyclerView(AList<Topic> topicses) {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-        adapter = new RefloadAdapter<Topic>(topicses, R.layout.item_topics_recycler_view) {
+        adapter = new RefloadAdapter<Topic>(topicses, R.layout.item_topics) {
             @Override
             protected void convert(CommonHolder holder, Topic topic, int position) {
                 ImageView imageView = holder.getImageView(R.id.avatar);
@@ -71,7 +70,7 @@ public final class MainTopicFragment extends MainFragment implements OnLoadMoreD
                         (imageView);
                 User user = topic.getUser();
                 holder.setText(R.id.author, user.getName());
-                holder.setText(R.id.time, CommonUtils.getHowLongAgo(topic.getUpdated_at()));
+                holder.setText(R.id.time, TimerUtils.getHowLongAgo(topic.getUpdated_at()));
                 holder.setText(R.id.type, topic.getNode_name());
                 holder.setText(R.id.replies_count, "评论 " + topic.getReplies_count());
                 holder.setText(R.id.title, topic.getTitle());
@@ -135,7 +134,6 @@ public final class MainTopicFragment extends MainFragment implements OnLoadMoreD
                 .subscribe(new DefaultSubscriber<AList<Topic>>(this) {
                     @Override
                     public void onHandleData(AList<Topic> topicses) {
-                        Log.e("TAG-->", topicses.size() + "");
                         if (Collections.isEmpty(topicses)) {
                             onLoadMoreNone();
                             return;

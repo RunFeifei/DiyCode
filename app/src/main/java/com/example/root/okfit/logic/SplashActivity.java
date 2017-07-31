@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.example.root.okfit.R;
 import com.example.root.okfit.base.BaseActivity;
+import com.example.root.okfit.logic.main.MainActivity;
 
 import butterknife.OnClick;
 

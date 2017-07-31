@@ -2,8 +2,10 @@ package com.example.root.okfit.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -35,6 +37,8 @@ public class CustomWebView extends WebView {
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
         settings.setJavaScriptEnabled(true);
+        setWebViewClient(getWebClient());
+        setWebChromeClient(getChromeWebClient());
     }
 
     public void loadData(String data) {
@@ -72,4 +76,20 @@ public class CustomWebView extends WebView {
                 + "</div></div></div></div>"
                 + "</body></html>", "", content);
     }
+
+    private WebViewClient getWebClient() {
+        return new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+        };
+    }
+
+    private WebChromeClient getChromeWebClient() {
+        return new WebChromeClient() {
+
+        };
+    }
+
 }

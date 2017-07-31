@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/activity_login"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/safe_mode_text"
+    >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:scaleType="centerInside"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/ic_logo"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
+        android:orientation="vertical"
+        android:layout_marginTop="50dp"
+        >
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            >
+
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginLeft="6dp"
+                android:background="@null"
+                android:hint="Email / 用户名"
+                android:inputType="textEmailAddress|text"
+                android:textSize="16sp"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="2dp"
+                android:layout_below="@id/username"
+                android:background="@drawable/shape_horizontal_line"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            >
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginLeft="6dp"
+                android:background="@null"
+                android:hint="密码"
+                android:inputType="textPassword"
+                android:textSize="16sp"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="2dp"
+                android:layout_below="@id/password"
+                android:background="@drawable/shape_horizontal_line"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+        <View
+            android:id="@+id/span3"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:visibility="invisible"
+            />
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="6dp"
+            android:text="登  录"
+            android:textColor="@color/black_text"
+            android:textSize="18sp"
+            android:background="@drawable/shape_normal_type_bg"
+            />
+
+        <TextView
+            android:id="@+id/sign_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:padding="12dp"
+            android:text="没有账号？点击注册"
+            />
+    </LinearLayout>
+</LinearLayout>

@@ -6,13 +6,10 @@ import com.dianrong.crnetwork.dataformat.Entity;
  * Created by PengFeifei on 17-7-25.
  */
 public class User implements Entity {
-    private int id;
-
-    private String login;
-
-    private String name;
-
-    private String avatar_url;
+    private int id;             // 唯一 id
+    private String login;       // 登录用户名
+    private String name;        // 昵称
+    private String avatar_url;  // 头像链接
 
     public void setId(int id) {
         this.id = id;

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dianrong.crnetwork.framework.view.IBaseView;
 import com.dianrong.crnetwork.response.RequestException;
@@ -199,6 +200,10 @@ public abstract class BaseFragment extends RxFragment implements IBaseView {
     @Override
     public FragmentManager onRequestIng() {
         return getChildFragmentManager();
+    }
+    /*****************************Utils*****************************/
+    protected void toast(String content) {
+        Toast.makeText(getContext(), content, Toast.LENGTH_SHORT).show();
     }
 
 }

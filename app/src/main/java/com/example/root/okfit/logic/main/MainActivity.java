@@ -1,5 +1,6 @@
-package com.example.root.okfit.logic;
+package com.example.root.okfit.logic.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -9,9 +10,8 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.example.root.okfit.R;
 import com.example.root.okfit.base.BaseActivity;
-import com.example.root.okfit.logic.main.MainNewsFragment;
-import com.example.root.okfit.logic.main.MainSiteFragment;
-import com.example.root.okfit.logic.main.MainTopicFragment;
+import com.example.root.okfit.logic.LoginActivity;
+import com.example.root.okfit.util.UserManager;
 
 import butterknife.BindView;
 
@@ -24,6 +24,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     @BindView(R.id.bottom_navigation_bar)
     BottomNavigationBar bottomNavigationBar;
     private Fragment[] fragments;
+    private int previousPosition;
 
     @Override
     protected void init(Bundle savedInstanceState) {
@@ -38,10 +39,11 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     }
 
     private void initFragments() {
-        fragments = new Fragment[3];
+        fragments = new Fragment[4];
         fragments[0] = new MainTopicFragment();
         fragments[1] = new MainNewsFragment();
         fragments[2] = new MainSiteFragment();
+        fragments[3] = new MainMineFragment();
     }
 
     private void initBottomBars() {
@@ -51,6 +53,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
         bottomNavigationBar.addItem(getTopicItem())
                 .addItem(getNewsItem())
                 .addItem(getSitesItem())
+                .addItem(getMineItem())
                 .setFirstSelectedPosition(0)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(this);
@@ -78,9 +81,16 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
         return item;
     }
 
+    private BottomNavigationItem getMineItem() {
+        BottomNavigationItem item = new BottomNavigationItem(R.drawable.ic_loan_calculator, "mine");
+        item.setActiveColor(R.color.transparent);
+        item.setInactiveIconResource(R.drawable.ic_loan_calculator);
+        return item;
+    }
+
 
     private void addDefaultFragment() {
-        addFragment(fragments[0]);
+        switchFragment(0);
     }
 
     @Override
@@ -90,32 +100,38 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
 
     @Override
     public void onTabSelected(int position) {
-        switchFragment(position,true);
+        if (position == 3 && !UserManager.isLogined) {
+            startActivity(new Intent(this, LoginActivity.class));
+            bottomNavigationBar.selectTab(previousPosition);
+            return;
+        }
+        previousPosition = position;
+        switchFragment(position);
     }
 
     @Override
     public void onTabUnselected(int position) {
-        switchFragment(position,false);
     }
 
     @Override
     public void onTabReselected(int position) {
-
+        switchFragment(position);
     }
 
-    private Fragment switchFragment(int position, boolean selected) {
-        Fragment fragment = fragments[position];
+    private void switchFragment(int position) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (!fragment.isAdded()) {
-            transaction.add(R.id.layFrame, fragment);
-        }
-        if (selected) {
-            transaction.show(fragment);
-        } else {
-            transaction.hide(fragment);
+        for (int i = 0; i < fragments.length; i++) {
+            Fragment fragment = fragments[i];
+            if (!fragment.isAdded()) {
+                transaction.add(R.id.layFrame, fragment);
+            }
+            if (i == position) {
+                transaction.show(fragment);
+            } else {
+                transaction.hide(fragment);
+            }
         }
         transaction.commitAllowingStateLoss();
-        return fragment;
     }
 
     @Override

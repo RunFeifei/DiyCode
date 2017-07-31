@@ -12,25 +12,9 @@ import java.util.Locale;
  * Created by Zack on 2017/6/25.
  */
 
-public class CommonUtils {
+public class TimerUtils {
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.CHINA);
-
-
-    /**
-     * 获取 URL 的 Host
-     */
-    public static String getHost(String urlString) {
-        String result = urlString;
-        try {
-            URL url = new URL(urlString);
-            result = url.getHost();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
 
     public static String getHowLongAgo(String timeString) {
         try {
