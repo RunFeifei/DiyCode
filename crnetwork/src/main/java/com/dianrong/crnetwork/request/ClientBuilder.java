@@ -7,9 +7,9 @@ import android.support.annotation.NonNull;
 
 import com.dianrong.crnetwork.cookie.CookieStore;
 import com.dianrong.crnetwork.host.BaseUrlBinder;
-import com.dianrong.crnetwork.internal.LoggingInterceptor;
 import com.dianrong.crnetwork.internal.ExtendInterceptor;
 import com.dianrong.crnetwork.internal.HeaderInterceptor;
+import com.dianrong.crnetwork.internal.LoggingInterceptor;
 import com.example.crnetwork.BuildConfig;
 import com.feifei.common.MultiApplication;
 import com.feifei.common.utils.Log;
@@ -78,8 +78,9 @@ public class ClientBuilder {
                 builder.hostnameVerifier((hostname, session) -> true);
 
                 LoggingInterceptor loggingInterceptor = new LoggingInterceptor();
-                loggingInterceptor.setLevel(LoggingInterceptor.Level.BODY);
                 builder.addNetworkInterceptor(loggingInterceptor);
+
+
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

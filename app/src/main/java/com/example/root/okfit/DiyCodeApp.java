@@ -8,7 +8,6 @@ import com.dianrong.crnetwork.host.ServerType;
 import com.dianrong.crnetwork.request.ClientBuilder;
 import com.example.root.okfit.net.bean.Token;
 import com.example.root.okfit.util.TokenHelper;
-import com.feifei.common.CrashHandler;
 import com.feifei.common.MultiApplication;
 import com.feifei.common.utils.Log;
 
@@ -31,11 +30,6 @@ public class DiyCodeApp extends MultiApplication {
         super.onCreate();
         init(this);
         initCacheDir();
-        try {
-            CrashHandler.init(this.getApplicationContext());
-        } catch (Exception ex) {
-            Log.e("-->", "Cannot initialize the CrashHandler.", ex);
-        }
         BaseUrlBinder.resetBaseUrl(ServerType.PRODUCT);
         BaseUrlBinder.initBaseUrl("https://diycode.cc/api/v3/");
         syncToken(this);
@@ -68,7 +62,7 @@ public class DiyCodeApp extends MultiApplication {
         if (token == null) {
             return;
         }
-        String accessToken =token.getAccess_token();
+        String accessToken = token.getAccess_token();
         if (TextUtils.isEmpty(accessToken)) {
             return;
         }

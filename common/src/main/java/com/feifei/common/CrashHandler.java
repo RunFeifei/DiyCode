@@ -91,7 +91,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
         new Thread(() -> {
             Looper.prepare();
-            uiHandler.post(() -> Toast.makeText(context, "很抱歉，程序遭遇异常，即将退出", Toast.LENGTH_SHORT).show());
+            uiHandler.post(() -> Toast.makeText(context, "未知Crash!!!", Toast.LENGTH_SHORT).show());
             CrashHandler.this.saveCrashToFile(throwable);
             Looper.loop();
         }).start();

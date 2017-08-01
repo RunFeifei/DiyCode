@@ -50,7 +50,7 @@ public class LoadingDialog extends RxDialogFragment implements View.OnClickListe
         timer = new CountDownTimer(TOTAL_TIME, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                Log.i("crOkhttp", "reuqest take " + (10 * 1000 - (int) millisUntilFinished) + " millis");
+                Log.d("Okhttp", "reuqest take " + (10 * 1000 - (int) millisUntilFinished) + " millis");
             }
 
             @Override
