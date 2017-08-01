@@ -2,7 +2,9 @@ package com.feifei.common.utils;
 
 public class Strings {
 
-    private Strings() {/*hide*/}
+    private Strings() {
+        assert true:"不支持调用私有构造函数";
+    }
 
     public static boolean isEmpty(CharSequence source) {
         return source == null || source.length() == 0;

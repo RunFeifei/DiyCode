@@ -2,7 +2,7 @@ package com.feifei.common.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
+import android.util.Log;
 
 import com.feifei.common.MultiApplication;
 
@@ -14,7 +14,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.UUID;
 
-public class PreferenceUtil {
+/**
+ * 用Acache解决方案
+ */
+public class StorageUtil {
 
     private static String slUUID;
 
@@ -41,7 +44,7 @@ public class PreferenceUtil {
             t = (T) ois.readObject();
         } catch (Exception e) {
             context.deleteFile(fileName);
-            Log.logStackTrace(e);
+            Log.e("StorageUtil",e.getMessage());
         } finally {
             closeStream(ois, fis);
         }
@@ -72,7 +75,7 @@ public class PreferenceUtil {
             oos = new ObjectOutputStream(fos);
             oos.writeObject(object);
         } catch (IOException e) {
-            Log.logStackTrace(e);
+            Log.e("StorageUtil",e.getMessage());
             context.deleteFile(fileName);
         } finally {
             closeStream(oos, fos);
@@ -86,7 +89,7 @@ public class PreferenceUtil {
                     try {
                         stream.close();
                     } catch (IOException e) {
-                        Log.logStackTrace(e);
+                        Log.e("StorageUtil",e.getMessage());
                     }
                 }
             }
@@ -98,7 +101,7 @@ public class PreferenceUtil {
             return slUUID;
         }
 
-        SharedPreferences sp = PreferenceUtil.getAppPreferences();
+        SharedPreferences sp = StorageUtil.getAppPreferences();
         slUUID = sp.getString("sl_uuid", null);
 
         if (slUUID == null) {

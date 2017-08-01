@@ -4,6 +4,7 @@ import com.dianrong.crnetwork.host.BaseUrlBinder;
 import com.feifei.common.MultiApplication;
 import com.feifei.common.utils.ContextUtils;
 import com.feifei.common.utils.PreferenceUtil;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,10 +28,15 @@ public class HeaderInterceptor implements Interceptor {
      * userAgent是一个特殊字符串头,使得服务器能够识别客户端
      */
     public HeaderInterceptor() {
-        userAgent = "Android/" + ContextUtils.getSystemVersion()
-                + " " + ContextUtils.getAppName() + "/" + ContextUtils.getVersionCode(MultiApplication.getContext())
-                + " ClientType/" + ContextUtils.getClientType()
-                + " ChannelId/" + ContextUtils.getChannelName();
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("platform", "Android");
+        jsonObject.addProperty("systemVersion", ContextUtils.getSystemVersion());
+        jsonObject.addProperty("appName", ContextUtils.getAppName());
+        jsonObject.addProperty("versionCode",ContextUtils.getVersionCode(MultiApplication.getContext()));
+        jsonObject.addProperty("versionName",ContextUtils.getVersionName(MultiApplication.getContext()));
+        jsonObject.addProperty("clientType", ContextUtils.getClientType());
+        jsonObject.addProperty("ChannelId", ContextUtils.getChannelName());
+        userAgent = jsonObject.toString();
     }
 
     @Override
@@ -40,9 +46,7 @@ public class HeaderInterceptor implements Interceptor {
         Request.Builder requestBuilder = request.newBuilder();
 
         requestBuilder.header("User-Agent", userAgent);
-        /*if (UserStatus.isLoggedIn() && UserStatus.getUser() != null && UserStatus.getUser().getAid() != null) {
-            requestBuilder.header("X-SL-Username", UserStatus.getUser().getAid());
-        }*/
+        //requestBuilder.header("userinfo", userId);
         requestBuilder.header("X-SL-UUID", PreferenceUtil.getSlUUID());
         requestBuilder.header("IMEI", ContextUtils.getImei());
         requestBuilder.header("Referer", BaseUrlBinder.getBaseUrl());

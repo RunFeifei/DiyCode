@@ -28,6 +28,7 @@ import static okhttp3.internal.http.StatusLine.HTTP_CONTINUE;
 
 /**
  * 解决HttpLoggingInterceptor不打印gzip压缩的Content的问题
+ * 待优化
  */
 public final class LoggingInterceptor implements Interceptor {
     private static final Charset UTF8 = Charset.forName("UTF-8");
@@ -51,13 +52,6 @@ public final class LoggingInterceptor implements Interceptor {
         }
     }
 
-    public Level getLevel() {
-        return level;
-    }
-
-    /**
-     * Change the level at which this interceptor logs.
-     */
     public LoggingInterceptor setLevel(Level level) {
         if (level == null) throw new NullPointerException("level == null. Use Level.NONE instead.");
         this.level = level;
@@ -89,8 +83,6 @@ public final class LoggingInterceptor implements Interceptor {
 
         if (logHeaders) {
             if (hasRequestBody) {
-                // Request body headers are only present when installed as a network interceptor.
-                // Force them to be included (when available) so there values are known.
                 if (requestBody.contentType() != null) {
                     logger.log("Content-Type: " + requestBody.contentType());
                 }
@@ -102,7 +94,6 @@ public final class LoggingInterceptor implements Interceptor {
             Headers headers = request.headers();
             for (int i = 0, count = headers.size(); i < count; i++) {
                 String name = headers.name(i);
-                // Skip headers from the request body as they are explicitly logged above.
                 if (!"Content-Type".equalsIgnoreCase(name) && !"Content-Length".equalsIgnoreCase(name)) {
                     logger.log(name + ": " + headers.value(i));
                 }
@@ -119,7 +110,6 @@ public final class LoggingInterceptor implements Interceptor {
                 if (contentType != null) {
                     charset = contentType.charset(UTF8);
                 }
-
 
                 logger.log("");
                 if (requestBody.contentLength() != 0 && requestBody.contentLength() < 32 * 1024
@@ -221,9 +211,6 @@ public final class LoggingInterceptor implements Interceptor {
             return true;
         }
 
-        // If the Content-Length or Transfer-Encoding headers disagree with the
-        // response code, the response is malformed. For best compatibility, we
-        // honor the headers.
         if (contentLength(response.headers()) != -1
                 || "chunked".equalsIgnoreCase(response.header("Transfer-Encoding"))) {
             return true;
@@ -243,17 +230,11 @@ public final class LoggingInterceptor implements Interceptor {
     }
 
     public interface Logger {
-        /**
-         * A {@link Logger} defaults output appropriate for the current platform.
-         */
-        Logger DEFAULT = new Logger() {
-            @Override
-            public void log(String message) {
-                if (message.contains("rawResponse")) {
-                    Log.w("OkHttp", message.replace("rawResponse",""));
-                }
-                Log.i("OkHttp", message);
+        Logger DEFAULT = (message) -> {
+            if (message.contains("rawResponse")) {
+                Log.w("OkHttp", message.replace("rawResponse", ""));
             }
+            Log.i("OkHttp", message);
         };
 
         void log(String message);

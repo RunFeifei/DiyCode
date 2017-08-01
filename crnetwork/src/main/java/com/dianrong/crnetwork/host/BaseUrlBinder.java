@@ -56,43 +56,43 @@ public class BaseUrlBinder {
     }
 
     public static <S> String getClassHost(Class<S> serviceClass) {
-        ClassHostMap classHostMap = serviceClass.getAnnotation(ClassHostMap.class);
-        if (classHostMap == null && !Strings.isEmpty(BaseUrlBinder.baseUrl)) {
+        ClassHost classHost = serviceClass.getAnnotation(ClassHost.class);
+        if (classHost == null && !Strings.isEmpty(BaseUrlBinder.baseUrl)) {
             return BaseUrlBinder.baseUrl;
         }
-        if (Strings.isEmpty(classHostMap.PRODUCT()) ||
-                !classHostMap.PRODUCT().startsWith("http://") && !classHostMap.PRODUCT().startsWith("https://")) {
+        if (Strings.isEmpty(classHost.PRODUCT()) ||
+                !classHost.PRODUCT().startsWith("http://") && !classHost.PRODUCT().startsWith("https://")) {
             throw new IllegalStateException("Atleast has valid PRODUCT host Annotation in " + serviceClass.getSimpleName());
         }
         int type = BaseUrlBinder.selectedServerType;
         if (type == ServerType.PRODUCT) {
-            return classHostMap.PRODUCT();
+            return classHost.PRODUCT();
         }
         if (type == ServerType.DEMO) {
-            return classHostMap.DEMO();
+            return classHost.DEMO();
         }
         if (type == ServerType.DEV) {
-            return classHostMap.DEV();
+            return classHost.DEV();
         }
 
         throw new IllegalStateException("getClassHost failed");
     }
 
     public static String getMethodHost(Method method) {
-        MethodHostMap methodHostMap = method.getAnnotation(MethodHostMap.class);
-        if (methodHostMap == null || Strings.isEmpty(methodHostMap.PRODUCT()) ||
-                !methodHostMap.PRODUCT().startsWith("http://") && !methodHostMap.PRODUCT().startsWith("https://")) {
-            throw new IllegalStateException("Atleast has valid PRODUCT host Annotation in " + methodHostMap.PRODUCT());
+        MethodHost methodHost = method.getAnnotation(MethodHost.class);
+        if (methodHost == null || Strings.isEmpty(methodHost.PRODUCT()) ||
+                !methodHost.PRODUCT().startsWith("http://") && !methodHost.PRODUCT().startsWith("https://")) {
+            throw new IllegalStateException("Atleast has valid PRODUCT host Annotation in " + methodHost.PRODUCT());
         }
         int type = BaseUrlBinder.selectedServerType;
         if (type == ServerType.PRODUCT) {
-            return methodHostMap.PRODUCT();
+            return methodHost.PRODUCT();
         }
         if (type == ServerType.DEMO) {
-            return methodHostMap.DEMO();
+            return methodHost.DEMO();
         }
         if (type == ServerType.DEV) {
-            return methodHostMap.DEV();
+            return methodHost.DEV();
         }
         throw new IllegalStateException("getMethodHost failed");
     }

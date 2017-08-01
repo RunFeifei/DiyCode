@@ -3,12 +3,13 @@ package com.feifei.common;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.feifei.common.utils.AppInfo;
+import com.feifei.common.utils.StorageUtil;
 
-import com.feifei.common.utils.ContextUtils;
-import com.feifei.common.utils.Log;
-import com.feifei.common.utils.PreferenceUtil;
+import org.json.JSONObject;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -36,12 +37,15 @@ public class CrashHandler implements UncaughtExceptionHandler {
         uiHandler = new Handler(Looper.getMainLooper());
     }
 
+    /**
+     * 在Application中初始化一次即可
+     */
     public static void init(Context context) throws Exception {
         if (CrashHandler.instance != null) {
             throw new Exception("The CrashHandler is already initialized.");
         }
 
-        crashStacks = PreferenceUtil.getObject(context, FILE_KEY);
+        crashStacks = StorageUtil.getObject(context, FILE_KEY);
         if (crashStacks == null) {
             crashStacks = new LinkedList<>();
         }
@@ -63,55 +67,44 @@ public class CrashHandler implements UncaughtExceptionHandler {
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
         if (!this.handleException(ex) && this.defaultHandler != null) {
-            Log.e(CrashHandler.TAG, "defaultHandler.uncaughtException");
-            // default one
             this.defaultHandler.uncaughtException(thread, ex);
         } else {
-            // time left for toast
+            //发完toast再退出APP
             try {
                 Thread.sleep(CrashHandler.TOAST_TIME);
+                System.exit(1);
             } catch (InterruptedException e) {
                 Log.e(CrashHandler.TAG, "Error : ", e);
+            } catch (Exception e) {
+                Log.e(CrashHandler.TAG, "Error : ", e);
             }
-
-            System.exit(1);
         }
     }
 
-    private boolean handleException(final Throwable ex) {
+    private boolean handleException(final Throwable throwable) {
         if (BuildConfig.DEBUG) {
-            Log.i(CrashHandler.TAG, "handleException");
+            Log.e(CrashHandler.TAG, throwable.toString());
         }
-        if (ex == null) {
-            if (BuildConfig.DEBUG) {
-                Log.i(CrashHandler.TAG, "No exception");
-            }
+        if (throwable == null) {
             return BuildConfig.DEBUG;
         }
 
-        new Thread() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                uiHandler.post(() -> Toast.makeText(context, "很抱歉，程序遭遇异常，即将退出",
-                        Toast.LENGTH_SHORT).show());
-                CrashHandler.this.saveCrashInfoToFile(ex, true);
-                Looper.loop();
-            }
-        }.start();
+        new Thread(() -> {
+            Looper.prepare();
+            uiHandler.post(() -> Toast.makeText(context, "很抱歉，程序遭遇异常，即将退出", Toast.LENGTH_SHORT).show());
+            CrashHandler.this.saveCrashToFile(throwable);
+            Looper.loop();
+        }).start();
 
         return BuildConfig.DEBUG;
     }
 
-    public void saveCrashInfoToFile(Throwable ex, boolean crashed) {
-
-        Log.e(CrashHandler.TAG, "Crash Log BEGIN" + (crashed ? "" : "(captured)"));
-
+    public void saveCrashToFile(Throwable throwable) {
         Writer info = new StringWriter();
         PrintWriter printWriter = new PrintWriter(info);
-        ex.printStackTrace(printWriter);
+        throwable.printStackTrace(printWriter);
 
-        Throwable cause = ex.getCause();
+        Throwable cause = throwable.getCause();
         while (cause != null) {
             cause.printStackTrace(printWriter);
             cause = cause.getCause();
@@ -122,17 +115,23 @@ public class CrashHandler implements UncaughtExceptionHandler {
         Log.e(CrashHandler.TAG, result);
 
         try {
-            result = ContextUtils.getVersionName(MultiApplication.getContext()) + "/" + ContextUtils.getVersionCode(MultiApplication.getContext()) + "\n" + System.currentTimeMillis() + "\n" + ("CAPTURED/" + !crashed) + "\n" + result;
+            Context context = MultiApplication.getContext();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("time", System.currentTimeMillis() + "");
+            jsonObject.put("systemVersion", AppInfo.getSystemVersion());
+            jsonObject.put("versionName", AppInfo.getVersionName(MultiApplication.getContext()));
+            jsonObject.put("clientType", AppInfo.getClientType());
+            jsonObject.put("ChannelId", AppInfo.getChannelName());
+            jsonObject.put("exception", result);
+
             if (crashStacks.size() >= 5) {
                 crashStacks.removeLast();
             }
-            crashStacks.addFirst(result);
-            PreferenceUtil.putObject(context, FILE_KEY, crashStacks);
+            crashStacks.addFirst(jsonObject.toString());
+            StorageUtil.putObject(context, FILE_KEY, crashStacks);
         } catch (Exception e) {
-            Log.e(CrashHandler.TAG, "an error occured while writing report file...", e);
+            Log.e(CrashHandler.TAG, "save crash to file fails", e);
         }
-
-        Log.i(CrashHandler.TAG, "Crash Log END");
     }
 
 }
