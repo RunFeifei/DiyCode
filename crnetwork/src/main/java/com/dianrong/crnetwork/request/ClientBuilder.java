@@ -16,13 +16,11 @@ import com.feifei.common.utils.Log;
 import com.feifei.common.utils.Strings;
 
 import java.io.File;
-import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
 import okhttp3.Interceptor;
@@ -33,7 +31,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class ClientBuilder {
 
-    private static final String TAG = ClientBuilder.class.getSimpleName();
+    private static final String TAG ="OkHttp-->";
 
     private static final long CONNECT_TIMEOUT = 10_000;
     private static final long READ_TIMEOUT = 10_000;
@@ -46,41 +44,16 @@ public class ClientBuilder {
     private static ExtendInterceptor networkInterceptor;
 
     private static void initHttpClient() {
-
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-
-        //DEBUG版忽视所有证书问题。
         if (BuildConfig.DEBUG) {
             try {
-                final TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
-                    @Override
-                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
-                    }
-
-                    @Override
-                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
-                    }
-
-                    @Override
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        // 解决okhttp3.x的NPE Bug
-                        return new java.security.cert.X509Certificate[0];
-                    }
-                }};
-
-                // Install the all-trusting trust manager
                 final SSLContext sslContext = SSLContext.getInstance("SSL");
-                sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-                // Create an ssl socket factory with our all-trusting manager
+                sslContext.init(null, new TrustManager[]{new XTrustManager()}, new java.security.SecureRandom());
                 final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-
                 builder.sslSocketFactory(sslSocketFactory);
                 builder.hostnameVerifier((hostname, session) -> true);
-
                 LoggingInterceptor loggingInterceptor = new LoggingInterceptor();
                 builder.addNetworkInterceptor(loggingInterceptor);
-
-
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -95,21 +68,16 @@ public class ClientBuilder {
          * addinterceptor-->aplication拦截器，只在response被调用一次
          */
         builder.addInterceptor(getHeaderInterceptor());
-
         builder.cookieJar(CookieStore.getInstance());
-
         builder.connectTimeout(CONNECT_TIMEOUT, TimeUnit.MILLISECONDS);
         builder.readTimeout(READ_TIMEOUT, TimeUnit.MILLISECONDS);
         builder.writeTimeout(WRITE_TIMEOUT, TimeUnit.MILLISECONDS);
-
         builder.addInterceptor(getApplicationInterceptor());
         builder.addNetworkInterceptor(getNetworkInterceptor());
-
         client = builder.build();
     }
 
-    public static final OkHttpClient getClient() {
-
+    public static OkHttpClient getClient() {
         if (client == null) {
             initHttpClient();
         }
@@ -128,7 +96,7 @@ public class ClientBuilder {
         builder.addCallAdapterFactory(RxJavaCallAdapterFactory.create());
         builder.client(ClientBuilder.getClient());
         retrofit = builder.build();
-        Log.i(TAG, "Now: baseUrl is " + getBaseUrl());
+        Log.d(TAG, "baseUrl change to " + getBaseUrl());
     }
 
     private static Retrofit getRetrofit() {
@@ -146,13 +114,13 @@ public class ClientBuilder {
 
     public static void resetBaseUrl(@NonNull String baseUrl) {
         if (Strings.isEqual(baseUrl, getBaseUrl())) {
-            Log.i(TAG, "baseUrl stays in " + baseUrl);
+            Log.d(TAG, "baseUrl stays in " + baseUrl);
             return;
         }
         if (Strings.isEmpty(baseUrl) || !baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
             throw new IllegalStateException("baseUrl is illegal: " + baseUrl);
         }
-        CookieStore.getInstance().checkWebCookieUpdate(baseUrl);
+        CookieStore.getInstance().updateWebCookie(baseUrl);
         rebuildRetrofit(baseUrl);
     }
 
@@ -204,11 +172,6 @@ public class ClientBuilder {
         return getHeaderInterceptor().getUserAgent();
     }
 
-    /**
-     * 设置UserAgent，如果不想覆盖当前的UserAgent，可以先通过getUserAgent()获取，再加上新增的UserAgent
-     *
-     * @param userAgent
-     */
     public static void setUserAgent(String userAgent) {
         getHeaderInterceptor().setUserAgent(userAgent);
     }

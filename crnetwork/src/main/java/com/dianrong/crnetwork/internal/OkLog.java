@@ -17,9 +17,6 @@ public class OkLog {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final int JSON_INDENT = 4;
     private static final String SUFFIX = ".java";
-    private static final String TAG_RESPONSE = "Response";
-    private static final String TAG_REQUEST = "Request";
-
 
     public static void log(String msg) {
         if (TextUtils.isEmpty(msg)) {
@@ -43,7 +40,7 @@ public class OkLog {
 
         String[] lines = message.split(LINE_SEPARATOR);
         for (String line : lines) {
-            Log.d(TAG, "║ " + line);
+            Log.i(TAG, "║ " + line);
         }
     }
 

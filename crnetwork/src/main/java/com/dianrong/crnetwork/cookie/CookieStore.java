@@ -4,14 +4,12 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.text.TextUtils;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 
 import com.example.crnetwork.BuildConfig;
-import com.feifei.common.MultiApplication;
 import com.feifei.common.utils.Collections;
 import com.feifei.common.utils.Log;
-import com.feifei.common.utils.Strings;
 import com.feifei.common.utils.PreferenceUtil;
+import com.feifei.common.utils.Strings;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.CookieCache;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
@@ -38,16 +36,11 @@ public class CookieStore extends PersistentCookieJar {
     private static CookiePersist cookiePersist = new CookiePersist();
 
     private static final String DOMAINS_PREFERENCES = "domains";
-    private static CookieManager cookieManager;
-    @SuppressWarnings("deprecation")
-    private static CookieSyncManager cookieSyncManager;
+    private static CookieManager webCookieManager;
 
     public static CookieStore getInstance() {
         if (instance == null) {
-            cookieManager = CookieManager.getInstance();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                cookieSyncManager = CookieSyncManager.createInstance(MultiApplication.getContext());
-            }
+            webCookieManager = CookieManager.getInstance();
             instance = new CookieStore(setCookieCache, cookiePersist);
         }
         return instance;
@@ -66,13 +59,11 @@ public class CookieStore extends PersistentCookieJar {
 
     private void syncToManager(List<Cookie> cookies) {
         for (Cookie cookie : cookies) {
-            cookieManager.setCookie(cookie.domain(), cookie.toString());
+            webCookieManager.setCookie(cookie.domain(), cookie.toString());
             String domains = PreferenceUtil.getAppPreferences().getString(CookieStore.DOMAINS_PREFERENCES, null);
             if (Strings.isEmpty(domains)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    cookieManager.flush();
-                } else {
-                    cookieSyncManager.sync();
+                    webCookieManager.flush();
                 }
                 return;
             }
@@ -86,7 +77,7 @@ public class CookieStore extends PersistentCookieJar {
                 // 将sessionId保存到slSessionId
                 for (String domain : set) {
                     if (cookie.name().equals("JSESSIONID")) {
-                        cookieManager.setCookie(domain, "slSessionId=" + cookie.value());
+                        webCookieManager.setCookie(domain, "slSessionId=" + cookie.value());
                     }
                 }
             } catch (Exception e) {
@@ -95,14 +86,12 @@ public class CookieStore extends PersistentCookieJar {
 
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            cookieManager.flush();
-        } else {
-            cookieSyncManager.sync();
+            webCookieManager.flush();
         }
     }
 
 
-    public boolean checkWebCookieUpdate(String url) {
+    public boolean updateWebCookie(String url) {
         String domain = url.split("//", 2)[1];
         if (Strings.isEmpty(domain)) {
             return false;
@@ -132,7 +121,7 @@ public class CookieStore extends PersistentCookieJar {
             sharedPreferences.edit().putString(DOMAINS_PREFERENCES, strJson).commit();
             return true;
         } catch (Exception e) {
-            Log.e("checkWebCookieUpdate", "checkWebCookieUpdate fail");
+            Log.e("updateWebCookie", "updateWebCookie fail");
             return false;
         }
 
@@ -140,13 +129,11 @@ public class CookieStore extends PersistentCookieJar {
 
 
     public synchronized boolean removeAll() {
-        cookieManager.removeAllCookie();
+        webCookieManager.removeAllCookie();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            cookieManager.flush();
-        } else {
-            cookieSyncManager.sync();
+            webCookieManager.flush();
         }
-        clear();
+        super.clear();
         return true;
     }
 
@@ -155,7 +142,7 @@ public class CookieStore extends PersistentCookieJar {
      */
     public void logCookies(String url) {
         if (BuildConfig.DEBUG && instance != null && url != null) {
-            Log.d("cookie", "logCookies : " + instance.cookieManager.getCookie(url));
+            Log.d("cookie", "logCookies : " + instance.webCookieManager.getCookie(url));
         }
     }
 

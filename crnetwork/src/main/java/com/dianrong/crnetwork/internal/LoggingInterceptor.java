@@ -1,6 +1,9 @@
 package com.dianrong.crnetwork.internal;
 
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
@@ -26,16 +29,6 @@ import static okhttp3.internal.http.StatusLine.HTTP_CONTINUE;
 
 public final class LoggingInterceptor implements Interceptor {
     private static final Charset UTF8 = Charset.forName("UTF-8");
-
-    private static long stringToLong(String s) {
-        if (s == null) return -1;
-        try {
-            return Long.parseLong(s);
-        } catch (NumberFormatException e) {
-            return -1;
-        }
-    }
-
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -82,8 +75,7 @@ public final class LoggingInterceptor implements Interceptor {
                 charset = contentType.charset(UTF8);
             }
 
-            if (requestBody.contentLength() != 0 && requestBody.contentLength() < 32 * 1024
-                    && bodyIsText(contentType)) {
+            if (requestBody.contentLength() != 0 && requestBody.contentLength() < 32 * 1024 && bodyIsText(contentType)) {
                 if (bodyEncodedGzip(request.headers())) {
                     buffer = decodeGzip(buffer);
                 }
@@ -132,14 +124,14 @@ public final class LoggingInterceptor implements Interceptor {
                 }
             }
 
-            if (contentLength != 0 && contentLength < 32 * 1024
-                    && bodyIsText(contentType)) {
+            if (contentLength != 0 && contentLength < 32 * 1024 && bodyIsText(contentType)) {
                 if (bodyEncodedGzip(response.headers())) {
                     buffer = decodeGzip(buffer);
                 }
                 OkLog.log("________________________________________________________");
                 OkLog.log("*******************ResponseBody*************************");
-                OkLog.log(buffer.clone().readString(charset));
+                String str=buffer.clone().readString(charset);
+                OkLog.log(str);
             }
             OkLog.log("ResponseBody-->" + buffer.size() + "byte");
             OkLog.end("Response ↑↑↑");
@@ -171,7 +163,6 @@ public final class LoggingInterceptor implements Interceptor {
         if (response.request().method().equals("HEAD")) {
             return false;
         }
-
         int responseCode = response.code();
         if ((responseCode < HTTP_CONTINUE || responseCode >= 200)
                 && responseCode != HTTP_NO_CONTENT
@@ -184,7 +175,17 @@ public final class LoggingInterceptor implements Interceptor {
     }
 
     private long contentLength(Headers headers) {
-        return stringToLong(headers.get("Content-Length"));
+        String length = headers.get("Content-Length");
+        if (TextUtils.isEmpty(length)) {
+            return -1;
+        }
+        length = length.trim();
+        try {
+            return Long.parseLong(length);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+
     }
 
 }

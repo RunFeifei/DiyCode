@@ -65,17 +65,5 @@ dependencies {
     compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
     compile 'com.android.support:multidex:1.0.1'
 
-    //maven上传配置
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                pom.artifactId = "rxnetwork"
-                pom.groupId = "com.dianrong.android"
-                pom.version = "1.0.8"
-                repository(url: uri('http://10.8.12.133:8099/repository/internal/'))
-            }
-        }
-    }
-
 //    compile project(path: ':common')
 }
