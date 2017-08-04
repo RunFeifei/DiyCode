@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.novoda.bintray-release'
+
 
 def VERSION_CODE = 1000000
 def VERSION_NAME = '1.0.0'
@@ -45,6 +47,10 @@ android {
         exclude '**/pom.properties'
         exclude '**/pom.properties'
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 gradle.projectsEvaluated {
@@ -60,4 +66,11 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: '../libs')
     compile "com.android.support:support-v4:$ANDROID_SUPPORT_VERSION"
     compile 'com.android.support:multidex:1.0.1'
+}
+
+publish {
+    userOrg = 'feifei'
+    groupId = 'com.bintray.run'
+    artifactId = 'common'
+    publishVersion = '1.0.0'
 }

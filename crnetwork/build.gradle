@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: "maven"
+apply plugin: 'com.novoda.bintray-release'
+
 
 android {
     compileSdkVersion ANDROID_SDK_VERSION
@@ -28,6 +30,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        abortOnError false
     }
 
     publishNonDefault true
@@ -66,4 +72,11 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
 
 //    compile project(path: ':common')
+}
+
+publish {
+    userOrg = 'feifei'
+    groupId = 'com.bintray.run'
+    artifactId = 'network'
+    publishVersion = '1.0.0'
 }

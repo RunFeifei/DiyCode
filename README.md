@@ -6,4 +6,5 @@ SHA256: 9E:0B:28:66:E3:05:85:72:B9:86:95:9A:B0:91:FD:96:00:C2:CD:9F:32:36:0F:15:
 key.store=keystorePath
 key.alias=android.keystore
 key.store.password=dianrong
-key.alias.password=dianrong
+key.alias.password=dianrong  
+./gradlew clean build bintrayUpload -PbintrayUser=feifei -PbintrayKey=69175aa7101760b64a7fee5aea872d4d84d14c8c -PdryRun=false
