@@ -8,7 +8,6 @@ import com.trello.rxlifecycle.FragmentEvent;
 import com.trello.rxlifecycle.components.ActivityLifecycleProvider;
 import com.trello.rxlifecycle.components.FragmentLifecycleProvider;
 
-import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -17,35 +16,33 @@ import rx.functions.Func1;
  * Created by PengFeifei on 17-5-12.
  */
 
-public class CrSubscriber {
+public class BusSubscriber {
 
     private FragmentLifecycleProvider fragmentLifecycleProvider;
     private ActivityLifecycleProvider activityLifecycleProvider;
 
-    private
-    @CrBusEvent.EventId
-    int eventId;
-    private Action1<CrBusEvent> onNext;
+    private int eventId;
+    private Action1<BusEvent> onNext;
     private Action1<Throwable> onError;
 
-    private CrSubscriber(@NonNull FragmentLifecycleProvider provider) {
+    private BusSubscriber(@NonNull FragmentLifecycleProvider provider) {
         this.fragmentLifecycleProvider = provider;
     }
 
-    private CrSubscriber(@NonNull ActivityLifecycleProvider provider) {
+    private BusSubscriber(@NonNull ActivityLifecycleProvider provider) {
         this.activityLifecycleProvider = provider;
     }
 
-    public static CrSubscriber getFragmentSubscriber(@NonNull FragmentLifecycleProvider provider) {
-        return new CrSubscriber(provider);
+    public static BusSubscriber bind(@NonNull FragmentLifecycleProvider provider) {
+        return new BusSubscriber(provider);
     }
 
-    public static CrSubscriber getActivitySubscriber(@NonNull ActivityLifecycleProvider provider) {
-        return new CrSubscriber(provider);
+    public static BusSubscriber bind(@NonNull ActivityLifecycleProvider provider) {
+        return new BusSubscriber(provider);
     }
 
 
-    public CrSubscriber bindEvent(@CrBusEvent.EventId int eventId) {
+    public BusSubscriber bindEvent(int eventId) {
         this.eventId = eventId;
         return this;
     }
@@ -53,7 +50,7 @@ public class CrSubscriber {
     /**
      * required
      */
-    public CrSubscriber onNext(Action1<CrBusEvent> action) {
+    public BusSubscriber onNext(Action1<BusEvent> action) {
         this.onNext = action;
         return this;
     }
@@ -61,7 +58,7 @@ public class CrSubscriber {
     /**
      * optional
      */
-    public CrSubscriber onError(Action1<Throwable> action) {
+    public BusSubscriber onError(Action1<Throwable> action) {
         this.onError = action;
         return this;
     }
@@ -83,27 +80,27 @@ public class CrSubscriber {
             throw new IllegalStateException("fragment & activity both do subscribed????");
         }
 
-        Observable observable = isSticky ?
-                CrObservable.getInstance().getStickyObservable(CrBusEvent.class)
-                : CrObservable.getInstance().getObservable(CrBusEvent.class);
+        rx.Observable observable = isSticky ?
+                BusObservable.bind().getStickyObservable(BusEvent.class)
+                : BusObservable.bind().getObservable(BusEvent.class);
         observable = observable.compose(fragmentLifecycleProvider != null
-                ? fragmentLifecycleProvider.<CrBusEvent>bindUntilEvent(FragmentEvent.DESTROY_VIEW) :
-                activityLifecycleProvider.<CrBusEvent>bindUntilEvent(ActivityEvent.DESTROY));
+                ? fragmentLifecycleProvider.<BusEvent>bindUntilEvent(FragmentEvent.DESTROY_VIEW) :
+                activityLifecycleProvider.<BusEvent>bindUntilEvent(ActivityEvent.DESTROY));
 
-        //return CrObservable.getInstance().getObservable(CrBusEvent.class)
+        //return CrObservable.bind().getObservable(CrBusEvent.class)
         //compose()将生命周期包装成了Observable
-        return observable.filter(new Func1<CrBusEvent, Boolean>() {
+        return observable.filter(new Func1<BusEvent, Boolean>() {
             @Override
-            public Boolean call(CrBusEvent events) {
+            public Boolean call(BusEvent events) {
                 //根据Id进行过滤
-                Log.e("CrRxbus-->", "filter");
+                Log.d("Rxbus-->", "filter");
                 return events.getEventId() == eventId;
             }
         })
-                .subscribe(new rx.Subscriber<CrBusEvent>() {
+                .subscribe(new rx.Subscriber<BusEvent>() {
                     @Override
                     public void onCompleted() {
-                        Log.e("CrRxbus-->", "onComplete");
+                        Log.d("Rxbus-->", "onComplete");
                     }
 
                     @Override
@@ -111,18 +108,18 @@ public class CrSubscriber {
                         if (onError != null) {
                             onError.call(e);
                         }
-                        Log.e("CrRxbus-->", e.toString());
+                        Log.d("Rxbus-->", e.toString());
                     }
 
                     @Override
-                    public void onNext(CrBusEvent crBusEvent) {
+                    public void onNext(BusEvent busEvent) {
                         try {
-                            onNext.call(crBusEvent);
+                            onNext.call(busEvent);
                         } catch (Exception e) {
                             if (onError != null) {
                                 onError.call(e);
                             }
-                            Log.e("CrRxbus-->", e.toString());
+                            Log.d("Rxbus-->", e.toString());
                         }
                     }
                 });

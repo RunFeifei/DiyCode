@@ -30,7 +30,7 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Loading
 
     @Override
     public void onNext(T t) {
-        Log.d("TAG-->", "-------------------------------------------------onNext");
+        Log.d("BaseSubscriber-->", "-------------------------------------------------onNext");
         if (baseView.onPageVisible() && t != null) {
             onHandleData(t);
         }
@@ -40,7 +40,7 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Loading
 
     @Override
     public void onStart() {
-        Log.d("TAG-->", "-------------------------------------------------onStart");
+        Log.d("BaseSubscriber-->", "-------------------------------------------------onStart");
         super.onStart();
         boolean onStart = baseView.onRequestStart();
         if (!onStart) {
@@ -53,7 +53,7 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Loading
 
     @Override
     public void onCompleted() {
-        Log.d("TAG-->", "-------------------------------------------------onCompleted");
+        Log.d("BaseSubscriber-->", "-------------------------------------------------onCompleted");
         if (!cancelled) {
             baseView.onRequestEnd();
             if (loadingDialog != null) {
@@ -71,7 +71,7 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Loading
     }
 
     protected void onError(Throwable e, boolean consumedException) {
-        Log.d("TAG-->", "-------------------------------------------------onError");
+        Log.d("BaseSubscriber-->", "-------------------------------------------------onError");
         Log.e("BaseSubscriber-->", e.getMessage());
         if (!cancelled) {
             if (loadingDialog != null) {
@@ -88,14 +88,14 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Loading
 
     @Override
     public void onDismiss() {
-        Log.d("TAG-->", "-------------------------------------------------onDismiss");
+        Log.d("BaseSubscriber-->", "-------------------------------------------------onDismiss");
         unsubscribe();
         ObservableHandler.setHttpUrl(null);
     }
 
     @Override
     public void onCancell() {
-        Log.d("TAG-->", "-------------------------------------------------onCancell");
+        Log.d("BaseSubscriber-->", "-------------------------------------------------onCancell");
         cancelled = true;
         baseView.onRequestCacell();
         unsubscribe();
@@ -104,7 +104,7 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Loading
 
     @Override
     public void onTimeOutDismiss() {
-        Log.d("TAG-->", "-------------------------------------------------onTimeOutDismiss");
+        Log.d("BaseSubscriber-->", "-------------------------------------------------onTimeOutDismiss");
         if (!isUnsubscribed()) {
             throw new RequestException(ObservableHandler.getHttpUrl(), ErrorCode.REQUEST_TIMEOUT_ERR, "request take more than " + TOTAL_TIME + " millis");
         }

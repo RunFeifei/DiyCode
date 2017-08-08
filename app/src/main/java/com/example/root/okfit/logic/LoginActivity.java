@@ -1,12 +1,16 @@
 package com.example.root.okfit.logic;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.root.okfit.CrRxbus.BusEvent;
+import com.example.root.okfit.CrRxbus.BusObservable;
+import com.example.root.okfit.CrRxbus.BusSubscriber;
 import com.example.root.okfit.R;
 import com.example.root.okfit.base.BaseActivity;
 import com.example.root.okfit.base.BaseWebviewActivity;
@@ -16,6 +20,10 @@ import com.example.root.okfit.util.UserManager;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
+import rx.functions.Action1;
+
+import static com.example.root.okfit.CrRxbus.BusEvents.SWITCH_TAB;
+import static com.example.root.okfit.CrRxbus.BusEvents.TEST;
 
 public class LoginActivity extends BaseActivity {
 
@@ -35,6 +43,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void init(Bundle savedInstanceState) {
+        resgisBusEvent();
 
     }
 
@@ -45,7 +54,7 @@ public class LoginActivity extends BaseActivity {
                 || TextUtils.isEmpty(password.getText().toString())) {
             return;
         }
-        UserManager.login(this,username.getText().toString(), password.getText().toString(),new UserManager.OnLogin() {
+        UserManager.login(this, username.getText().toString(), password.getText().toString(), new UserManager.OnLogin() {
             @Override
             public void onGetoken(Token token) {
                 toast("登录成功");
@@ -65,5 +74,18 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.sign_up)
     public void onSignUpClicked() {
         BaseWebviewActivity.openLink(this, "https://www.diycode.cc/account/sign_up");
+        /*BusObservable.bind().sendEvent(new BusEvent(SWITCH_TAB, "mine"));
+        resgisBusEvent();*/
     }
+
+    private void resgisBusEvent() {
+        BusSubscriber.bind(this).bindEvent(TEST)
+                .onNext(new Action1<BusEvent>() {
+                    @Override
+                    public void call(BusEvent busEvent) {
+                        toast(busEvent.getContent());
+                    }
+                }).create(true);
+    }
+
 }

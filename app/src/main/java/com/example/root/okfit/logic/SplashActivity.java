@@ -36,6 +36,7 @@ public class SplashActivity extends BaseActivity {
     @OnClick(R.id.button1)
     protected void toTest() {
         requestData();
+        //BusObservable.bind().sendStickyEvent(new BusEvent(BusEvents.TEST, "uhuhuh"));
     }
 
     private void requestData() {

@@ -8,6 +8,8 @@ import android.view.Gravity;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.example.root.okfit.CrRxbus.BusEvents;
+import com.example.root.okfit.CrRxbus.BusSubscriber;
 import com.example.root.okfit.R;
 import com.example.root.okfit.base.BaseActivity;
 import com.example.root.okfit.logic.LoginActivity;
@@ -31,6 +33,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
         initFragments();
         initBottomBars();
         addDefaultFragment();
+//        resgisBusEvent();
     }
 
     @Override
@@ -138,4 +141,10 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     protected boolean hasToolbar() {
         return false;
     }
+
+    private void resgisBusEvent() {
+        BusSubscriber.bind(this).bindEvent(BusEvents.SWITCH_TAB)
+                .onNext((event) -> toast(event.getContent())).create();
+    }
+
 }
