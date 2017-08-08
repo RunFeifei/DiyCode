@@ -2,8 +2,8 @@ package com.dianrong.crnetwork.internal;
 
 import com.dianrong.crnetwork.host.BaseUrlBinder;
 import com.feifei.common.MultiApplication;
-import com.feifei.common.utils.ContextUtils;
-import com.feifei.common.utils.PreferenceUtil;
+import com.feifei.common.utils.AppInfo;
+import com.feifei.common.utils.StorageUtil;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -30,12 +30,12 @@ public class HeaderInterceptor implements Interceptor {
     public HeaderInterceptor() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("platform", "Android");
-        jsonObject.addProperty("systemVersion", ContextUtils.getSystemVersion());
-        jsonObject.addProperty("appName", ContextUtils.getAppName());
-        jsonObject.addProperty("versionCode",ContextUtils.getVersionCode(MultiApplication.getContext()));
-        jsonObject.addProperty("versionName",ContextUtils.getVersionName(MultiApplication.getContext()));
-        jsonObject.addProperty("clientType", ContextUtils.getClientType());
-        jsonObject.addProperty("ChannelId", ContextUtils.getChannelName());
+        jsonObject.addProperty("systemVersion", AppInfo.getSystemVersion());
+        jsonObject.addProperty("appName", AppInfo.getAppName(MultiApplication.getContext()).toString());
+        jsonObject.addProperty("versionCode",AppInfo.getVersionCode(MultiApplication.getContext()));
+        jsonObject.addProperty("versionName",AppInfo.getVersionName(MultiApplication.getContext()));
+        jsonObject.addProperty("clientType", AppInfo.getClientType());
+        jsonObject.addProperty("ChannelId", AppInfo.getChannelName());
         userAgent = jsonObject.toString();
     }
 
@@ -47,8 +47,8 @@ public class HeaderInterceptor implements Interceptor {
 
         requestBuilder.header("User-Agent", userAgent);
         //requestBuilder.header("userinfo", userId);
-        requestBuilder.header("X-SL-UUID", PreferenceUtil.getSlUUID());
-        requestBuilder.header("IMEI", ContextUtils.getImei());
+        requestBuilder.header("X-SL-UUID", StorageUtil.getSlUUID());
+        requestBuilder.header("IMEI", AppInfo.getImei());
         requestBuilder.header("Referer", BaseUrlBinder.getBaseUrl());
         requestBuilder.removeHeader("Pragma");//在HTTP1.0中Pragma: no-cache,删除旧的
         //requestBuilder.removeHeader("Cache-Control");//删除旧的

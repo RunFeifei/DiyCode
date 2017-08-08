@@ -46,8 +46,6 @@ repositories {
 
 dependencies {
 
-    compile(name:'common',ext:'aar')
-
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.1'
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.1'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.8.1'
@@ -70,13 +68,13 @@ dependencies {
 
     compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
     compile 'com.android.support:multidex:1.0.1'
+    compile 'com.bintray.run:common:1.0.0'
 
-//    compile project(path: ':common')
 }
 
 publish {
     userOrg = 'feifei'
     groupId = 'com.bintray.run'
     artifactId = 'crnetwork'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.2'
 }

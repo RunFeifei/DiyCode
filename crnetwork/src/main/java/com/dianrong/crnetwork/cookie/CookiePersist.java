@@ -5,7 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 
 import com.feifei.common.MultiApplication;
-import com.feifei.common.utils.PreferenceUtil;
+import com.feifei.common.utils.StorageUtil;
 import com.franmontiel.persistentcookiejar.persistence.CookiePersistor;
 import com.franmontiel.persistentcookiejar.persistence.SerializableCookie;
 
@@ -24,7 +24,7 @@ public class CookiePersist implements CookiePersistor {
 
 
     public CookiePersist() {
-        this.sharedPreferences = PreferenceUtil.getSharedPreferences(MultiApplication.getContext(),NAME);
+        this.sharedPreferences = StorageUtil.getSharedPreferences(MultiApplication.getContext(),NAME);
     }
 
     @Override

@@ -20,6 +20,9 @@ buildscript {
             maven {
                 url "${HTTP_MAVEN_JIT}"
             }
+            maven {
+                url "${HTTP_MAVEN_BINTRAY}"
+            }
         }
     }
     dependencies {
@@ -51,6 +54,9 @@ allprojects {
         }
         maven {
             url "${HTTP_MAVEN_JIT}"
+        }
+        maven {
+            url "${HTTP_MAVEN_BINTRAY}"
         }
     }
 }

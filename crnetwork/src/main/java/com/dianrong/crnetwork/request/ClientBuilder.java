@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.dianrong.crnetwork.cookie.CookieStore;
 import com.dianrong.crnetwork.host.BaseUrlBinder;
@@ -12,7 +13,6 @@ import com.dianrong.crnetwork.internal.HeaderInterceptor;
 import com.dianrong.crnetwork.internal.LoggingInterceptor;
 import com.example.crnetwork.BuildConfig;
 import com.feifei.common.MultiApplication;
-import com.feifei.common.utils.Log;
 import com.feifei.common.utils.Strings;
 
 import java.io.File;
