@@ -15,9 +15,9 @@ android {
             keyPassword properties.getProperty('key.alias.password')
         }
         debug {
-            storeFile rootProject.file('okfit.keystore')
-            storePassword "dianrong"
-            keyAlias "dianrong"
+            storeFile rootProject.file('fei.keystore')
+            storePassword "feifei"
+            keyAlias "feifei"
         }
     }
     compileSdkVersion ANDROID_SDK_VERSION
