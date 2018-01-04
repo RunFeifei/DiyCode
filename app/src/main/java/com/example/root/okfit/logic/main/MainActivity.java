@@ -9,11 +9,11 @@ import android.view.Gravity;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.example.root.okfit.CrRxbus.BusEvents;
-import com.example.root.okfit.CrRxbus.BusSubscriber;
 import com.example.root.okfit.R;
 import com.example.root.okfit.base.BaseActivity;
 import com.example.root.okfit.logic.LoginActivity;
 import com.example.root.okfit.util.UserManager;
+import com.fei.root.common.Rxbus.BusSubscriber;
 
 import butterknife.BindView;
 

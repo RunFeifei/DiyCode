@@ -1,9 +1,9 @@
 package com.dianrong.crnetwork.internal;
 
 import com.dianrong.crnetwork.host.BaseUrlBinder;
-import com.feifei.common.MultiApplication;
-import com.feifei.common.utils.AppInfo;
-import com.feifei.common.utils.StorageUtil;
+import com.fei.root.common.AppInfo;
+import com.fei.root.common.MultiApplication;
+import com.fei.root.common.Storage;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -47,8 +47,8 @@ public class HeaderInterceptor implements Interceptor {
 
         requestBuilder.header("User-Agent", userAgent);
         //requestBuilder.header("userinfo", userId);
-        requestBuilder.header("X-SL-UUID", StorageUtil.getSlUUID());
-        requestBuilder.header("IMEI", AppInfo.getImei());
+        requestBuilder.header("X-SL-UUID", Storage.getSlUUID());
+        requestBuilder.header("IMEI", AppInfo.getImei(MultiApplication.getContext()));
         requestBuilder.header("Referer", BaseUrlBinder.getBaseUrl());
         requestBuilder.removeHeader("Pragma");//在HTTP1.0中Pragma: no-cache,删除旧的
         //requestBuilder.removeHeader("Cache-Control");//删除旧的

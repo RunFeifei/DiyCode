@@ -38,11 +38,6 @@ android {
 
     publishNonDefault true
 }
-repositories {
-    flatDir {
-        dirs 'libs'
-    }
-}
 
 dependencies {
 
@@ -68,7 +63,7 @@ dependencies {
 
     compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.bintray.run:common:1.0.0'
+    compile 'com.bintray.run:common:1.0.2'
 
 }
 

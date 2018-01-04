@@ -12,8 +12,8 @@ import com.dianrong.crnetwork.internal.ExtendInterceptor;
 import com.dianrong.crnetwork.internal.HeaderInterceptor;
 import com.dianrong.crnetwork.internal.LoggingInterceptor;
 import com.example.crnetwork.BuildConfig;
-import com.feifei.common.MultiApplication;
-import com.feifei.common.utils.Strings;
+import com.fei.root.common.MultiApplication;
+import com.fei.root.common.Strings;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;

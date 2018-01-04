@@ -7,9 +7,9 @@ import android.util.Log;
 import android.webkit.CookieManager;
 
 import com.example.crnetwork.BuildConfig;
-import com.feifei.common.utils.Collections;
-import com.feifei.common.utils.StorageUtil;
-import com.feifei.common.utils.Strings;
+import com.fei.root.common.Collections;
+import com.fei.root.common.Storage;
+import com.fei.root.common.Strings;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.CookieCache;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
@@ -60,7 +60,7 @@ public class CookieStore extends PersistentCookieJar {
     private void syncToManager(List<Cookie> cookies) {
         for (Cookie cookie : cookies) {
             webCookieManager.setCookie(cookie.domain(), cookie.toString());
-            String domains = StorageUtil.getAppPreferences().getString(CookieStore.DOMAINS_PREFERENCES, null);
+            String domains = Storage.getAppPreferences().getString(CookieStore.DOMAINS_PREFERENCES, null);
             if (Strings.isEmpty(domains)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     webCookieManager.flush();
@@ -96,7 +96,7 @@ public class CookieStore extends PersistentCookieJar {
         if (Strings.isEmpty(domain)) {
             return false;
         }
-        SharedPreferences sharedPreferences = StorageUtil.getAppPreferences();
+        SharedPreferences sharedPreferences = Storage.getAppPreferences();
         String domains = sharedPreferences.getString(CookieStore.DOMAINS_PREFERENCES, null);
         boolean needUpdate = domains == null || !domains.contains(domain);
         if (!needUpdate) {

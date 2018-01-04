@@ -3,7 +3,7 @@ package com.dianrong.crnetwork.host;
 import android.support.annotation.NonNull;
 
 import com.dianrong.crnetwork.request.ClientBuilder;
-import com.feifei.common.utils.Strings;
+import com.fei.root.common.Strings;
 
 import java.lang.reflect.Method;
 

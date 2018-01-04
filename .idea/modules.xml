@@ -4,11 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/OkFit.iml" filepath="$PROJECT_DIR$/OkFit.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://E:\WorkPlace\CodeHub\OkFit\app\app.iml" filepath="E:\WorkPlace\CodeHub\OkFit\app\app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
-      <module fileurl="file://E:\WorkPlace\CodeHub\OkFit\common\common.iml" filepath="E:\WorkPlace\CodeHub\OkFit\common\common.iml" />
       <module fileurl="file://$PROJECT_DIR$/crnetwork/crnetwork.iml" filepath="$PROJECT_DIR$/crnetwork/crnetwork.iml" />
-      <module fileurl="file://E:\WorkPlace\CodeHub\OkFit\crnetwork\crnetwork.iml" filepath="E:\WorkPlace\CodeHub\OkFit\crnetwork\crnetwork.iml" />
     </modules>
   </component>
 </project>
