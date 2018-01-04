@@ -62,17 +62,10 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile(name: 'recater-release', ext: 'aar')
-    compile(name: 'common', ext: 'aar')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
     debugCompile project(path: ':crnetwork', configuration: 'debug')
     releaseCompile project(path: ':crnetwork', configuration: 'release')
     compile "com.android.support:support-v4:$ANDROID_SUPPORT_VERSION"
     compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_VERSION"
-
 
     compile 'com.github.lzyzsd.randomcolor:library:1.0.0'
     compile 'com.jakewharton:butterknife:8.5.1'
@@ -86,4 +79,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile 'com.bintray.run:common:1.0.2'
+    compile 'com.bintray.run:recater:1.0.5'
+
 }

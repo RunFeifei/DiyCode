@@ -8,8 +8,8 @@ import com.dianrong.crnetwork.host.ServerType;
 import com.dianrong.crnetwork.request.ClientBuilder;
 import com.example.root.okfit.net.bean.Token;
 import com.example.root.okfit.util.TokenHelper;
-import com.feifei.common.MultiApplication;
-import com.feifei.common.utils.Log;
+import com.fei.root.common.ALog;
+import com.fei.root.common.MultiApplication;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class DiyCodeApp extends MultiApplication {
             try {
                 cacheDir = cacheFile.getCanonicalPath();
             } catch (IOException e) {
-                Log.logStackTrace(e);
+                ALog.log(e.getMessage());
             }
         }
 
@@ -51,7 +51,7 @@ public class DiyCodeApp extends MultiApplication {
             try {
                 cacheDir = getCacheDir().getCanonicalPath();
             } catch (IOException e) {
-                Log.logStackTrace(e);
+                ALog.log(e.getMessage());
                 System.exit(1);
             }
         }

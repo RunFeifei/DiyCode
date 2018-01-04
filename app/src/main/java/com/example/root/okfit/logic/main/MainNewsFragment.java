@@ -18,6 +18,7 @@ import com.example.root.okfit.net.api.NewsApi;
 import com.example.root.okfit.net.bean.News;
 import com.example.root.okfit.net.bean.User;
 import com.example.root.okfit.util.TimerUtils;
+import com.fei.root.common.Collections;
 import com.fei.root.recater.action.OnLoadMoreData;
 import com.fei.root.recater.action.OnRefreshData;
 import com.fei.root.recater.adapter.RefloadAdapter;
@@ -25,7 +26,6 @@ import com.fei.root.recater.view.DefaultRefreshFooterView;
 import com.fei.root.recater.view.DefaultRefreshHeaderView;
 import com.fei.root.recater.view.RefloadRecyclerView;
 import com.fei.root.recater.viewholder.CommonHolder;
-import com.feifei.common.utils.Collections;
 
 import butterknife.BindView;
 
