@@ -1,6 +1,6 @@
 package com.example.root.okfit.net.bean;
 
-import com.dianrong.crnetwork.dataformat.Entity;
+import com.fei.crnetwork.dataformat.Entity;
 import com.example.root.okfit.R;
 import com.fei.root.recater.adapter.multi.ItemModule;
 

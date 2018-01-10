@@ -22,6 +22,7 @@ import com.fei.root.recater.adapter.multi.ItemWrapper;
 import com.fei.root.recater.adapter.multi.MultiAdapter;
 import com.fei.root.recater.decoration.DividerDecoration;
 import com.fei.root.recater.listener.AdapterListeners;
+import com.fei.root.recater.view.RefloadRecyclerView;
 import com.fei.root.recater.viewholder.CommonHolder;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import butterknife.BindView;
 public final class MainMineFragment extends MainFragment {
 
     @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
+    RefloadRecyclerView recyclerView;
 
     private List<ItemModule> listDatas;
     private MultiAdapter<ItemModule> adapter;

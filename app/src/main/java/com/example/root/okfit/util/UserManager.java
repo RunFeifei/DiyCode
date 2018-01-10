@@ -3,12 +3,12 @@ package com.example.root.okfit.util;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.dianrong.crnetwork.framework.RequestAgent;
-import com.dianrong.crnetwork.framework.error.ErrorHandler;
-import com.dianrong.crnetwork.framework.subscriber.DefaultSubscriber;
-import com.dianrong.crnetwork.framework.view.IBaseView;
-import com.dianrong.crnetwork.request.ClientBuilder;
-import com.dianrong.crnetwork.request.RequestHandler;
+import com.fei.crnetwork.framework.RequestAgent;
+import com.fei.crnetwork.framework.error.ErrorHandler;
+import com.fei.crnetwork.framework.subscriber.DefaultSubscriber;
+import com.fei.crnetwork.framework.view.IBaseView;
+import com.fei.crnetwork.request.ClientBuilder;
+import com.fei.crnetwork.request.RequestHandler;
 import com.example.root.okfit.DiyCodeApp;
 import com.example.root.okfit.logic.LoginActivity;
 import com.example.root.okfit.net.api.LoginApi;
