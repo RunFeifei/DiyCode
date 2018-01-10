@@ -11,10 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.dianrong.crnetwork.dataformat.AList;
-import com.dianrong.crnetwork.framework.RequestAgent;
-import com.dianrong.crnetwork.framework.subscriber.DefaultSubscriber;
-import com.dianrong.crnetwork.request.RequestHandler;
+import com.fei.crnetwork.dataformat.AList;
+import com.fei.crnetwork.framework.RequestAgent;
+import com.fei.crnetwork.framework.subscriber.DefaultSubscriber;
+import com.fei.crnetwork.request.RequestHandler;
 import com.example.root.okfit.R;
 import com.example.root.okfit.base.BaseActivity;
 import com.example.root.okfit.net.api.TopicApi;

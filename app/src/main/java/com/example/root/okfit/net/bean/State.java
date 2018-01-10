@@ -1,6 +1,6 @@
 package com.example.root.okfit.net.bean;
 
-import com.dianrong.crnetwork.dataformat.Entity;
+import com.fei.crnetwork.dataformat.Entity;
 
 /**
  * 判断操作状态是否成功

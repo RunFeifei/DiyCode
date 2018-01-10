@@ -2,17 +2,16 @@ package com.example.root.okfit.logic.main;
 
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.dianrong.crnetwork.dataformat.AList;
-import com.dianrong.crnetwork.framework.RequestAgent;
-import com.dianrong.crnetwork.framework.subscriber.DefaultSubscriber;
-import com.dianrong.crnetwork.request.RequestHandler;
+import com.fei.crnetwork.dataformat.AList;
+import com.fei.crnetwork.framework.RequestAgent;
+import com.fei.crnetwork.framework.subscriber.DefaultSubscriber;
+import com.fei.crnetwork.request.RequestHandler;
 import com.example.root.okfit.R;
 import com.example.root.okfit.base.BaseWebviewActivity;
 import com.example.root.okfit.net.api.SitesApi;

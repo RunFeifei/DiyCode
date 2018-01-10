@@ -1,6 +1,6 @@
 package com.example.root.okfit.net.bean;
 
-import com.dianrong.crnetwork.dataformat.Entity;
+import com.fei.crnetwork.dataformat.Entity;
 
 /**
  * Created by PengFeifei on 17-7-25.

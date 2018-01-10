@@ -1,7 +1,7 @@
 package com.example.root.okfit.net.dianrong;
 
-import com.dianrong.crnetwork.dataformat.AList;
-import com.dianrong.crnetwork.dataformat.Entity;
+import com.fei.crnetwork.dataformat.AList;
+import com.fei.crnetwork.dataformat.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**

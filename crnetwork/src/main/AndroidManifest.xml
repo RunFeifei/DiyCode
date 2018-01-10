@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         >
         <meta-data
-            android:name="com.dianrong.crnetwork.GlideMod"
+            android:name="com.fei.crnetwork.GlideMod"
             android:value="GlideModule" />
     </application>
 

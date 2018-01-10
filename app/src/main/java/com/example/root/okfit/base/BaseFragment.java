@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dianrong.crnetwork.framework.view.IBaseView;
-import com.dianrong.crnetwork.response.RequestException;
+import com.fei.crnetwork.framework.view.IBaseView;
+import com.fei.crnetwork.response.RequestException;
 import com.example.root.okfit.R;
 import com.trello.rxlifecycle.components.support.RxFragment;
 

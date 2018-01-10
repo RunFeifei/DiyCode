@@ -1,14 +1,11 @@
 package com.example.root.okfit.net.api;
 
 
-import com.dianrong.crnetwork.dataformat.AList;
+import com.fei.crnetwork.dataformat.AList;
 import com.example.root.okfit.net.bean.Topic;
 import com.example.root.okfit.net.bean.TopicDetail;
 import com.example.root.okfit.net.bean.TopicReply;
 
-import java.util.List;
-
-import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
