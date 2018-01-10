@@ -1,4 +1,4 @@
-package com.example.root.okfit.net.dianrong;
+package com.example.root.okfit.net.ddrr;
 
 import com.fei.crnetwork.dataformat.AList;
 import com.fei.crnetwork.dataformat.Entity;

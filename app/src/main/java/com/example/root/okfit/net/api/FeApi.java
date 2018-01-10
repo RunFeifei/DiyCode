@@ -2,9 +2,9 @@ package com.example.root.okfit.net.api;
 
 
 import com.fei.crnetwork.host.ClassHost;
-import com.example.root.okfit.net.dianrong.BreakerItem;
-import com.example.root.okfit.net.dianrong.DrList;
-import com.example.root.okfit.net.dianrong.DrRoot;
+import com.example.root.okfit.net.ddrr.BreakerItem;
+import com.example.root.okfit.net.ddrr.DrList;
+import com.example.root.okfit.net.ddrr.DrRoot;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
