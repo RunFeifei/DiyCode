@@ -28,28 +28,28 @@
 -keepattributes Signature
 -keepattributes SourceFile,LineNumberTable
 
--keep class com.dianrong.android.common.viewholder.Res{
+-keep class com.fei.android.common.viewholder.Res{
     public int value();
 }
 
 -keepclassmembers class **.**{
-    @com.dianrong.android.common.viewholder.Res <fields>;
+    @com.fei.android.common.viewholder.Res <fields>;
 }
 
--keep class com.dianrong.android.deeplink.DeepLinkMapping{
+-keep class com.fei.android.deeplink.DeepLinkMapping{
     public int value();
 }
 
 -keepclassmembers class **.**{
-    @com.dianrong.android.deeplink.DeepLinkMapping <methods>;
+    @com.fei.android.deeplink.DeepLinkMapping <methods>;
 }
 
--keep class com.dianrong.android.deeplink.DeepLinkResult{
+-keep class com.fei.android.deeplink.DeepLinkResult{
     public int value();
 }
 
 -keepclassmembers class **.**{
-    @com.dianrong.android.deeplink.DeepLinkResult <methods>;
+    @com.fei.android.deeplink.DeepLinkResult <methods>;
 }
 
 -keep public class * extends android.app.Activity
@@ -103,7 +103,7 @@
 -keep class com.tencent.** {*;}
 -keep class com.umeng.** {*;}
 -keep class u.aly.** {*;}
--keep class com.dianrong.android.network.volley.** {*;}
+-keep class com.fei.android.network.volley.** {*;}
 -keep class org.apache.http.** {*;}
 
 # Okio
@@ -119,15 +119,15 @@
 -keepclasseswithmembers class * {
     @retrofit2.http.* <methods>;
 }
--keep class com.dianrong.android.foxtalk.**{*;}
+-keep class com.fei.android.foxtalk.**{*;}
 -keepattributes Signature
 -keepattributes Exceptions
 -keepclasseswithmembers class * {
     @retrofit2.http.* <methods>;
 }
 #Crnetwork
--keep class com.dianrong.crnetwork.** {*;}
--keep class com.dianrong.processor.** {*;}
+-keep class com.fei.crnetwork.** {*;}
+-keep class com.fei.processor.** {*;}
 # Otto
 #-keepattributes *Annotation*
 -keepclassmembers class ** {
@@ -171,19 +171,19 @@
     *;
 }
 
--keep class com.dianrong.credit.net.credit.** {
+-keep class com.fei.credit.net.credit.** {
  *;
 }
 
--keep class com.dianrong.credit.net.credit.**.* {
+-keep class com.fei.credit.net.credit.**.* {
  *;
 }
 
--keep class com.dianrong.credit.net.credit.pbcc.** {
+-keep class com.fei.credit.net.credit.pbcc.** {
  *;
 }
 
--keep class com.dianrong.credit.net.credit.pbcc.**.* {
+-keep class com.fei.credit.net.credit.pbcc.**.* {
  *;
 }
 
@@ -278,7 +278,7 @@
 -assumenosideeffects class * extends java.lang.Throwable{
     public void printStackTrace();
 }
--assumenosideeffects class com.dianrong.android.common.utils.Log{
+-assumenosideeffects class com.fei.android.common.utils.Log{
     public static *** d(...);
     public static *** i(...);
     public static *** v(...);
