@@ -48,7 +48,7 @@ public class HeaderInterceptor implements Interceptor {
         requestBuilder.header("User-Agent", userAgent);
         //requestBuilder.header("userinfo", userId);
         requestBuilder.header("X-SL-UUID", Storage.getSlUUID());
-        requestBuilder.header("IMEI", AppInfo.getImei(MultiApplication.getContext()));
+//        requestBuilder.header("IMEI", AppInfo.getImei(MultiApplication.getContext()));
         requestBuilder.header("Referer", BaseUrlBinder.getBaseUrl());
         requestBuilder.removeHeader("Pragma");//在HTTP1.0中Pragma: no-cache,删除旧的
         //requestBuilder.removeHeader("Cache-Control");//删除旧的
