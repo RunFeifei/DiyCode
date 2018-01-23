@@ -3,23 +3,6 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    signingConfigs {
-        release {
-
-            Properties properties = new Properties()
-            properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-            storeFile file(properties.getProperty('key.store'))
-            storePassword properties.getProperty('key.store.password')
-            keyAlias properties.getProperty('key.alias')
-            keyPassword properties.getProperty('key.alias.password')
-        }
-        debug {
-            storeFile rootProject.file('fei.keystore')
-            storePassword "feifei"
-            keyAlias "feifei"
-        }
-    }
     compileSdkVersion ANDROID_SDK_VERSION
     buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
     defaultConfig {
@@ -35,10 +18,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-        }
-        debug {
-            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -47,12 +26,29 @@ android {
     }
 
     packagingOptions {
+        exclude '.readme'
+        exclude 'LICENSE.txt'
         exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LGPL2.1'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/README.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude '**/pom.properties'
+        exclude '**/pom.properties'
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    publishNonDefault true
 }
 
 repositories {
@@ -76,7 +72,7 @@ dependencies {
     compile 'com.amap.api:location:latest.integration'
     compile 'com.amap.api:map2d:latest.integration'
     compile 'com.facebook.rebound:rebound:0.3.8'
-    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:multidex:1.0.2'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.5.1'
     compile 'com.bintray.run:common:1.0.2'
