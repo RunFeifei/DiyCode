@@ -41,11 +41,11 @@ public class ObservableHandler<T, Data extends Serializable> {
 
     public ObservableHandler(IBaseView baseView) {
         this.baseView = baseView;
-        if (baseView instanceof RxFragment) {
+        if (baseView instanceof FragmentLifecycleProvider) {
             this.fragmentLifecycle = (FragmentLifecycleProvider) baseView;
             return;
         }
-        if (baseView instanceof RxAppCompatActivity) {
+        if (baseView instanceof ActivityLifecycleProvider) {
             this.activityLifecycle = (ActivityLifecycleProvider) baseView;
             return;
         }
