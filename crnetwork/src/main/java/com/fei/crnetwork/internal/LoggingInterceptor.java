@@ -9,6 +9,7 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Connection;
+import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -52,6 +53,18 @@ public final class LoggingInterceptor implements Interceptor {
             if (requestBody.contentLength() != -1) {
                 OkLog.log("Content-Length-->" + requestBody.contentLength());
             }
+            if("POST".equals(request.method())){
+                StringBuilder sb = new StringBuilder();
+                if (request.body() instanceof FormBody) {
+                    FormBody body = (FormBody) request.body();
+                    for (int i = 0; i < body.size(); i++) {
+                        sb.append(body.encodedName(i) + "=" + body.encodedValue(i) + ",");
+                    }
+                    sb.delete(sb.length() - 1, sb.length());
+                    OkLog.log( "RequestBody :{"+sb.toString()+"}");
+                }
+            }
+
         }
 
         Headers requestHeaders = request.headers();
