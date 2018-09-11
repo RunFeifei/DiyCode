@@ -3,8 +3,8 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: "maven"
 apply plugin: 'com.novoda.bintray-release'
 
-def VERSION_CODE = 6
-def VERSION_NAME = "1.0.6"
+def VERSION_CODE = 7
+def VERSION_NAME = "1.0.7"
 
 android {
     compileSdkVersion ANDROID_SDK_VERSION
