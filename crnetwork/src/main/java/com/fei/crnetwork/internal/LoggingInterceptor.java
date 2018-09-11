@@ -60,7 +60,6 @@ public final class LoggingInterceptor implements Interceptor {
                     for (int i = 0; i < body.size(); i++) {
                         sb.append(body.encodedName(i) + "=" + body.encodedValue(i) + ",");
                     }
-                    sb.delete(sb.length() - 1, sb.length());
                     OkLog.log( "RequestBody :{"+sb.toString()+"}");
                 }
             }
