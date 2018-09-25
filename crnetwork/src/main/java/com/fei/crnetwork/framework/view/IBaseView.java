@@ -1,8 +1,7 @@
 package com.fei.crnetwork.framework.view;
 
 
-import android.support.v4.app.FragmentManager;
-
+import com.fei.crnetwork.framework.view.loading.Loading;
 import com.fei.crnetwork.response.RequestException;
 
 /**
@@ -21,6 +20,6 @@ public interface IBaseView {
 
     boolean onPageVisible();
 
-    FragmentManager onRequestIng();
+    Loading onLoadIng();
 
 }

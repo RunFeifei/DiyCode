@@ -99,7 +99,7 @@ public class ClientBuilder {
         Log.d(TAG, "baseUrl change to " + getBaseUrl());
     }
 
-    private static Retrofit getRetrofit() {
+    public static Retrofit getRetrofit() {
         if (client == null) {
             initHttpClient();
         }

@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.root.okfit.view.loading.LoadingDialog;
 import com.fei.crnetwork.framework.view.IBaseView;
+import com.fei.crnetwork.framework.view.loading.Loading;
 import com.fei.crnetwork.response.RequestException;
 import com.example.root.okfit.R;
 import com.trello.rxlifecycle.components.support.RxFragment;
@@ -198,9 +200,10 @@ public abstract class BaseFragment extends RxFragment implements IBaseView {
     }
 
     @Override
-    public FragmentManager onRequestIng() {
-        return getChildFragmentManager();
+    public Loading onLoadIng() {
+        return new LoadingDialog(getChildFragmentManager());
     }
+
     /*****************************Utils*****************************/
     protected void toast(String content) {
         Toast.makeText(getContext(), content, Toast.LENGTH_SHORT).show();

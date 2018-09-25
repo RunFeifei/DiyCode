@@ -186,7 +186,7 @@ public class ObservableHandler<T, Data extends Serializable> {
     }
 
     public static HttpUrl setHttpUrl(HttpUrl httpUrl) {
-        return ObservableHandler.httpUrl = null;
+        return ObservableHandler.httpUrl = httpUrl;
     }
 
 

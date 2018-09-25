@@ -1,11 +1,9 @@
-package com.fei.crnetwork.framework.view.loading;
+package com.example.root.okfit.view.loading;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-
-import com.example.crnetwork.R;
 
 
 public class RotatingImageView extends AppCompatImageView {
@@ -25,7 +23,7 @@ public class RotatingImageView extends AppCompatImageView {
     }
 
     private void init() {
-        setImageResource(R.drawable.icon_loading);
+        setImageResource(com.example.root.okfit.R.drawable.icon_loading);
         setFocusable(true);
         setFocusableInTouchMode(true);
         initRunable();

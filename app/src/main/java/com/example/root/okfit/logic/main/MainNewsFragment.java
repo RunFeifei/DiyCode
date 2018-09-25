@@ -148,8 +148,4 @@ public final class MainNewsFragment extends MainFragment implements OnLoadMoreDa
         ;
     }
 
-    @Override
-    public FragmentManager onRequestIng() {
-        return null;
-    }
 }

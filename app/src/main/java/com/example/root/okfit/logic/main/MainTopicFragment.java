@@ -155,8 +155,4 @@ public final class MainTopicFragment extends MainFragment implements OnLoadMoreD
         ;
     }
 
-    @Override
-    public FragmentManager onRequestIng() {
-        return null;
-    }
 }

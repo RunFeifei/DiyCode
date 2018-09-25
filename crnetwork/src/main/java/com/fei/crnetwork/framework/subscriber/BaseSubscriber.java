@@ -3,25 +3,21 @@ package com.fei.crnetwork.framework.subscriber;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.fei.crnetwork.error.ErrorCode;
 import com.fei.crnetwork.framework.ObservableHandler;
 import com.fei.crnetwork.framework.adapter.ExceptionAdapter;
 import com.fei.crnetwork.framework.view.IBaseView;
-import com.fei.crnetwork.framework.view.loading.LoadingDialog;
-import com.fei.crnetwork.response.RequestException;
+import com.fei.crnetwork.framework.view.loading.OnLoadingDismissListener;
 
 import rx.Subscriber;
 
-import static com.fei.crnetwork.framework.view.loading.LoadingDialog.TOTAL_TIME;
 
 /**
  * Created by PengFeifei on 17-6-14.
  */
 
-public abstract class BaseSubscriber<T> extends Subscriber<T> implements LoadingDialog.OnDismissListener {
+public abstract class BaseSubscriber<T> extends Subscriber<T> implements OnLoadingDismissListener {
 
     private IBaseView baseView;
-    private LoadingDialog loadingDialog;
     private boolean cancelled;
 
     public BaseSubscriber(@NonNull IBaseView baseView) {
@@ -44,10 +40,8 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Loading
         super.onStart();
         boolean onStart = baseView.onRequestStart();
         if (!onStart) {
-            loadingDialog = LoadingDialog.showLoading(baseView.onRequestIng());
-            if (loadingDialog != null) {
-                loadingDialog.setOnDismissListener(this);
-            }
+            setOnDialogDismissListener();
+            showLoading();
         }
     }
 
@@ -56,10 +50,7 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Loading
         Log.d("BaseSubscriber-->", "-------------------------------------------------onCompleted");
         if (!cancelled) {
             baseView.onRequestEnd();
-            if (loadingDialog != null) {
-                loadingDialog.dismiss();
-                loadingDialog = null;
-            }
+            dismissLoading();
             cancelled = false;
         }
         ObservableHandler.setHttpUrl(null);
@@ -74,10 +65,7 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Loading
         Log.d("BaseSubscriber-->", "-------------------------------------------------onError");
         Log.e("BaseSubscriber-->", e.getMessage());
         if (!cancelled) {
-            if (loadingDialog != null) {
-                loadingDialog.dismiss();
-                loadingDialog = null;
-            }
+            dismissLoading();
             cancelled = false;
         }
         if (!consumedException) {
@@ -87,27 +75,33 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements Loading
     }
 
     @Override
-    public void onDismiss() {
-        Log.d("BaseSubscriber-->", "-------------------------------------------------onDismiss");
-        unsubscribe();
-        ObservableHandler.setHttpUrl(null);
-    }
-
-    @Override
-    public void onCancell() {
-        Log.d("BaseSubscriber-->", "-------------------------------------------------onCancell");
+    public void onDialogCancelled() {
+        Log.d("BaseSubscriber-->", "-------------------------------------------------onDialogCancelled");
         cancelled = true;
         baseView.onRequestCacell();
         unsubscribe();
         ObservableHandler.setHttpUrl(null);
     }
 
-    @Override
-    public void onTimeOutDismiss() {
-        Log.d("BaseSubscriber-->", "-------------------------------------------------onTimeOutDismiss");
-        if (!isUnsubscribed()) {
-            throw new RequestException(ObservableHandler.getHttpUrl(), ErrorCode.REQUEST_TIMEOUT_ERR, "request take more than " + TOTAL_TIME + " millis");
+
+    private void dismissLoading() {
+        if (baseView.onLoadIng() == null) {
+            return;
         }
-        ObservableHandler.setHttpUrl(null);
+        baseView.onLoadIng().dismissLoading();
+    }
+
+    private void showLoading() {
+        if (baseView.onLoadIng() == null) {
+            return;
+        }
+        baseView.onLoadIng().showLoading();
+    }
+
+    private void setOnDialogDismissListener() {
+        if (baseView.onLoadIng() == null) {
+            return;
+        }
+        baseView.onLoadIng().setOnDismissListener(this);
     }
 }

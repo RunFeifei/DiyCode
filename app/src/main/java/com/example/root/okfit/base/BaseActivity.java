@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -15,9 +14,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fei.crnetwork.framework.view.IBaseView;
-import com.fei.crnetwork.response.RequestException;
 import com.example.root.okfit.R;
+import com.example.root.okfit.view.loading.LoadingDialog;
+import com.fei.crnetwork.framework.view.IBaseView;
+import com.fei.crnetwork.framework.view.loading.Loading;
+import com.fei.crnetwork.response.RequestException;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -174,8 +175,8 @@ public abstract class BaseActivity extends BasePermissionsActivity implements IB
     }
 
     @Override
-    public FragmentManager onRequestIng() {
-        return getSupportFragmentManager();
+    public Loading onLoadIng() {
+        return new LoadingDialog(getSupportFragmentManager());
     }
 
     /*****************************Utils*****************************/
