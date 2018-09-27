@@ -6,6 +6,7 @@ import android.util.Log;
 import com.fei.crnetwork.framework.ObservableHandler;
 import com.fei.crnetwork.framework.adapter.ExceptionAdapter;
 import com.fei.crnetwork.framework.view.IBaseView;
+import com.fei.crnetwork.framework.view.loading.Loading;
 import com.fei.crnetwork.framework.view.loading.OnLoadingDismissListener;
 
 import rx.Subscriber;
@@ -19,18 +20,12 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements OnLoadi
 
     private IBaseView baseView;
     private boolean cancelled;
+    private Loading loading;
 
     public BaseSubscriber(@NonNull IBaseView baseView) {
         this.baseView = baseView;
     }
 
-    @Override
-    public void onNext(T t) {
-        Log.d("BaseSubscriber-->", "-------------------------------------------------onNext");
-        if (baseView.onPageVisible() && t != null) {
-            onHandleData(t);
-        }
-    }
 
     public abstract void onHandleData(T t);
 
@@ -38,21 +33,35 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements OnLoadi
     public void onStart() {
         Log.d("BaseSubscriber-->", "-------------------------------------------------onStart");
         super.onStart();
+        loading = baseView.onLoadIng();
         boolean onStart = baseView.onRequestStart();
         if (!onStart) {
-            setOnDialogDismissListener();
-            showLoading();
+            if (loading != null) {
+                loading.showLoading();
+                loading.setOnDismissListener(this);
+            }
+        }
+
+    }
+
+    @Override
+    public void onNext(T t) {
+        Log.d("BaseSubscriber-->", "-------------------------------------------------onNext");
+        if (!cancelled) {
+            baseView.onRequestEnd();
+            if (loading != null) {
+                loading.dismissLoading();
+            }
+            cancelled = false;
+        }
+        if (baseView.onPageVisible() && t != null) {
+            onHandleData(t);
         }
     }
 
     @Override
     public void onCompleted() {
         Log.d("BaseSubscriber-->", "-------------------------------------------------onCompleted");
-        if (!cancelled) {
-            baseView.onRequestEnd();
-            dismissLoading();
-            cancelled = false;
-        }
         ObservableHandler.setHttpUrl(null);
     }
 
@@ -65,7 +74,9 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements OnLoadi
         Log.d("BaseSubscriber-->", "-------------------------------------------------onError");
         Log.e("BaseSubscriber-->", e.getMessage());
         if (!cancelled) {
-            dismissLoading();
+            if (loading != null) {
+                loading.dismissLoading();
+            }
             cancelled = false;
         }
         if (!consumedException) {
@@ -84,24 +95,5 @@ public abstract class BaseSubscriber<T> extends Subscriber<T> implements OnLoadi
     }
 
 
-    private void dismissLoading() {
-        if (baseView.onLoadIng() == null) {
-            return;
-        }
-        baseView.onLoadIng().dismissLoading();
-    }
 
-    private void showLoading() {
-        if (baseView.onLoadIng() == null) {
-            return;
-        }
-        baseView.onLoadIng().showLoading();
-    }
-
-    private void setOnDialogDismissListener() {
-        if (baseView.onLoadIng() == null) {
-            return;
-        }
-        baseView.onLoadIng().setOnDismissListener(this);
-    }
 }

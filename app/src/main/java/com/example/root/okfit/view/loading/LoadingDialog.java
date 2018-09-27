@@ -51,7 +51,6 @@ public class LoadingDialog extends DialogFragment implements View.OnClickListene
         }
     }
 
-
     @Override
     public void dismissLoading() {
         dismissAllowingStateLoss();

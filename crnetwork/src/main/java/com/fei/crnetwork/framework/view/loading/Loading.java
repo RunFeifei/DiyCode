@@ -9,4 +9,5 @@ public interface Loading {
     void showLoading();
 
     void setOnDismissListener(OnLoadingDismissListener onDismissListener);
+
 }
